@@ -60,7 +60,7 @@ public class Json {
 		}
 		return null;
 	}
-	public static String getRemoteProperty(String order, String... param)throws HttpException, IOException{
+	public static String getRemoteProperty(String order, Object... param)throws HttpException, IOException{
 		return Constants.getPropertyValue(order, param);
 	}
 }
