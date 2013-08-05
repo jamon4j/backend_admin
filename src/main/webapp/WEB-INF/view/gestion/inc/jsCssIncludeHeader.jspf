@@ -1,0 +1,13 @@
+<link rel="stylesheet" href="/js/jquery/plugins/jquery_ui/themes/base/jquery.ui.all.css" />
+<script type="text/javascript" src="/js/jquery/core/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.mouse.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.draggable.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.position.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.resizable.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.button.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.dialog.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.effect.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.effect-blind.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.effect-explode.js"></script>
