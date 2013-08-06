@@ -69,9 +69,9 @@
 						<td>${dto.id} </td>
 						<td>${dto.name} </td>
 						<td><c:if test="${dto.deleted=='false'}">是</c:if><c:if test="${dto.deleted=='true'}">否</c:if> </td>
-						<td><button onclick="detail(${status.count})">详情</button></td>
+						<td><button onclick="detail(${dto.id})">详情</button></td>
 						<td><button onclick="showhostlist(${dto.id})">查看物理机</button></td>
-						<div id="zone_dialog_${status.count}" title="zone${status.count}详情" style="display:none">
+						<div id="zone_dialog_${dto.id}" title="zone${dto.id}详情" style="display:none">
 							<p>id:${dto.id}</p>
 							<p>name:${dto.name}</p>
 							<p>isdeleted:${dto.deleted}</p>

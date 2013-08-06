@@ -2,6 +2,7 @@ package com.ksyun.vm.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import sun.misc.BASE64Decoder;
 
+import com.ksyun.vm.dto.ebs.VmEBSDto;
 import com.ksyun.vm.dto.vm.ServerDto;
 import com.ksyun.vm.utils.Constants;
 import com.ksyun.vm.utils.HttpUtils;
@@ -42,5 +44,14 @@ public class VmController {
 		String requestStr = Constants.getPropertyValue(Constants.getPropertyValue(InitConst.SERVER,tenantId,vmId));
 		String resultJson = HttpUtils.getAdminResponseData(requestStr);
 		return resultJson;
+	}
+	
+	//虚机绑定ebs列表
+	@RequestMapping("/g/vm_ebs/{tenantid}/{userid}/{vm_id}")
+	public ModelAndView returnVmEBSDetail(@PathVariable("tenantid") String tenantId,@PathVariable("userid")String userId,@PathVariable("vm_id") String vmId,ModelAndView mav) throws HttpException, IOException{
+		List<VmEBSDto> list = JsonParser.returnVMEBSLIST(tenantId, userId, vmId);
+		mav.addObject("vmebslist", list);
+		mav.setViewName("/gestion/user/ebs_list");
+		return mav;
 	}
 }

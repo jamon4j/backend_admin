@@ -3,6 +3,8 @@ package com.ksyun.vm.dto.vm;
 import java.util.List;
 
 import com.ksyun.vm.dto.common.CoreDto;
+import com.ksyun.vm.dto.common.MetaDto;
+import com.ksyun.vm.dto.securitygroup.SecurityGroupDto;
 
 public class CreateServerDto extends CoreDto{
 	private String name;
@@ -11,6 +13,28 @@ public class CreateServerDto extends CoreDto{
 	private String max_count;
 	private String min_count;
 	private List<SecurityGroupDto> security_groups;
+	private String adminPass;
+	private MetaDto metadata;
+	private String availability_zone;
+
+	public String getAvailability_zone() {
+		return availability_zone;
+	}
+	public void setAvailability_zone(String availabilityZone) {
+		availability_zone = availabilityZone;
+	}
+	public MetaDto getMetadata() {
+		return metadata;
+	}
+	public void setMetadata(MetaDto metadata) {
+		this.metadata = metadata;
+	}
+	public String getAdminPass() {
+		return adminPass;
+	}
+	public void setAdminPass(String adminPass) {
+		this.adminPass = adminPass;
+	}
 	public String getName() {
 		return name;
 	}

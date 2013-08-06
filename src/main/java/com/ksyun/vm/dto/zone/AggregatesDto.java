@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ksyun.vm.dto.common.CoreDto;
 import com.ksyun.vm.dto.common.MetaDto;
+import com.ksyun.vm.utils.Tools;
 
 /**
  * zone Dto
@@ -85,10 +86,7 @@ public class AggregatesDto extends CoreDto{
 	}
 	@Override
 	public String toString() {
-		for(String host : hosts){
-			hostStr = host+",";
-		}
-		hostStr = hostStr.substring(0, hostStr.lastIndexOf(",")-1);
+		hostStr = Tools.listToString(hosts);
 		return "AggregatesDto [availability_zone=" + availability_zone + ", created_at=" + created_at + ", deleted=" + deleted + ", deleted_at=" + deleted_at + ", hosts=" + hostStr + ", id=" + id + ", metadata=" + metadata + ", name=" + name + ", updated_at=" + updated_at + "]";
 	}
 }

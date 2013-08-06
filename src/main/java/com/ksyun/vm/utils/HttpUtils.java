@@ -24,7 +24,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.ksyun.vm.utils.enumeration.EnumResult;
 
 public class HttpUtils {
-
+	/**
+	 * 构造httpClient对象
+	 * @return
+	 */
 	private static HttpClient getHttpClient() {
 		MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
 		HttpClient client = new HttpClient(connectionManager);
@@ -33,7 +36,7 @@ public class HttpUtils {
 		client.getHttpConnectionManager().getParams().setSoTimeout(Integer.valueOf(Constants.getPropertyValue(InitConst.SOCKET_TIMEOUT)));
 		return client;
 	}
-
+	
 	private static String inputStreamToString(InputStream input) throws IOException {
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 		byte[] data = new byte[1024];
@@ -95,6 +98,8 @@ public class HttpUtils {
 	 * @param headerArgs
 	 */
 	private static void setHeader(HttpMethod httpMethod, Map<String, String> headerArgs) {
+		if(headerArgs == null)
+			return;
 		Set<Map.Entry<String, String>> set = headerArgs.entrySet();
 		for (Iterator<Map.Entry<String, String>> it = set.iterator(); it.hasNext();) {
 			Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
@@ -129,8 +134,11 @@ public class HttpUtils {
 		setHeader(postMethod, headerArgs);
 		client.executeMethod(postMethod);
 		InputStream input = postMethod.getResponseBodyAsStream();
-		String responseBody = inputStreamToString(input);
-		return responseBody;
+		if(input != null){
+			String responseBody = inputStreamToString(input);
+			return responseBody;
+		}
+		return null;
 	}
 	
 	

@@ -85,18 +85,16 @@
 							<p>created: ${vm.created}</p>
 							<p>tenant_id: ${vm.tenant_id}</p>
 							<p>OS-DCF:diskConfig: ${vm.OS_DCF_diskConfig}</p>
-							<p>public_address: </p>
+							<p>public_ip_address: </p>
 							<c:forEach var="public_address" items="${vm.addresses.publicAddress}" varStatus="status">
 								<p>&nbsp;&nbsp;version: ${public_address.version}</p>
 								<p>&nbsp;&nbsp;address: ${public_address.addr}</p>
 							</c:forEach>
-							<p>private_address: </p>
+							<p>private_ip_address: </p>
 							<c:forEach var="private_address" items="${vm.addresses.privateAddress}" varStatus="status">
 								<p>&nbsp;&nbsp;version: ${private_address.version}</p>
 								<p>&nbsp;&nbsp;address: ${private_address.addr}</p>
 							</c:forEach>
-							<p>accessIPv4: ${vm.accessIPv4}</p>
-							<p>accessIPv6: ${vm.accessIPv6}</p>
 							<p>progress: ${vm.progress}</p>
 							<p>OS-EXT-STS:power_state: ${vm.OS_EXT_STS_power_state}</p>
 							<p>config_drive: ${vm.config_drive}</p>

@@ -6,6 +6,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.ksyun.vm.dto.common.CoreDto;
 import com.ksyun.vm.dto.common.LinkDto;
 import com.ksyun.vm.dto.common.MetaDto;
+import com.ksyun.vm.dto.securitygroup.SecurityGroupDto;
 
 public class ServerDto extends CoreDto{
 	private String status;

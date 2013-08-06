@@ -48,4 +48,20 @@ public class OperationVm {
 		System.out.println("delete vm: " + url);
 		return HttpUtils.deleteMethod(url, tenantId, userId);
 	}
+	
+	/**
+	 * 创建系统镜像
+	 * @param url
+	 * @param tenantId
+	 * @param userId
+	 * @param snapShotName
+	 * @throws org.apache.commons.httpclient.HttpException
+	 * @throws java.io.IOException
+	 */
+	public static void createSnapShot(String url, String tenantId, String userId, String snapShotName) throws HttpException, IOException{
+		String requestBody = "{\"createImage\":{\"name\":"+"\""+snapShotName+"\""+"}}";
+		System.out.println(requestBody);
+		String result = HttpUtils.getPostResponseData(url, requestBody, tenantId,userId);
+		System.out.println(result);
+	}
 }

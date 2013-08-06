@@ -19,6 +19,19 @@ public class EBSDto extends CoreDto{
 	private String source_volid;
 	private MetaDto metadata;
 	private String id;
+	private String name;
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 	private String size;
 	public String getStatus() {
 		return status;

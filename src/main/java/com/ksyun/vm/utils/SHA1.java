@@ -193,4 +193,6 @@ public class SHA1 {
 		return byteArrayToHexString(getDigestOfBytes(byteData));
 	}
 
+	public static void main(String[] args) {
+	}
 }

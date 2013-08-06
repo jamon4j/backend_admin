@@ -11,8 +11,8 @@
     <h1>金山云虚拟主机管理中心</h1>
     <ul>
         <li><a href="<%=webRootPath%>/zonelist">机器管理</a></li>
-        <li><a href="<%=webRootPath%>/userlist">用户管理</a></li>
-       <li><a href="<%=webRootPath%>/testlist">测试</a></li><!--
+        <li><a href="<%=webRootPath%>/sglist">安全组管理</a></li>
+        <li><a href="<%=webRootPath%>/userlist">用户管理</a></li><!--
         <li><a href="#">用户管理</a></li>
         <li><a href="#">虚拟机管理</a></li>
         <li><a href="#">EBS管理</a></li>
@@ -33,25 +33,31 @@
         <ul>
             <li><a href="/g/home?" router="home/0/0" target="mainframe">首页</a></li>
             <li><a href="/g/zonelist?" router="home/0/1" target="mainframe">查询zone</a></li>
-            <li><a href="/g/allhostlist?" router="home/0/2" target="mainframe">查询物理机</a></li><!--
-            <li><a href="/g/home?" router="home/0/3" target="mainframe">查询虚拟机</a></li>-->
+            <li><a href="/g/allhostlist?" router="home/0/2" target="mainframe">查询物理机</a></li>
+            <li><!--<a href="/g/home?" router="home/0/3" target="mainframe">防火墙</a>--></li>
         </ul>
     </div>
     <div class="menu-group">
-        <h2 class="first">用户管理</h2>
+        <h2 class="first">安全组管理</h2>
         <ul>
-            <li><a href="/g/user/list/1?" router="home/1/0" target="mainframe">用户信息</a></li><!--
+            <li><a href="/g/sglist?" router="home/1/0" target="mainframe">安全组信息</a></li>
+            <li><a href="/g/sgrulelist?" router="home/1/1" target="mainframe">安全组规则信息</a></li><!--
             <li><a href="/g/home?" router="home/1/1" target="mainframe">批量用户操作</a></li>
             <li><a href="/g/home?" router="home/1/2" target="mainframe">重置任务</a></li>
             <li><a href="/g/home?" router="home/1/3" target="mainframe">在线用户管理</a></li>
         --></ul>
     </div>
- 	<div class="menu-group">
+    <div class="menu-group">
         <h2 class="first">用户管理</h2>
         <ul>
-            <li><a href="/g/userlist/1?" router="home/2/3" target="mainframe">用户信息</a></li>
-        </ul>
+            <li><a href="/g/user/list/1?" router="home/2/0" target="mainframe">用户信息</a></li><!--
+            <li><a href="/g/home?" router="home/1/1" target="mainframe">批量用户操作</a></li>
+            <li><a href="/g/home?" router="home/1/2" target="mainframe">重置任务</a></li>
+            <li><a href="/g/home?" router="home/1/3" target="mainframe">在线用户管理</a></li>
+        --></ul>
     </div>
+
+
     <div class="menu-group">
         <h2 class="first">用户管理</h2>
         <ul>
