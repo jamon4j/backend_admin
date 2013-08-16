@@ -342,6 +342,17 @@
                 }
             });
             $( "#create_root_disk" ).val($( "#slider-range-min" ).slider( "value" ));
+            $.ajax({
+                url:"/g/user/ebslist/${tenantid}/${userid}",
+                dataType:'json',
+                success:function(data){
+                    $.each(data,function(index,val){
+                        if(val.status!="in-use"){
+                            $("#setebs").append("<option value='"+val.id+"'>"+val.name+"</option>");
+                        }
+                    });
+                }
+            });
 	   	});
 	   	function ebslist(tenantid,vmid){
 	   		window.location.href="/g/vm_ebs/"+tenantid+"/${userid}/"+vmid;
@@ -372,17 +383,6 @@
 						$("#setebs_dialog").dialog( "close" );
 					}
 				}
-	   		});
-	   		$.ajax({
-	   			url:"/g/user/ebslist/${tenantid}/${userid}",
-	   			dataType:'json',
-	   			success:function(data){
-	   				$.each(data,function(index,val){
-                        if(val.status!="in-use"){
-	   					    $("#setebs").append("<option value='"+val.id+"'>"+val.name+"</option>");
-                        }
-	   				});
-	   			}
 	   		});
 	   		$("#setebs_dialog").dialog("open");
 	   	}
