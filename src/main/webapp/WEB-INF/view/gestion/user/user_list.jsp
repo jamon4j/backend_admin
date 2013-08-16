@@ -68,8 +68,12 @@
 								url : "/g/user/createuser",
 								data : {name:$("#create_name").val()},
 								success : function(data) {
-									alert("创建用户成功!");
-									window.location.href="/g/user/list/1";
+									if(data.indexOf("token") != -1){
+										alert("创建用户成功!");
+										window.location.href="/g/user/list/1";
+									}else{
+										alert("创建用户失败");
+									}
 								},
 								error : function(XMLHttpRequest,textStatus,errorThrown) {
 									alert("创建用户失败!");

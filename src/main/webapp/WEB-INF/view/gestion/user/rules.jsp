@@ -98,7 +98,12 @@
 							url : "/g/user/createrule/"+sgId+"/"+tenantId+"/"+userId,
 							data : {protocal:create_protocal.val(),from_port:create_from_port.val(),to_port:create_to_port.val(),cidr:create_cidr.val()},
 							success : function(data) {
-								alert("创建安全组规则成功");
+								if(data == "failed"){
+									alert("创建安全组规则失败");
+									return;
+								}else{
+									alert("创建安全组规则成功");
+								}
 								window.location.href="/g/user/security_groups/rules/"+sgId+"/"+tenantId+"/"+userId;
 							},
 							error : function(XMLHttpRequest,textStatus,errorThrown) {
@@ -126,7 +131,12 @@
 			type: "GET",
 			url : "/g/user/deleterule/"+ruleId+"/"+tenantId+"/"+userId,
 			success : function(data) {
-				alert("删除安全组规则成功");
+				if(data == "failed"){
+					alert("删除安全组规则失败");
+					return;
+				}else{
+					alert("删除安全组规则成功");
+				}
 				window.location.href="/g/user/security_groups/"+tenantId+"/"+userId;
 			},
 			error : function(XMLHttpRequest,textStatus,errorThrown) {

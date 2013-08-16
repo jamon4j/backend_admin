@@ -12,6 +12,7 @@ import java.util.Set;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.DeleteMethod;
@@ -139,12 +140,14 @@ public class HttpUtils {
 		postMethod.setRequestEntity(entity);
 		setHeader(postMethod, headerArgs);
 		int status=client.executeMethod(postMethod);
-		InputStream input = postMethod.getResponseBodyAsStream();
-		if(input != null){
-			String responseBody = inputStreamToString(input);
-			return responseBody;
+		if(status == HttpStatus.SC_OK){
+			InputStream input = postMethod.getResponseBodyAsStream();
+			if(input != null){
+				String responseBody = inputStreamToString(input);
+				return responseBody;
+			}
 		}
-		return status+"";
+		return EnumResult.failed.value();
 	}
 	
 	
@@ -165,12 +168,15 @@ public class HttpUtils {
 		postMethod.setRequestEntity(entity);
 		Map<String,String> header = returnDefaultHeader(tenantId, userId);
 		setHeader(postMethod, header);
-		client.executeMethod(postMethod);
-		InputStream input = postMethod.getResponseBodyAsStream();
-		if(input == null || ("").equals(input))
-			return null;
-		String responseBody = inputStreamToString(input);
-		return responseBody;
+		int status=client.executeMethod(postMethod);
+		if(status == HttpStatus.SC_OK){
+			InputStream input = postMethod.getResponseBodyAsStream();
+			if(input != null){
+				String responseBody = inputStreamToString(input);
+				return responseBody;
+			}
+		}
+		return EnumResult.failed.value();
 	}
 	
 	
@@ -229,14 +235,18 @@ public class HttpUtils {
 	 * @param tenantId
 	 * @param userId
 	 */
-	public static Integer deleteMethod(String url,String tenantId, String userId){
+	public static String deleteMethod(String url,String tenantId, String userId){
 		HttpClient client = getHttpClient();
 		DeleteMethod method = new DeleteMethod(url);
 		Map<String,String> header = returnDefaultHeader(tenantId, userId);
 		setHeader(method, header);
 		try {
-			client.executeMethod(method);
-			return EnumResult.successful.value();
+			Integer stauts = client.executeMethod(method);
+			if(stauts == HttpStatus.SC_NO_CONTENT){
+				return EnumResult.successful.value();
+			}else{
+				return EnumResult.failed.value();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return EnumResult.failed.value();

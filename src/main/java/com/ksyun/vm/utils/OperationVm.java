@@ -45,7 +45,7 @@ public class OperationVm {
 	 * @param tenantId
 	 * @param userId
 	 */
-	public static Integer deleteVm(String url,String tenantId,String userId){
+	public static String deleteVm(String url,String tenantId,String userId){
 		System.out.println("delete vm: " + url);
 		return HttpUtils.deleteMethod(url, tenantId, userId);
 	}
@@ -59,11 +59,10 @@ public class OperationVm {
 	 * @throws org.apache.commons.httpclient.HttpException
 	 * @throws java.io.IOException
 	 */
-	public static void createSnapShot(String vmId, String tenantId, String userId, String snapShotName) throws HttpException, IOException{
+	public static String createSnapShot(String vmId, String tenantId, String userId, String snapShotName) throws HttpException, IOException{
 		String requestStr = Constants.getPropertyValue(InitConst.CREATESYSTEMSNAPSHOT);
 		String requestBody = "{\"instance_id\":"+"\""+vmId+"\""+", \"name\":"+"\""+snapShotName+"\""+"}";
-		System.out.println(requestBody);
 		String result = HttpUtils.getPostResponseData(requestStr, requestBody, tenantId,userId);
-		System.out.println(result);
+		return result;
 	}
 }

@@ -96,7 +96,12 @@
 								url : "/g/user/createsg/"+tenantId+"/"+userId,
 								data : {name:$("#create_name").val(),desc:$("#create_desc").val()},
 								success : function(data) {
-									alert("创建安全组成功");
+									if(data == "failed"){
+										alert("创建安全组失败");
+										return;
+									}else{
+										alert("创建安全组成功");
+									}
 									window.location.href="/g/user/security_groups/"+tenantId+"/"+userId;
 								},
 								error : function(XMLHttpRequest,textStatus,errorThrown) {
@@ -146,7 +151,12 @@
 			url : "/g/user/deletesgs/"+tenantId+"/"+userId,
 			data : {sgids:sgids},
 			success : function(data) {
-				alert("删除安全组成功");
+				if(data == "failed"){
+					alert("删除安全组失败");
+					return;
+				}else{
+					alert("删除安全组成功");
+				}
 				window.location.href="/g/user/security_groups/"+tenantId+"/"+userId;
 			},
 			error : function(XMLHttpRequest,textStatus,errorThrown) {

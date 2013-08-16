@@ -337,11 +337,11 @@ public class JsonParser {
 
     public static void deleteEBS(String tenantId, String userId, String ebsid) throws IOException {
         String requestStr = Constants.getPropertyValue(InitConst.DELETEEBS,ebsid);
-        Integer i = HttpUtils.deleteMethod(requestStr, tenantId, userId);
+        HttpUtils.deleteMethod(requestStr, tenantId, userId);
     }
 
     public static void deleteEBSSnapshot(String tenantId, String userId, String ebssnapshotid) {
         String requestStr = Constants.getPropertyValue(InitConst.DELETEEBSSNAPSHOT,ebssnapshotid);
-        Integer i = HttpUtils.deleteMethod(requestStr, tenantId, userId);
+        HttpUtils.deleteMethod(requestStr, tenantId, userId);
     }
 }

@@ -2,16 +2,16 @@ package com.ksyun.vm.utils.enumeration;
 
 public enum EnumResult {
 	
-	successful(1),
-	failed(0);
+	successful("successful"),
+	failed("failed");
 	
-	private EnumResult(Integer type) {
+	private EnumResult(String type) {
 		this.type = type;
 	}
 	
-	private Integer type;
+	private String type;
 
-	public Integer value() {
+	public String value() {
 		return type;
 	}
 }

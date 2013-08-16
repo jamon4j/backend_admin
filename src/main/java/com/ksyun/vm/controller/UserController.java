@@ -30,6 +30,7 @@ import com.ksyun.vm.utils.JsonMaker;
 import com.ksyun.vm.utils.JsonParser;
 import com.ksyun.vm.utils.OperationVm;
 import com.ksyun.vm.utils.PageWithoutSize;
+import com.ksyun.vm.utils.enumeration.EnumResult;
 
 @Controller
 public class UserController {
@@ -99,7 +100,6 @@ public class UserController {
 			@RequestParam("create_zone") String zone, @RequestParam("count") String count, @RequestParam("adminPass") String adminPass,
 			@RequestParam("security_groups[]") String security_groups, HttpServletResponse response, ModelAndView mav) throws HttpException, IOException {
 		String result = JsonMaker.createVm(tenantId, userId, name, imageRef, count, security_groups, adminPass, isOnEbs, zone, vcpu, network, rootDisk, ram);
-		System.out.println(result);
 		return result;
 	}
 
@@ -157,10 +157,13 @@ public class UserController {
 	@RequestMapping(value = "/g/user/createsnapshot/{tenantid}/{userid}/{vmid}/{snapshot_name}")
 	@ResponseBody
 	public String createSnapShot(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @PathVariable("vmid") String vmId,
-			@PathVariable("snapshot_name") String snapshotName, HttpServletResponse response, ModelAndView mav) throws HttpException, IOException {
-
-		OperationVm.createSnapShot(vmId, tenantId, userId, snapshotName);
-		return "success";
+			@PathVariable("snapshot_name") String snapshotName, HttpServletResponse response, ModelAndView mav){
+		try {
+			String result = OperationVm.createSnapShot(vmId, tenantId, userId, snapshotName);
+			return result;
+		} catch (Exception e) {
+			return EnumResult.failed.value();
+		}
 	}
 
 	// 创建EBS快照
@@ -231,17 +234,20 @@ public class UserController {
 	// 创建安全组
 	@RequestMapping(value = "/g/user/createsg/{tenantid}/{userid}")
 	@ResponseBody
-	public String createsg(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@RequestParam("name") String name,@RequestParam("desc") String desc, ModelAndView mav) throws HttpException, IOException{
-		JsonMaker.createSg(tenantId,userId,name,desc);	
-		return "success";
+	public String createsg(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@RequestParam("name") String name,@RequestParam("desc") String desc, ModelAndView mav) {
+		try {
+			String result = JsonMaker.createSg(tenantId,userId,name,desc);
+			return result;
+		} catch (Exception e) {
+			return EnumResult.failed.value();
+		}
 	}
 	
 	// 删除安全组
 	@RequestMapping(value = "/g/user/deletesgs/{tenantid}/{userid}")
 	@ResponseBody
 	public String deletesgs(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@RequestParam("sgids") String sgids) throws HttpException, IOException{
-		JsonMaker.deleteSgs(tenantId, userId, sgids);
-		return "success";
+		return JsonMaker.deleteSgs(tenantId, userId, sgids);
 	}
 	// 查找指定用户安全组规则
 	@RequestMapping(value = "/g/user/security_groups/rules/{sgid}/{tenantid}/{userid}")
@@ -260,15 +266,13 @@ public class UserController {
 	@ResponseBody
 	public String createRule(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@PathVariable("sgid") String sgid,
 			@RequestParam("protocal") String protocal,@RequestParam("from_port") String fromPort,@RequestParam("to_port") String toPort,@RequestParam("cidr") String cidr) throws HttpException, IOException{
-		JsonMaker.createRule(tenantId,userId,sgid,protocal,fromPort,toPort,cidr);	
-		return "success";
+		return JsonMaker.createRule(tenantId,userId,sgid,protocal,fromPort,toPort,cidr);	
 	}
 	// 删除安全组规则
 	@RequestMapping(value = "/g/user/deleterule/{ruleid}/{tenantid}/{userid}")
 	@ResponseBody
 	public String deleterule(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@PathVariable("ruleid") String ruleId) throws HttpException, IOException{
-		JsonMaker.deleteRule(tenantId, userId, ruleId);
-		return "success";
+		return JsonMaker.deleteRule(tenantId, userId, ruleId);
 	}
 	//获取安全组信息(ajax请求)
 	@RequestMapping(value = "/g/user/security_groups/ajax/{tenantid}/{userid}")

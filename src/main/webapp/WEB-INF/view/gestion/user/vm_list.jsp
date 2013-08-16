@@ -297,8 +297,12 @@
 								type: "GET",
 								url : "/g/user/createsnapshot/"+tenantid+"/"+userid+"/"+vmid+"/"+$("#snapshot_name").val(),
 								success : function(data) {
-									alert("创建系统快照成功!");
-									var jsonobj=eval('('+data+')');
+									if(data == "failed"){
+										alert("创建系统快照失败!");
+										return;
+									}else {
+										alert("创建系统快照成功!");
+									}
 								},
 								error : function(XMLHttpRequest,textStatus,errorThrown) {
 									alert("创建系统快照失败!");
@@ -535,21 +539,21 @@
 			<option value="">请选zone</option>
 			</select>
 			<label for="name">cpu核数<b>(只需填入数字，如1，必填)</b></label>
-			<input type="text" name="vcpu" id="create_vcpu" value="" class="text ui-widget-content ui-corner-all" />
+			<input type="text" name="vcpu" id="create_vcpu" value="1" class="text ui-widget-content ui-corner-all" />
 			<label for="name">带宽<b>(只需填入数字，单位：MB，如5或20，必填)</b></label>
-			<input type="text" name="network" id="create_network" value="" class="text ui-widget-content ui-corner-all" />
+			<input type="text" name="network" id="create_network" value="10" class="text ui-widget-content ui-corner-all" />
 			<label for="create_root_disk">系统盘大小<b>(必填,单位:<input type="text" name="root_disk" id="create_root_disk" style="width:28px;border:0;color: #f6931f; font-weight: bold;display: inline-block;" />GB)</b></label>
             <div id="slider-range-min" style="width:81%;"></div>
 			<!--<input type="text" name="root_disk" id="create_root_disk" value="" class="text ui-widget-content ui-corner-all" />-->
 			<label for="name">内存大小<b>(只需填入数字，单位：M，如512或者2048，必填)</b></label>
-			<input type="text" name="ram" id="create_ram" value="" class="text ui-widget-content ui-corner-all" />
+			<input type="text" name="ram" id="create_ram" value="512" class="text ui-widget-content ui-corner-all" />
 			<label for="name">系统盘是否在ebs上创建<b>(必选)</b></label>
 			<div>
 			<span><input type="radio" name="is_ebs" value="True" id="create_ebs" style="float:left;"/><span style="float:left;">是</span></span>
 			<span><input type="radio" name="is_ebs" value="False" id="create_not_ebs" style="float:left;margin-left:20px;"/>否</span>
 			</div>
 			<label for="count">虚拟机数量<b>(必填)</b></label>
-			<input type="text" name="count" id="create_count" value="" class="text ui-widget-content ui-corner-all" />
+			<input type="text" name="count" id="create_count" value="1" class="text ui-widget-content ui-corner-all" />
 			<label for="adminPass">初始密码<b>(必填)</b></label>
 			<input type="text" name="adminPass" id="create_adminPass" value="" class="text ui-widget-content ui-corner-all" />
 			<label for="security_groups">security_groups<b>(必选)</b></label>

@@ -16,6 +16,7 @@ import com.ksyun.vm.dto.securitygroup.CreateSGDto;
 import com.ksyun.vm.dto.securitygroup.CreateSecurityGroupRuleDto;
 import com.ksyun.vm.dto.user.CreateUserDto;
 import com.ksyun.vm.dto.vm.CreateServerDto;
+import com.ksyun.vm.utils.enumeration.EnumResult;
 
 public class JsonMaker {
 
@@ -90,36 +91,40 @@ public class JsonMaker {
         String requestStr = Constants.getPropertyValue(InitConst.CREATESECURITYGROUP);
         Map<String, String> header = HttpUtils.returnDefaultHeader(tenantId, userId);
         String requestBody = makeCreateSGJson(name, desc);
-        System.out.println(requestBody);
         String resultJson = HttpUtils.getPostResponseData(requestStr, requestBody, header);
-        System.out.println(resultJson);
         return resultJson;
     }
 
     //删除安全组
-    public static void deleteSgs(String tenantId, String userId, String sgids) {
+    public static String deleteSgs(String tenantId, String userId, String sgids) {
+    	Integer failedNo = 0;
         String[] sgidArr = sgids.split(",");
         for (String sgid : sgidArr) {
             String requestStr = Constants.getPropertyValue(InitConst.DELETESECURITYGROUP, sgid);
-            HttpUtils.deleteMethod(requestStr, tenantId, userId);
+            String result = HttpUtils.deleteMethod(requestStr, tenantId, userId);
+            if(result.equals(EnumResult.failed.value())){
+            	failedNo++;
+            }
         }
-        return;
+        if(failedNo > 0){
+        	return EnumResult.failed.value();
+        }
+        return EnumResult.successful.value();
     }
 
     //创建安全组规则
-    public static void createRule(String tenantId, String userId, String sgid, String protocal, String fromPort, String toPort, String cidr) throws HttpException, IOException {
+    public static String createRule(String tenantId, String userId, String sgid, String protocal, String fromPort, String toPort, String cidr) throws HttpException, IOException {
         String requestStr = Constants.getPropertyValue(InitConst.CREATESGRULE);
         Map<String, String> header = HttpUtils.returnDefaultHeader(tenantId, userId);
         String requestBody = makeCreateRuleJson(sgid, protocal, fromPort, toPort, cidr);
         System.out.println(requestBody);
-        String result = HttpUtils.getPostResponseData(requestStr, requestBody, header);
-
+        return HttpUtils.getPostResponseData(requestStr, requestBody, header);
     }
 
     //删除安全组规则
-    public static void deleteRule(String tenantId, String userId, String ruleId) {
+    public static String deleteRule(String tenantId, String userId, String ruleId) {
         String requestStr = Constants.getPropertyValue(InitConst.DELETESGRULE, ruleId);
-        HttpUtils.deleteMethod(requestStr, tenantId, userId);
+        return HttpUtils.deleteMethod(requestStr, tenantId, userId);
     }
 
     private static String makeCreateRuleJson(String sgid, String protocal, String fromPort, String toPort, String cidr) {
