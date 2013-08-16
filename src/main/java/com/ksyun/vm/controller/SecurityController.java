@@ -17,7 +17,7 @@ import com.ksyun.vm.utils.JsonParser;
 
 @Controller
 public class SecurityController {
-	@RequestMapping("/g/sglist")
+/*	@RequestMapping("/g/sglist")
 	public ModelAndView returnSecurityGroupList(HttpServletRequest request, ModelAndView mav) throws HttpException, IOException{
 		String tenantId = Constants.getPropertyValue(InitConst.ADMINNAME);
 		List<SecurityGroupDto> list = JsonParser.returnSecurityGroupList(tenantId);
@@ -36,6 +36,6 @@ public class SecurityController {
 		mav.addObject("sglist", list);
 		mav.setViewName("/gestion/securitygroup/sg_list");
 		return mav;
-	}
+	}*/
 
 }

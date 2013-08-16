@@ -3,73 +3,85 @@ package com.ksyun.vm.dto.vm;
 import java.util.List;
 
 import com.ksyun.vm.dto.common.CoreDto;
-import com.ksyun.vm.dto.common.MetaDto;
-import com.ksyun.vm.dto.securitygroup.SecurityGroupDto;
 
 public class CreateServerDto extends CoreDto{
 	private String name;
-	private String imageRef;
-	private String flavorRef;
-	private String max_count;
-	private String min_count;
-	private List<SecurityGroupDto> security_groups;
-	private String adminPass;
-	private MetaDto metadata;
-	private String availability_zone;
-
-	public String getAvailability_zone() {
-		return availability_zone;
-	}
-	public void setAvailability_zone(String availabilityZone) {
-		availability_zone = availabilityZone;
-	}
-	public MetaDto getMetadata() {
-		return metadata;
-	}
-	public void setMetadata(MetaDto metadata) {
-		this.metadata = metadata;
-	}
-	public String getAdminPass() {
-		return adminPass;
-	}
-	public void setAdminPass(String adminPass) {
-		this.adminPass = adminPass;
-	}
+	private String image;
+	private String instance_count;
+	private List<String> security_groups;
+	private String memory;
+	private String vcpu;
+	private String root_disk;
+	private String network_bandwidth;
+	private String boot_on_ebs;
+	private String zone;
+	private String rootpwd;
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getImageRef() {
-		return imageRef;
+	public String getImage() {
+		return image;
 	}
-	public void setImageRef(String imageRef) {
-		this.imageRef = imageRef;
+	public void setImage(String image) {
+		this.image = image;
 	}
-	public String getFlavorRef() {
-		return flavorRef;
+	public String getInstance_count() {
+		return instance_count;
 	}
-	public void setFlavorRef(String flavorRef) {
-		this.flavorRef = flavorRef;
+	public void setInstance_count(String instance_count) {
+		this.instance_count = instance_count;
 	}
-	public String getMax_count() {
-		return max_count;
+
+	public String getMemory() {
+		return memory;
 	}
-	public void setMax_count(String maxCount) {
-		max_count = maxCount;
+	public void setMemory(String memory) {
+		this.memory = memory;
 	}
-	public String getMin_count() {
-		return min_count;
+	public String getVcpu() {
+		return vcpu;
 	}
-	public void setMin_count(String minCount) {
-		min_count = minCount;
+	public void setVcpu(String vcpu) {
+		this.vcpu = vcpu;
 	}
-	public List<SecurityGroupDto> getSecurity_groups() {
+	public String getRoot_disk() {
+		return root_disk;
+	}
+	public void setRoot_disk(String root_disk) {
+		this.root_disk = root_disk;
+	}
+	public String getNetwork_bandwidth() {
+		return network_bandwidth;
+	}
+	public void setNetwork_bandwidth(String network_bandwidth) {
+		this.network_bandwidth = network_bandwidth;
+	}
+	public String getBoot_on_ebs() {
+		return boot_on_ebs;
+	}
+	public void setBoot_on_ebs(String boot_on_ebs) {
+		this.boot_on_ebs = boot_on_ebs;
+	}
+	public String getZone() {
+		return zone;
+	}
+	public void setZone(String zone) {
+		this.zone = zone;
+	}
+	public String getRootpwd() {
+		return rootpwd;
+	}
+	public void setRootpwd(String rootpwd) {
+		this.rootpwd = rootpwd;
+	}
+	public List<String> getSecurity_groups() {
 		return security_groups;
 	}
-	public void setSecurity_groups(List<SecurityGroupDto> securityGroups) {
-		security_groups = securityGroups;
+	public void setSecurity_groups(List<String> security_groups) {
+		this.security_groups = security_groups;
 	}
 	
 	

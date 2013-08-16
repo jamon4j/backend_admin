@@ -173,7 +173,7 @@
                     <div class="th-gap">虚拟机状态</div>
                 </th>	
                 <th width="15%">
-                    <div class="th-gap">instance_name</div>
+                    <div class="th-gap">name</div>
                 </th>
                 <th width="15%">
                     <div class="th-gap">所属物理机</div>
@@ -190,7 +190,7 @@
 					<tr>
 						<td>${dto.id} </td>
 						<td>${dto.status} </td>
-						<td>${dto.OS_EXT_SRV_ATTR_instance_name} </td>
+						<td>${dto.name} </td>
 						<td>${dto.OS_EXT_SRV_ATTR_host} </td>
 						<td>${dto.tenant_id} </td>
 						<td><button onclick="detail('${status.count}')">详情</button></td>
@@ -233,6 +233,12 @@
 								<p>&nbsp;&nbsp;&nbsp;&nbsp;href: ${link.href}</p>
 								<p>&nbsp;&nbsp;&nbsp;&nbsp;rel: ${link.rel}</p>
 							</c:forEach>
+							<p>&nbsp;&nbsp;faults: </p>
+							<p>&nbsp;&nbsp;&nbsp;&nbsp;message: ${vm.fault.message}</p>
+							<p>&nbsp;&nbsp;&nbsp;&nbsp;code: ${vm.fault.code}</p>
+							<p>&nbsp;&nbsp;&nbsp;&nbsp;created: ${vm.fault.created}</p>
+							<p>&nbsp;&nbsp;metadata: </p>
+							<p>&nbsp;&nbsp;&nbsp;&nbsp;storage_location: ${vm.metadata.storage_location}</p>
 						</div>
 					</tr>
             </tbody>

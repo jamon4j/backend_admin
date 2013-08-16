@@ -3,15 +3,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@include file="../inc/jsCssIncludeHeader.jspf"%>
-<%@include file="../inc/meta.jspf"%>
+<html>
+<head>
+    <%@include file="../inc/meta.jspf"%>
     <%
 		String tenantId = (String)request.getAttribute("tenantid");
 		String userId = (String)request.getAttribute("userid");
  	%>
-<html>
-<head>
     <title>VM - VM列表</title>
-    <script type="text/javascript" src="/js/kingsoft/vm_oper.js"></script>
 	<style>
 			label, input { display:block; }
 			input.text { margin-bottom:12px; width:80%; padding: .4em; }
@@ -25,7 +24,6 @@
 	</style>
    	<script language="javascript">
    		var j = jQuery.noConflict(true);
-   		
    		function checknull( tips, o, n ) {
 			if ( o.val() == null || o.val() == "" ) {
 				alert( n + " 不能为空!!!" );
@@ -42,7 +40,23 @@
 				tips.removeClass( "ui-state-highlight", 1500 );
 			}, 500 );
 		}
-		///////////   编辑vm开始  ///////////
+		//全选操作
+		function selectAll(checked) {
+			var vms = $("input[name='vm_list']");
+			if (vms == 0) {
+				return;
+			}
+			if (checked) {
+				for ( var idx = 0; idx < vms.length; idx++) {
+					vms[idx].checked = true;
+				}
+			} else {
+				for ( var idx = 0; idx < vms.length; idx++) {
+					vms[idx].checked = false;
+				}
+			}
+		}
+				///////////   编辑vm开始  ///////////
 		function editvm(){
 			//判断虚拟机选中情况
 			var vms = $("input[name='vm_list']");
@@ -73,56 +87,31 @@
 				buttons: {
 					"确认": function() {
 						var val=$('input:radio[name="edit"]:checked').val();
-						//删除
-						if(val == "delete"){
-							$.ajax({
-								type: "POST",
-								url : "/g/user/delete_vm/<%=tenantId %>/<%=userId %>",
-								data : {"vmids":vmids},
-								success : function(data) {
-									alert("delete虚拟机成功，因机器情况各异，可能需要稍等片刻!");
-									window.location.href="/g/user/vmlist/<%=tenantId %>/<%=userId %>";
-								},
-								error : function(XMLHttpRequest,textStatus,errorThrown) {
-									alert("删除虚拟机失败!");
-									alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
-									alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
-									alert("textStatus:"+textStatus);
-								}
-							});
-						//其他操作
-						}else{
-							var action = "";
-							if(val == "reboot"){
-								action = "reboot";
-							}/*if(val == "pause"){
-								action = "pause";
-							}if(val == "suspend"){
-								action = "suspend";
-							}if(val == "resume"){
-								action = "resume";
-							}*/
-							else if(val == "stop"){
-								action = "stop";
-							}else if(val == "start"){
-								action = "start";
+						var action = "";
+						if(val == "restart"){
+							action = "restart";
+						}else if(val == "stop"){
+							action = "stop";
+						}else if(val == "start"){
+							action = "start";
+						}else if(val == "terminal"){
+							action = "terminal";
+						}
+						$.ajax({
+							type: "POST",
+							url : "/g/user/edit_vm/"+action+"/<%=tenantId %>/<%=userId %>",
+							data : {"vmids":vmids},
+							success : function(data) {
+								alert(action+"虚拟机成功，因机器情况各异，可能需要稍等片刻!");
+								window.location.href="/g/user/vmlist/<%=tenantId %>/<%=userId %>";
+							},
+							error : function(XMLHttpRequest,textStatus,errorThrown) {
+								alert(action+"虚拟机失败!");
+								alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
+								alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
+								alert("textStatus:"+textStatus);
 							}
-							$.ajax({
-								type: "POST",
-								url : "/g/user/edit_vm/"+action+"/<%=tenantId %>/<%=userId %>",
-								data : {"vmids":vmids},
-								success : function(data) {
-									alert(action+"虚拟机成功，因机器情况各异，可能需要稍等片刻!");
-									window.location.href="/g/user/vmlist/<%=tenantId %>/<%=userId %>";
-								},
-								error : function(XMLHttpRequest,textStatus,errorThrown) {
-									alert("删除虚拟机失败!");
-									alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
-									alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
-									alert("textStatus:"+textStatus);
-								}
-							});
-						} 
+						});
 						$(this).dialog( "close" );
 					},
 					"取消": function() {
@@ -188,7 +177,18 @@
 				success : function(data) {
 					var imageJson = eval('('+data+')');
 					for(i=0;i<imageJson.length;i++){
-						$("#create_imageRef_self").append("<option value='"+imageJson[i].name+"'>"+imageJson[i].name+"</option>");
+						$("#create_imageRef_self").append("<option value='"+imageJson[i].id+"'>"+imageJson[i].name+"</option>");
+					}
+				}
+			});
+			
+			$.ajax({
+				url : "/g/user/security_groups/ajax/"+tenantid+"/"+userid,
+				dataType : 'text',
+				success : function(data) {
+					var sgJson = eval('('+data+')');
+					for(i=0;i<sgJson.length;i++){
+						$("#create_security_groups").append("<option value='"+sgJson[i].name+"'>"+sgJson[i].name+"</option>");
 					}
 				}
 			});
@@ -212,7 +212,7 @@
 						create_zone = $( "#create_zone" ),
 						create_network = $( "#create_network" ),
 						create_on_ebs=$('input:radio[name="is_ebs"]:checked');
-						create_data_disk = $( "#create_data_disk" ),
+						create_root_disk = $( "#create_root_disk" ),
 						create_ram = $( "#create_ram" ),
 					//	allFields = $( [] ).add( create_name ).add( create_imageRef ).add( create_count ).add( create_security_groups ).add( create_adminPass ),
 						tips = $( ".validateTips" );
@@ -225,7 +225,7 @@
 						bValid = bValid && checknull( tips, create_on_ebs, "create_on_ebs");
 						bValid = bValid && checknull( tips, create_vcpu, "vcpu");
 						bValid = bValid && checknull( tips, create_network, "network");
-						bValid = bValid && checknull( tips, create_data_disk, "data_disk");
+						bValid = bValid && checknull( tips, create_root_disk, "root_disk");
 						bValid = bValid && checknull( tips, create_ram, "ram");
 						
 						var image = null;
@@ -238,25 +238,24 @@
 							alert("系统镜像与自有镜像必需选择其一!");
 							return;
 						}
-						alert(image);
 						if(bValid){
 							$.ajax({
 								type: "POST",
 								url : "/g/user/createvm/"+tenantid+"/"+userid,
 								data : {name:create_name.val(),
-										imageRef:create_imageRef.val(),
+										imageRef:image,
 										count:create_count.val(),
 										security_groups:create_security_groups.val(),
 										vcpu:create_vcpu.val(),
 										network:create_network.val(),
 										create_on_ebs:create_on_ebs.val(),
 										create_zone:create_zone.val(),
-										data_disk:create_data_disk.val(),
+										root_disk:create_root_disk.val(),
 										ram:create_ram.val(),
 										adminPass:create_adminPass.val()},
 								success : function(data) {
 									var jsonobj=eval('('+data+')');
-									window.location.href="/g/user/vmlist/"+tenantid+"/"+userid+"/"+jsonobj.server.id;
+									window.location.href="/g/user/vmlist/"+tenantid+"/"+userid+"/"+jsonobj.id;
 								},
 								error : function(XMLHttpRequest,textStatus,errorThrown) {
 									alert("创建虚拟机失败!");
@@ -278,7 +277,7 @@
 					$("#create_imageRef").append("<option value=''>请选择镜像</option>");
 					$("#create_zone").empty();
 					$("#create_zone").append("<option value=''>请选择zone</option>");
-				//	allFields.val( "" );
+					$("#create_security_groups").empty();
 				}
 			});
 	   		$( "#addvm_form" ).dialog("open");
@@ -298,9 +297,8 @@
 								type: "GET",
 								url : "/g/user/createsnapshot/"+tenantid+"/"+userid+"/"+vmid+"/"+$("#snapshot_name").val(),
 								success : function(data) {
-									alert(data);
+									alert("创建系统快照成功!");
 									var jsonobj=eval('('+data+')');
-							//		window.location.href="/g/user/vmlist/"+tenantid+"/"+userid+"/"+jsonobj.server.id;
 								},
 								error : function(XMLHttpRequest,textStatus,errorThrown) {
 									alert("创建系统快照失败!");
@@ -330,9 +328,19 @@
 	   			$("#sysImage").hide();
 	   			$("#selfImage").show();
 	   		});
+            $( "#slider-range-min" ).slider({
+                range: "min",
+                value: 20,
+                min: 5,
+                max: 200,
+                slide: function( event, ui ) {
+                    $( "#create_root_disk" ).val(ui.value);
+                }
+            });
+            $( "#create_root_disk" ).val($( "#slider-range-min" ).slider( "value" ));
 	   	});
 	   	function ebslist(tenantid,vmid){
-	   		window.location.href="/g/vm_ebs/"+tenantid+"/${userId}/"+vmid;
+	   		window.location.href="/g/vm_ebs/"+tenantid+"/${userid}/"+vmid;
 	   	}
 	   	function setEBS(tenantid,vmid){
 	   		$("#setebs_dialog").dialog({
@@ -347,13 +355,11 @@
 							return false;
 						}
 						$.ajax({
-							url:"/g/user/setebs/${tenantId}/${userId}",
+							url:"/g/user/setebs/${tenantid}/${userid}",
 							data:{vmid:vmid,ebsid:$("#setebs").val(),device:$("#device").val()},
 							success:function(data){
-								if(data=="success"){
-									alert("关联成功");
-									window.location.href="/g/vm_ebs/"+tenantid+"/${userId}/"+vmid;
-								}
+								alert(data);
+								window.location.href="/g/vm_ebs/"+tenantid+"/${userid}/"+vmid;
 							}
 						});
 						$("#setebs_dialog").dialog( "close" );
@@ -364,11 +370,13 @@
 				}
 	   		});
 	   		$.ajax({
-	   			url:"/g/user/ebslist/${tenantId}/${userId}",
+	   			url:"/g/user/ebslist/${tenantid}/${userid}",
 	   			dataType:'json',
 	   			success:function(data){
 	   				$.each(data,function(index,val){
-	   					$("#setebs").append("<option value='"+val.id+"'>"+val.display_name+"</option>");
+                        if(val.status!="in-use"){
+	   					    $("#setebs").append("<option value='"+val.id+"'>"+val.name+"</option>");
+                        }
 	   				});
 	   			}
 	   		});
@@ -382,8 +390,9 @@
 <div class="main-cont">
     <h3 class="title">vm列表
     </h3>
+
     <div class="set-area">
-        <div><p class="tips-desc">vm列表，vm数量：<c:out value="${fn:length(vmlist)}"></c:out><span><img src="/img/refresh.jpg" height="100%" width="20px" style="margin-left:20px;" onclick="window.location.reload()"/></span><span><img onclick ="addvm('<%=tenantId %>','<%=userId %>')" src="/img/add.jpg" alt="新增虚拟机" height="100%" width="20px" style="float:right;margin-right:100px;"/></span><span><img onclick="editvm()" src="/img/edit.jpg" alt="编辑虚拟机" height="100%" width="20px" style="float:right;margin-right:20px;"/></span></p></div>
+        <div><p class="tips-desc">vm列表，vm数量：<c:out value="${fn:length(vmlist)}"></c:out><span><img src="/img/refresh.jpg" height="100%" width="20px" style="margin-left:20px;" onclick="window.location.reload()"/></span><img onclick ="addvm('<%=tenantId %>','<%=userId %>')" src="/img/add.jpg" alt="新增虚拟机" height="100%" width="20px" style="float:right;margin-right:100px;"/></span><span><img onclick="editvm()" src="/img/edit.jpg" alt="编辑虚拟机" height="100%" width="20px" style="float:right;margin-right:20px;"/></span></p></div>
 			        <table class="table" cellpadding="0" cellspacing="0" width="100%" border="0">
             <colgroup>
             </colgroup>
@@ -399,7 +408,7 @@
                     <div class="th-gap">状态</div>
                 </th>	
                 <th width="12%">
-                    <div class="th-gap">instance_name</div>
+                    <div class="th-gap">name</div>
                 </th>
                 <th width="10%">
                     <div class="th-gap">所属物理机</div>
@@ -421,7 +430,7 @@
 						<td><input type="checkbox" name="vm_list" id="${vm.id}" value="${vm.id}"/></td>
 						<td>${vm.id} </td>
 						<td>${vm.status} </td>
-						<td>${vm.OS_EXT_SRV_ATTR_instance_name} </td>
+						<td>${vm.name} </td>
 						<td>${vm.OS_EXT_SRV_ATTR_host} </td>
 						<td><button onclick="detail('${vm.id}')">详情</button></td>
 						<td><button onclick="createsnapshot('<%=tenantId %>','<%=userId %>','${vm.id}')">创建</button></td>
@@ -465,6 +474,12 @@
 								<p>&nbsp;&nbsp;&nbsp;&nbsp;href: ${link.href}</p>
 								<p>&nbsp;&nbsp;&nbsp;&nbsp;rel: ${link.rel}</p>
 							</c:forEach>
+							<p>&nbsp;&nbsp;faults: </p>
+							<p>&nbsp;&nbsp;&nbsp;&nbsp;message: ${vm.fault.message}</p>
+							<p>&nbsp;&nbsp;&nbsp;&nbsp;code: ${vm.fault.code}</p>
+							<p>&nbsp;&nbsp;&nbsp;&nbsp;created: ${vm.fault.created}</p>
+							<p>&nbsp;&nbsp;metadata: </p>
+							<p>&nbsp;&nbsp;&nbsp;&nbsp;storage_location: ${vm.metadata.storage_location}</p>
 						</div>
 					</tr>
 				</c:forEach>
@@ -474,8 +489,8 @@
 </div>
 <div id="editvm_form" title="请选择下列操作" style="display: none">
 <form>
-		<div><input type="radio" name="edit" value="delete" id="edit_delete" style="float:left;"/>&nbsp;&nbsp;删除虚拟机</div>
-		<div><input type="radio" name="edit" value="reboot" id="edit_reboot" style="float:left;"/>&nbsp;&nbsp;重启虚拟机</div>
+		<div><input type="radio" name="edit" value="terminal" id="edit_terminal" style="float:left;"/>&nbsp;&nbsp;删除虚拟机</div>
+		<div><input type="radio" name="edit" value="restart" id="edit_restart" style="float:left;"/>&nbsp;&nbsp;重启虚拟机</div>
 		<!--<div><input type="radio" name="edit" value="pause" id="edit_pause" style="float:left;"/>&nbsp;&nbsp;暂停虚拟机</div>
 		<div><input type="radio" name="edit" value="suspend" id="edit_suspend" style="float:left;"/>&nbsp;&nbsp;挂起虚拟机</div>
 		<div><input type="radio" name="edit" value="resume" id="edit_resume" style="float:left;"/>&nbsp;&nbsp;恢复虚拟机</div>-->
@@ -523,14 +538,15 @@
 			<input type="text" name="vcpu" id="create_vcpu" value="" class="text ui-widget-content ui-corner-all" />
 			<label for="name">带宽<b>(只需填入数字，单位：MB，如5或20，必填)</b></label>
 			<input type="text" name="network" id="create_network" value="" class="text ui-widget-content ui-corner-all" />
-			<label for="name">数据盘大小<b>(只需填入数字，单位：G，必填)</b></label>
-			<input type="text" name="data_disk" id="create_data_disk" value="" class="text ui-widget-content ui-corner-all" />
+			<label for="create_root_disk">系统盘大小<b>(必填,单位:<input type="text" name="root_disk" id="create_root_disk" style="width:28px;border:0;color: #f6931f; font-weight: bold;display: inline-block;" />GB)</b></label>
+            <div id="slider-range-min" style="width:81%;"></div>
+			<!--<input type="text" name="root_disk" id="create_root_disk" value="" class="text ui-widget-content ui-corner-all" />-->
 			<label for="name">内存大小<b>(只需填入数字，单位：M，如512或者2048，必填)</b></label>
 			<input type="text" name="ram" id="create_ram" value="" class="text ui-widget-content ui-corner-all" />
 			<label for="name">系统盘是否在ebs上创建<b>(必选)</b></label>
 			<div>
-			<span><input type="radio" name="is_ebs" value="yes" id="create_ebs" style="float:left;"/><span style="float:left;">是</span></span>
-			<span><input type="radio" name="is_ebs" value="no" id="create_not_ebs" style="float:left;margin-left:20px;"/>否</span>
+			<span><input type="radio" name="is_ebs" value="True" id="create_ebs" style="float:left;"/><span style="float:left;">是</span></span>
+			<span><input type="radio" name="is_ebs" value="False" id="create_not_ebs" style="float:left;margin-left:20px;"/>否</span>
 			</div>
 			<label for="count">虚拟机数量<b>(必填)</b></label>
 			<input type="text" name="count" id="create_count" value="" class="text ui-widget-content ui-corner-all" />
@@ -538,7 +554,7 @@
 			<input type="text" name="adminPass" id="create_adminPass" value="" class="text ui-widget-content ui-corner-all" />
 			<label for="security_groups">security_groups<b>(必选)</b></label>
 			<select multiple="multiple" name="security_groups" id="create_security_groups" class="text ui-widget-content ui-corner-all" >
-			<option value="default">default</option></select>
+			</select>
 		</fieldset>
 	</form>
 </div>

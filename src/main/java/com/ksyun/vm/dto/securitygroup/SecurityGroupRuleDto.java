@@ -9,8 +9,16 @@ public class SecurityGroupRuleDto extends CoreDto{
 	private String ipProtocol;
 	private String toPort;
 	private String parentGroupId;
-	private String cidr;
+	private IpRange ipRange;
 	private String groupId;
+	private String id;
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	@JSONField(name = "from_port")
 	public String getFromPort() {
 		return fromPort;
@@ -43,11 +51,13 @@ public class SecurityGroupRuleDto extends CoreDto{
 	public void setParentGroupId(String parentGroupId) {
 		this.parentGroupId = parentGroupId;
 	}
-	public String getCidr() {
-		return cidr;
+	@JSONField(name = "ip_range")
+	public IpRange getIpRange() {
+		return ipRange;
 	}
-	public void setCidr(String cidr) {
-		this.cidr = cidr;
+	@JSONField(name = "ip_range")
+	public void setIpRange(IpRange ipRange) {
+		this.ipRange = ipRange;
 	}
 	@JSONField(name = "group_id")
 	public String getGroupId() {
@@ -57,4 +67,20 @@ public class SecurityGroupRuleDto extends CoreDto{
 	public void setGroupId(String groupId) {
 		this.groupId = groupId;
 	}
+
+class IpRange extends CoreDto{
+	private String cidr;
+
+	public String getCidr() {
+		return cidr;
+	}
+	public void setCidr(String cidr) {
+		this.cidr = cidr;
+	}
+	@Override
+	public String toString() {
+		return "cidr=" + cidr;
+	}
+	
+}
 }

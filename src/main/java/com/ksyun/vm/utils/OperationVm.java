@@ -16,25 +16,26 @@ public class OperationVm {
 	 * @throws org.apache.commons.httpclient.HttpException
 	 * @throws java.io.IOException
 	 */
-	public static void editVm(String url, String action, String tenantId, String userId) throws HttpException, IOException{
-		if(action.equals(EnumEditVm.reboot.value())){
-			String requestBody = "{\"reboot\":{\"type\":\"soft\"}}";
-			HttpUtils.getPostResponseData(url, requestBody, tenantId,userId);
-		}else if(action.equals(EnumEditVm.pause.value())){
-			String requestBody = "{\"pause\":null}";
-			HttpUtils.getPostResponseData(url, requestBody, tenantId,userId);
-		}else if(action.equals(EnumEditVm.resume.value())){
-			String requestBody = "{\"resume\":null}";
-			HttpUtils.getPostResponseData(url, requestBody, tenantId,userId);
-		}else if(action.equals(EnumEditVm.suspend.value())){
-			String requestBody = "{\"suspend\":null}";
-			HttpUtils.getPostResponseData(url, requestBody, tenantId,userId);
+	public static void editVm(String vmId, String action, String tenantId, String userId) throws HttpException, IOException{
+		if(action.equals(EnumEditVm.restart.value())){
+			String requestStr = Constants.getPropertyValue(InitConst.RESTARTVM);
+			String requestBody = "{\"instance_id\":"+"\""+vmId+"\""+"}";
+			HttpUtils.getPostResponseData(requestStr, requestBody, tenantId,userId);
+		}else if(action.equals(EnumEditVm.changepwd.value())){
+			String requestStr = Constants.getPropertyValue(InitConst.CHANGEPWDVM);
+			String requestBody = "{\"instance_id\":"+"\""+vmId+"\""+"}";
+			HttpUtils.getPostResponseData(requestStr, requestBody, tenantId,userId);
+		}else if(action.equals(EnumEditVm.terminal.value())){
+			String requestStr = Constants.getPropertyValue(InitConst.TERMINALVM,vmId);
+			HttpUtils.deleteMethod(requestStr, tenantId, userId);
 		}else if(action.equals(EnumEditVm.stop.value())){
-			String requestBody = "{\"os-stop\":null}";
-			HttpUtils.getPostResponseData(url, requestBody, tenantId,userId);
+			String requestStr = Constants.getPropertyValue(InitConst.STOPVM);
+			String requestBody = "{\"instance_id\":"+"\""+vmId+"\""+"}";
+			HttpUtils.getPostResponseData(requestStr, requestBody, tenantId,userId);
 		}else if(action.equals(EnumEditVm.start.value())){
-			String requestBody = "{\"os-start\":null}";
-			HttpUtils.getPostResponseData(url, requestBody, tenantId,userId);
+			String requestStr = Constants.getPropertyValue(InitConst.STARTVM);
+			String requestBody = "{\"instance_id\":"+"\""+vmId+"\""+"}";
+			HttpUtils.getPostResponseData(requestStr, requestBody, tenantId,userId);
 		}
 		
 	}
@@ -58,10 +59,11 @@ public class OperationVm {
 	 * @throws org.apache.commons.httpclient.HttpException
 	 * @throws java.io.IOException
 	 */
-	public static void createSnapShot(String url, String tenantId, String userId, String snapShotName) throws HttpException, IOException{
-		String requestBody = "{\"createImage\":{\"name\":"+"\""+snapShotName+"\""+"}}";
+	public static void createSnapShot(String vmId, String tenantId, String userId, String snapShotName) throws HttpException, IOException{
+		String requestStr = Constants.getPropertyValue(InitConst.CREATESYSTEMSNAPSHOT);
+		String requestBody = "{\"instance_id\":"+"\""+vmId+"\""+", \"name\":"+"\""+snapShotName+"\""+"}";
 		System.out.println(requestBody);
-		String result = HttpUtils.getPostResponseData(url, requestBody, tenantId,userId);
+		String result = HttpUtils.getPostResponseData(requestStr, requestBody, tenantId,userId);
 		System.out.println(result);
 	}
 }

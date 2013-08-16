@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ksyun.vm.dto.zone.AggregatesDto;
-import com.ksyun.vm.utils.Constants;
-import com.ksyun.vm.utils.InitConst;
 import com.ksyun.vm.utils.JsonMaker;
 import com.ksyun.vm.utils.JsonParser;
 
@@ -25,8 +23,8 @@ public class ZoneController {
 	//zone列表
 	@RequestMapping("/g/zonelist")
 	public ModelAndView returnZoneList(HttpServletRequest request, ModelAndView mav) throws IOException {
-		String tenantId = Constants.getPropertyValue(InitConst.ADMINNAME);
-		List<AggregatesDto> list = JsonParser.returnAggregatesList(tenantId);
+	//	String tenantId = Constants.getPropertyValue(InitConst.ADMINNAME);
+		List<AggregatesDto> list = JsonParser.returnAggregatesList();
 		mav.addObject("zonelist", list);
 		mav.setViewName("/gestion/zone/zone_list");
 		return mav;
@@ -35,8 +33,8 @@ public class ZoneController {
 	@RequestMapping("/g/zonelist/ajax")
 	@ResponseBody
 	public String returnZoneAjaxList(HttpServletRequest request, ModelAndView mav) throws IOException {
-		String tenantId = Constants.getPropertyValue(InitConst.ADMINNAME);
-		List<AggregatesDto> list = JsonParser.returnAggregatesList(tenantId);
+	//	String tenantId = Constants.getPropertyValue(InitConst.ADMINNAME);
+		List<AggregatesDto> list = JsonParser.returnAggregatesList();
 		String resultStr = JsonMaker.createFromListToJson(list);
 		return resultStr;
 	}

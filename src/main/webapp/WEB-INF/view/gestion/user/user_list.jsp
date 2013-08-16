@@ -26,6 +26,10 @@
    	function vm_list(tenantId, userId){
    		window.location.href="/g/user/vmlist/"+tenantId+"/"+userId;
    	}
+   	
+   	function security_groups(tenantId, userId){
+   		window.location.href="/g/user/security_groups/"+tenantId+"/"+userId;
+   	}
    	function checknull( tips, o, n ) {
 		if ( o.val() == null || o.val() == "" ) {
 			alert( n + " 不能为空!!!" );
@@ -64,12 +68,7 @@
 								url : "/g/user/createuser",
 								data : {name:$("#create_name").val()},
 								success : function(data) {
-									if(data == null||data==""){
-										alert("创建用户成功!");
-									}else{
-										alert("创建用户失败!");
-										alert(data);
-									}
+									alert("创建用户成功!");
 									window.location.href="/g/user/list/1";
 								},
 								error : function(XMLHttpRequest,textStatus,errorThrown) {
@@ -121,8 +120,11 @@
                 <th>
                     <div class="th-gap">email</div>
                 </th>
-                <th width="25%">
+                <th width="22%">
                     <div class="th-gap">tenant_id</div>
+                </th>
+                <th width="8%">
+                    <div class="th-gap">安全组</div>
                 </th>
                 <th width="8%">
                     <div class="th-gap">EBS,镜像</div>
@@ -140,6 +142,7 @@
 						<td>${dto.enabled}</td>
 						<td>${dto.email}</td>
 						<td>${dto.tenantId}</td>
+						<td><button onclick="security_groups('${dto.tenantId}','${dto.id}')">查看</button></td>
 						<td><button onclick="ebs_snapshot_list('${dto.tenantId}','${dto.id}')">查看</button></td>
 						<td><button onclick="vm_list('${dto.tenantId}','${dto.id}')">查看</button></td>
 					</tr>

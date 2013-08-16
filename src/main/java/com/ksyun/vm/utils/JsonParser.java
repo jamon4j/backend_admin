@@ -2,7 +2,6 @@ package com.ksyun.vm.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -14,11 +13,10 @@ import org.apache.commons.httpclient.HttpException;
 import com.alibaba.fastjson.JSON;
 import com.ksyun.vm.dto.ebs.EBSDto;
 import com.ksyun.vm.dto.ebs.VmEBSDto;
-import com.ksyun.vm.dto.ebs.VolumeTypeDto;
 import com.ksyun.vm.dto.host.HypervisorDto;
-import com.ksyun.vm.dto.host.HypervisorsListDto;
 import com.ksyun.vm.dto.images.SnapshotsDto;
 import com.ksyun.vm.dto.images.SystemImageDto;
+import com.ksyun.vm.dto.images.SystemSnapshotDto;
 import com.ksyun.vm.dto.securitygroup.SecurityGroupDto;
 import com.ksyun.vm.dto.user.UserDto;
 import com.ksyun.vm.dto.vm.FlavorDto;
@@ -29,14 +27,15 @@ import com.ksyun.vm.dto.zone.AggregatesDto;
  * Created with IntelliJ IDEA. User: yuri Date: 13-7-9 Time: 上午11:14 To change
  * this template use File | Settings | File Templates.
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked","rawtypes"})
 public class JsonParser {
 	// 返回zone列表
-	public static List<AggregatesDto> returnAggregatesList(String tenantId) throws HttpException, IOException {
-		String requestStr = Constants.getPropertyValue(InitConst.AGGREGATES, tenantId);
+	public static List<AggregatesDto> returnAggregatesList() throws HttpException, IOException {
+		String requestStr = Constants.getPropertyValue(InitConst.AGGREGATES);
 		String resultJson = HttpUtils.getAdminResponseData(requestStr);
 		if (resultJson != null) {
 			List<AggregatesDto> resultList = new ArrayList<AggregatesDto>();
+			
 			LinkedHashMap map = JSON.parseObject(resultJson, LinkedHashMap.class);
 			Iterator<Map.Entry> iter = map.entrySet().iterator();
 			while (iter.hasNext()) {
@@ -54,11 +53,11 @@ public class JsonParser {
 	}
 
 	// 返回主机列表
-	public static List<HypervisorsListDto> returnHypervisorsList(String tenantId) throws HttpException, IOException {
-		String requestStr = Constants.getPropertyValue(InitConst.HYPERVISORSLIST, tenantId);
+	public static List<HypervisorDto> returnHypervisorsList(String zoneId) throws HttpException, IOException {
+		String requestStr = Constants.getPropertyValue(InitConst.HYPERVISORSLIST, zoneId);
 		String resultJson = HttpUtils.getAdminResponseData(requestStr);
 		if (resultJson != null) {
-			List<HypervisorsListDto> resultList = new ArrayList<HypervisorsListDto>();
+			List<HypervisorDto> resultList = new ArrayList<HypervisorDto>();
 			LinkedHashMap map = JSON.parseObject(resultJson, LinkedHashMap.class);
 			Iterator<Map.Entry> iter = map.entrySet().iterator();
 			while (iter.hasNext()) {
@@ -66,7 +65,7 @@ public class JsonParser {
 				LinkedList list = JSON.parseObject(entry.getValue().toString(), LinkedList.class);
 				Iterator innerIter = list.iterator();
 				while (innerIter.hasNext()) {
-					HypervisorsListDto dto = JSON.parseObject(innerIter.next().toString(), HypervisorsListDto.class);
+					HypervisorDto dto = JSON.parseObject(innerIter.next().toString(), HypervisorDto.class);
 					resultList.add(dto);
 				}
 			}
@@ -94,9 +93,10 @@ public class JsonParser {
 	}
 
 	// 返回指定主机的虚拟机列表
-	public static List<ServerDto> returnServerList(String tenantId, String hostName, String marker) throws HttpException, IOException {
-		String requestStr = Constants.getPropertyValue(InitConst.SERVERS, tenantId, hostName, marker);
+	public static List<ServerDto> returnServerList(String hostName) throws HttpException, IOException {
+		String requestStr = Constants.getPropertyValue(InitConst.VMLIST,hostName);
 		String resultJson = HttpUtils.getAdminResponseData(requestStr);
+		System.out.println(resultJson);
 		if (resultJson != null) {
 			List<ServerDto> resultList = new ArrayList<ServerDto>();
 			LinkedHashMap map = JSON.parseObject(resultJson, LinkedHashMap.class);
@@ -116,9 +116,10 @@ public class JsonParser {
 	}
 
 	// 返回虚拟机详情
-	public static ServerDto returnServerDto(String tenantId, String vmId) throws HttpException, IOException {
-		String requestStr = Constants.getPropertyValue(InitConst.SERVER, tenantId, vmId);
+	public static ServerDto returnServerDto(String vmId) throws HttpException, IOException {
+		String requestStr = Constants.getPropertyValue(InitConst.SERVER, vmId);
 		String resultJson = HttpUtils.getAdminResponseData(requestStr);
+		System.out.println(resultJson);
 		ServerDto dto = null;
 		if (resultJson != null) {
 			LinkedHashMap map = JSON.parseObject(resultJson, LinkedHashMap.class);
@@ -157,7 +158,7 @@ public class JsonParser {
 
 	// 返回用户虚机列表
 	public static List<ServerDto> returnServerListByUser(String tenantId, String userId) throws HttpException, IOException {
-		String requestStr = Constants.getPropertyValue(InitConst.USERSERVERLIST, tenantId);
+		String requestStr = Constants.getPropertyValue(InitConst.USERSERVERLIST);
 		Map<String, String> header = HttpUtils.returnDefaultHeader(tenantId, userId);
 		String resultJson = HttpUtils.getResponseData(requestStr, header);
 		if (resultJson != null) {
@@ -184,30 +185,19 @@ public class JsonParser {
 		Map<String, String> header = HttpUtils.returnDefaultHeader(tenantId, userId);
 		String resultJson = HttpUtils.getResponseData(requestStr, header);
 		if (resultJson != null) {
-			List<EBSDto> resultList = new ArrayList<EBSDto>();
-			LinkedHashMap map = JSON.parseObject(resultJson, LinkedHashMap.class);
-			Iterator<Map.Entry> iter = map.entrySet().iterator();
-			while (iter.hasNext()) {
-				Map.Entry entry = iter.next();
-				LinkedList list = JSON.parseObject(entry.getValue().toString(), LinkedList.class);
-				Iterator innerIter = list.iterator();
-				while (innerIter.hasNext()) {
-					EBSDto dto = JSON.parseObject(innerIter.next().toString(), EBSDto.class);
-					resultList.add(dto);
-				}
-			}
+			List<EBSDto> resultList = JSON.parseArray(resultJson,EBSDto.class);
 			return resultList;
 		}
 		return null;
 	}
 
 	// 返回某用户系统盘
-	public static List<SystemImageDto> returnSysImagesList(String tenantId, String userId) throws HttpException, IOException {
+	public static List<SystemSnapshotDto> returnSysImagesList(String tenantId, String userId) throws HttpException, IOException {
 		String requestStr = Constants.getPropertyValue(InitConst.SYSIMAGES, tenantId, userId);
 		Map<String, String> header = HttpUtils.returnDefaultHeader(tenantId, userId);
 		String resultJson = HttpUtils.getResponseData(requestStr, header);
 		if (resultJson != null) {
-			List<SystemImageDto> resultList = new ArrayList<SystemImageDto>();
+			List<SystemSnapshotDto> resultList = new ArrayList<SystemSnapshotDto>();
 			LinkedHashMap map = JSON.parseObject(resultJson, LinkedHashMap.class);
 			Iterator<Map.Entry> iter = map.entrySet().iterator();
 			while (iter.hasNext()) {
@@ -215,7 +205,7 @@ public class JsonParser {
 				LinkedList list = JSON.parseObject(entry.getValue().toString(), LinkedList.class);
 				Iterator innerIter = list.iterator();
 				while (innerIter.hasNext()) {
-					SystemImageDto dto = JSON.parseObject(innerIter.next().toString(), SystemImageDto.class);
+					SystemSnapshotDto dto = JSON.parseObject(innerIter.next().toString(), SystemSnapshotDto.class);
 					resultList.add(dto);
 				}
 			}
@@ -230,18 +220,7 @@ public class JsonParser {
 		Map<String, String> header = HttpUtils.returnDefaultHeader(tenantId, userId);
 		String resultJson = HttpUtils.getResponseData(requestStr, header);
 		if (resultJson != null) {
-			List<SnapshotsDto> resultList = new ArrayList<SnapshotsDto>();
-			LinkedHashMap map = JSON.parseObject(resultJson, LinkedHashMap.class);
-			Iterator<Map.Entry> iter = map.entrySet().iterator();
-			while (iter.hasNext()) {
-				Map.Entry entry = iter.next();
-				LinkedList list = JSON.parseObject(entry.getValue().toString(), LinkedList.class);
-				Iterator innerIter = list.iterator();
-				while (innerIter.hasNext()) {
-					SnapshotsDto dto = JSON.parseObject(innerIter.next().toString(), SnapshotsDto.class);
-					resultList.add(dto);
-				}
-			}
+			List<SnapshotsDto> resultList = JSON.parseArray(resultJson, SnapshotsDto.class);
 			return resultList;
 		}
 		return null;
@@ -304,9 +283,10 @@ public class JsonParser {
 	}
 
 	// 返回安全组列表
-	public static List<SecurityGroupDto> returnSecurityGroupList(String tenantId) throws HttpException, IOException {
-		String requestStr = Constants.getPropertyValue(InitConst.SECURITYGROUPLIST, tenantId);
-		String resultJson = HttpUtils.getAdminResponseData(requestStr);
+	public static List<SecurityGroupDto> returnSecurityGroupList(String tenantId, String userId) throws HttpException, IOException {
+		String requestStr = Constants.getPropertyValue(InitConst.SECURITYGROUPLIST);
+		Map<String, String> header = HttpUtils.returnDefaultHeader(tenantId, userId);
+		String resultJson = HttpUtils.getResponseData(requestStr, header);
 		if (resultJson != null) {
 			List<SecurityGroupDto> resultList = new ArrayList<SecurityGroupDto>();
 			LinkedHashMap map = JSON.parseObject(resultJson, LinkedHashMap.class);
@@ -325,50 +305,43 @@ public class JsonParser {
 		return null;
 	}
 
-	// 返回volume_type
-	public static Map<String, List<VolumeTypeDto>> returnVolumeTypeList(String tenantId, String userId) throws HttpException, IOException {
-		String requestStr = Constants.getPropertyValue(InitConst.VOLUMETYPE, tenantId);
-		Map<String, String> header = HttpUtils.returnDefaultHeader(tenantId, userId);
-		String resultJson = HttpUtils.getResponseData(requestStr, header);
-		if (resultJson != null) {
-			List<VolumeTypeDto> resultList = new ArrayList<VolumeTypeDto>();
-			LinkedHashMap map = JSON.parseObject(resultJson, LinkedHashMap.class);
-			Iterator<Map.Entry> iter = map.entrySet().iterator();
-			while (iter.hasNext()) {
-				Map.Entry entry = iter.next();
-				LinkedList list = JSON.parseObject(entry.getValue().toString(), LinkedList.class);
-				Iterator innerIter = list.iterator();
-				while (innerIter.hasNext()) {
-					VolumeTypeDto dto = JSON.parseObject(innerIter.next().toString(), VolumeTypeDto.class);
-					resultList.add(dto);
-				}
-			}
-			Map<String, List<VolumeTypeDto>> maps = new HashMap<String, List<VolumeTypeDto>>();
-			maps.put("volume_types", resultList);
-			return maps;
-		}
-		return null;
-	}
 	//返回vm ebs列表
 	public static List<VmEBSDto> returnVMEBSLIST(String tenantId, String userId,String vmId) throws HttpException, IOException {
-		String requestStr = Constants.getPropertyValue(InitConst.VMEBSLIST,tenantId,vmId);
+		String requestStr = Constants.getPropertyValue(InitConst.VMEBSLIST,vmId);
 		Map<String, String> header = HttpUtils.returnDefaultHeader(tenantId, userId);
 		String resultJson = HttpUtils.getResponseData(requestStr, header);
 		if (resultJson != null) {
-			List<VmEBSDto> resultList = new ArrayList<VmEBSDto>();
-			LinkedHashMap map = JSON.parseObject(resultJson, LinkedHashMap.class);
-			Iterator<Map.Entry> iter = map.entrySet().iterator();
-			while (iter.hasNext()) {
-				Map.Entry entry = iter.next();
-				LinkedList list = JSON.parseObject(entry.getValue().toString(), LinkedList.class);
-				Iterator innerIter = list.iterator();
-				while (innerIter.hasNext()) {
-					VmEBSDto dto = JSON.parseObject(innerIter.next().toString(), VmEBSDto.class);
-					resultList.add(dto);
-				}
-			}
+			List<VmEBSDto> resultList = JSON.parseArray(resultJson, VmEBSDto.class);
 			return resultList;
 		}
 		return null;
 	}
+	//返回指定安全组信息
+	public static SecurityGroupDto returnSecurityGroup(String sgid, String tenantId, String userId) throws HttpException, IOException {
+		String requestStr = Constants.getPropertyValue(InitConst.SECURITYGROUP,sgid);
+		Map<String, String> header = HttpUtils.returnDefaultHeader(tenantId, userId);
+		String resultJson = HttpUtils.getResponseData(requestStr, header);
+		SecurityGroupDto dto = null;
+		if (resultJson != null) {
+			LinkedHashMap map = JSON.parseObject(resultJson, LinkedHashMap.class);
+			Iterator<Map.Entry> iter = map.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = iter.next();
+				String testStr = entry.getValue().toString();
+				dto = JSON.parseObject(testStr, SecurityGroupDto.class);
+			}
+			return dto;
+		}
+		return null;
+	}
+
+    public static void deleteEBS(String tenantId, String userId, String ebsid) throws IOException {
+        String requestStr = Constants.getPropertyValue(InitConst.DELETEEBS,ebsid);
+        Integer i = HttpUtils.deleteMethod(requestStr, tenantId, userId);
+    }
+
+    public static void deleteEBSSnapshot(String tenantId, String userId, String ebssnapshotid) {
+        String requestStr = Constants.getPropertyValue(InitConst.DELETEEBSSNAPSHOT,ebssnapshotid);
+        Integer i = HttpUtils.deleteMethod(requestStr, tenantId, userId);
+    }
 }

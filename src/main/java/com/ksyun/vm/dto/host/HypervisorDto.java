@@ -20,7 +20,7 @@ public class HypervisorDto extends CoreDto{
 	private String local_gb;
 	private String free_ram_mb;
 	private String id;
-	private String cpu_info;
+//	private CpuInfoDto cpu_info;
 	public ServiceDto getService() {
 		return service;
 	}
@@ -117,10 +117,10 @@ public class HypervisorDto extends CoreDto{
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getCpu_info() {
+/*	public CpuInfoDto getCpu_info() {
 		return cpu_info;
 	}
-	public void setCpu_info(String cpuInfo) {
+	public void setCpu_info(CpuInfoDto cpuInfo) {
 		cpu_info = cpuInfo;
-	}
+	}*/
 }

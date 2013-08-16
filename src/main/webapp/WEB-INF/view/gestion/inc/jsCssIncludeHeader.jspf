@@ -11,3 +11,4 @@
 <script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.effect.js"></script>
 <script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.effect-blind.js"></script>
 <script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.effect-explode.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery_ui/jquery.ui.slider.js"></script>

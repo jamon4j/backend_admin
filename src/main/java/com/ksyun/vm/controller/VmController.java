@@ -25,18 +25,17 @@ import com.ksyun.vm.utils.JsonParser;
 @Controller
 public class VmController {
 	//虚拟机列表
-	@RequestMapping("/g/vmlist/{hostname}/{marker}")
-	public ModelAndView returnZoneList(@PathVariable("hostname") String hostName, @PathVariable("marker") String marker,HttpServletRequest request, ModelAndView mav) throws IOException {
-		String tenantId = Constants.getPropertyValue(InitConst.ADMINNAME);
-		if("0".equals(marker))
-			marker = "";
-		hostName = new String(new BASE64Decoder().decodeBuffer(hostName));
-		List<ServerDto> list = JsonParser.returnServerList(tenantId, hostName, marker);
+	@RequestMapping("/g/vmlist/{hostname}")
+	public ModelAndView returnZoneList(@PathVariable("hostname") String hostName, HttpServletRequest request, ModelAndView mav) throws IOException {
+	//	String tenantId = Constants.getPropertyValue(InitConst.ADMINNAME,hostName);
+		
+	//	hostName = new String(new BASE64Decoder().decodeBuffer(hostName));
+		List<ServerDto> list = JsonParser.returnServerList(hostName);
 		mav.addObject("vmlist", list);
 		mav.setViewName("/gestion/vm/vm_list");
-		return mav;
+		return mav;            
 	}
-	//虚拟机详情(ajax请求)
+/*	//虚拟机详情(ajax请求)
 	@RequestMapping("/g/vmdetail/{vm_id}")
 	@ResponseBody
 	public String returnVmDetail(@PathVariable("vm_id") String vmId,HttpServletRequest request) throws HttpException, IOException{
@@ -44,14 +43,16 @@ public class VmController {
 		String requestStr = Constants.getPropertyValue(Constants.getPropertyValue(InitConst.SERVER,tenantId,vmId));
 		String resultJson = HttpUtils.getAdminResponseData(requestStr);
 		return resultJson;
-	}
+	}*/
 	
 	//虚机绑定ebs列表
 	@RequestMapping("/g/vm_ebs/{tenantid}/{userid}/{vm_id}")
 	public ModelAndView returnVmEBSDetail(@PathVariable("tenantid") String tenantId,@PathVariable("userid")String userId,@PathVariable("vm_id") String vmId,ModelAndView mav) throws HttpException, IOException{
 		List<VmEBSDto> list = JsonParser.returnVMEBSLIST(tenantId, userId, vmId);
 		mav.addObject("vmebslist", list);
-		mav.setViewName("/gestion/user/ebs_list");
+        mav.addObject("tenantid",tenantId);
+        mav.addObject("userid",userId);
+		mav.setViewName("/gestion/user/vm_ebs_list");
 		return mav;
 	}
 }

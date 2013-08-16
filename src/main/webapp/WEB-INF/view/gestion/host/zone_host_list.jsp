@@ -9,44 +9,8 @@
    	var j = jQuery.noConflict(true);
    	//物理机详情
  	function detail(id){
- 		$.ajax({
-			url : "/g/hostdetail/"+id,
-			dataType : 'text',
-			success : function(data) {
-				var jsonobj=eval('('+data+')');
-				$("#vcpus_used").html("vcpus_used: "+jsonobj.hypervisor.vcpus_used);
-				$("#hypervisor_type").html("hypervisor_type: "+jsonobj.hypervisor.hypervisor_type);
-				$("#local_gb_used").html("local_gb_used: "+jsonobj.hypervisor.local_gb_used);
-				$("#hypervisor_hostname").html("hypervisor_hostname: "+jsonobj.hypervisor.hypervisor_hostname);
-				$("#memory_mb_used").html("memory_mb_used: "+jsonobj.hypervisor.memory_mb_used);
-				$("#memory_mb").html("memory_mb: "+jsonobj.hypervisor.memory_mb);
-				$("#current_workload").html("current_workload: "+jsonobj.hypervisor.current_workload);
-				$("#vcpus").html("vcpus: "+jsonobj.hypervisor.vcpus);
-				$("#running_vms").html("running_vms: "+jsonobj.hypervisor.running_vms);
-				$("#free_disk_gb").html("free_disk_gb: "+jsonobj.hypervisor.free_disk_gb);
-				$("#hypervisor_version").html("hypervisor_version: "+jsonobj.hypervisor.hypervisor_version);
-				$("#disk_available_least").html("disk_available_least: "+jsonobj.hypervisor.disk_available_least);
-				$("#local_gb").html("local_gb: "+jsonobj.hypervisor.local_gb);
-				$("#free_ram_mb").html("free_ram_mb: "+jsonobj.hypervisor.free_ram_mb);
-				$("#id").html("id: "+jsonobj.hypervisor.id);
-				var cpuobj=eval('('+jsonobj.hypervisor.cpu_info+')');
-				$("#cpu_info").html("cpu_info: ");
-				$("#vendor").html("&nbsp;&nbsp;vendor: "+cpuobj.vendor);
-				$("#model").html("&nbsp;&nbsp;model: "+cpuobj.model);
-				$("#arch").html("&nbsp;&nbsp;arch: "+cpuobj.arch);
-				$("#features").html("&nbsp;&nbsp;features: "+cpuobj.features);
-				var topologyobj=eval(cpuobj.topology);
-				$("#topology").html("topology: ");
-				$("#cores").html("&nbsp;&nbsp;cores: "+topologyobj.cores);
-				$("#threads").html("&nbsp;&nbsp;threads: "+topologyobj.threads);
-				$("#sockets").html("&nbsp;&nbsp;sockets: "+topologyobj.sockets);
-			},
-			complete: function(msg) {
-				$( "#host_detail" ).dialog("open");
-			}
-		});
 		//物理机详情窗口
-		$( "#host_detail").dialog({
+		$( "#host_detail_"+id).dialog({
 			autoOpen: false,
 			postion: "center",
 			height:"550",
@@ -61,10 +25,11 @@
 				duration: 1000
 			}
 		});
+		$( "#host_detail_"+id).dialog("open");
  	}
  	//虚拟机列表
  	function showvmlist(hostname){
-   		window.location.href="/g/vmlist/"+hostname+"/0";
+   		window.location.href="/g/vmlist/"+hostname;
    	}
  </script>
 </head>
@@ -82,7 +47,10 @@
             </colgroup>
             <thead class="tb-tit-bg">
             <tr>
-                <th width="40%">
+            	<th width="15%">
+                    <div class="th-gap">hostid</div>
+                </th>
+                <th width="25%">
                     <div class="th-gap">host名称</div>
                 </th>
                 <th width="10%">
@@ -94,11 +62,37 @@
             </tr>
             </thead>
             <tbody>
-            	<c:forEach var="hostItem" items="${hostMap}" varStatus="status">
+            	<c:forEach var="hostdto" items="${hostdtolist}" varStatus="status">
 					<tr>
-						<td>${hostItem.key} </td>
-						<td><button onclick="detail('${hostItem.value.id}')">详情</button></td>
-						<td><button onclick="showvmlist('${hostItem.value.hypervisor_hostname}')" >查看虚拟机</button></td>
+						<td>${hostdto.id} </td>
+						<td>${hostdto.hypervisor_hostname}</td>
+						<td><button onclick="detail('${hostdto.id}')">详情</button></td>
+						<td><button onclick="showvmlist('${hostdto.hypervisor_hostname}')" >查看虚拟机</button></td>
+						<div id="host_detail_${hostdto.id}" title="host${hostdto.id}详情" style="display:none">
+							<p>vcpus_used:${hostdto.vcpus_used}</p>
+							<p>hypervisor_type:${hostdto.hypervisor_type}</p>
+							<p>local_gb_used:${hostdto.local_gb_used}</p>
+							<p>hypervisor_hostname:${hostdto.hypervisor_hostname}</p>
+							<p>memory_mb_used:${hostdto.memory_mb_used}</p>
+							<p>memory_mb:${hostdto.memory_mb}</p>
+							<p>vcpus:${hostdto.vcpus}</p>
+							<p>running_vms:${hostdto.running_vms}</p>
+							<p>free_disk_gb:${hostdto.free_disk_gb}</p>
+							<p>hypervisor_version:${hostdto.hypervisor_version}</p>
+							<p>disk_available_least:${hostdto.disk_available_least}</p>
+							<p>local_gb:${hostdto.local_gb}</p>
+							<p>free_ram_mb:${hostdto.free_ram_mb}</p>
+							<p>id:${hostdto.id}</p>
+							<%-- <p>cpu_info:</p>
+							<p>vendor:&nbsp;&nbsp;${host.cpu_info.vendor}</p>
+							<p>model:&nbsp;&nbsp;${host.cpu_info.model}</p>
+							<p>arch:&nbsp;&nbsp;${host.cpu_info.arch}</p>
+							<p>features:</p>
+							<p>topology:${host.cpu_info.topology}</p>
+							<p>cores:${host.cpu_info.topology.cores}</p>
+							<p>threads:${host.cpu_info.topology.threads}</p>
+							<p>sockets:${host.cpu_info.topology.sockets}</p> --%>
+						</div>
 					</tr>
 				</c:forEach>
 

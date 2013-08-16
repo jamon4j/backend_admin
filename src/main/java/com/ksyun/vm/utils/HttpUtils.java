@@ -20,9 +20,9 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.ksyun.vm.dto.admin.AuthenticateDto;
 import com.ksyun.vm.utils.enumeration.EnumResult;
-
+@SuppressWarnings("rawtypes")
 public class HttpUtils {
 	/**
 	 * 构造httpClient对象
@@ -114,8 +114,14 @@ public class HttpUtils {
 	 */
 	private static void setAdminHeader(GetMethod getMethod) {
 		getMethod.setRequestHeader("Content-Type", "application/json");
-		//	getMethod.setRequestHeader("X-Auth-Token", getAdminToken());
-		getMethod.setRequestHeader("X-Auth-Token", "bf6f39d9024947c8ac91a0c2af1f6fd7:3ed3e7a66ec549a89f9fe8b713b07506");
+		try {
+			getMethod.setRequestHeader("X-Auth-Token", getAdminToken());
+		} catch (HttpException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+//		getMethod.setRequestHeader("X-Auth-Token", "bf6f39d9024947c8ac91a0c2af1f6fd7:3ed3e7a66ec549a89f9fe8b713b07506");
 	}
 	/**
 	 * 获取reponse数据
@@ -132,13 +138,13 @@ public class HttpUtils {
 		RequestEntity entity = new ByteArrayRequestEntity(requestBody.getBytes());
 		postMethod.setRequestEntity(entity);
 		setHeader(postMethod, headerArgs);
-		client.executeMethod(postMethod);
+		int status=client.executeMethod(postMethod);
 		InputStream input = postMethod.getResponseBodyAsStream();
 		if(input != null){
 			String responseBody = inputStreamToString(input);
 			return responseBody;
 		}
-		return null;
+		return status+"";
 	}
 	
 	
@@ -161,6 +167,8 @@ public class HttpUtils {
 		setHeader(postMethod, header);
 		client.executeMethod(postMethod);
 		InputStream input = postMethod.getResponseBodyAsStream();
+		if(input == null || ("").equals(input))
+			return null;
 		String responseBody = inputStreamToString(input);
 		return responseBody;
 	}
@@ -174,18 +182,25 @@ public class HttpUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	private static String getAdminToken() throws HttpException, IOException {
-		String requestBody = "{ \"auth\":{ \"passwordCredentials\": { \"username\":\"admin\", \"password\":\"secrete\" }, \"tenantName\":\"admin\" } }";
+		String requestBody = "{\"auth\":{\"name\":\"admin\",\"password\":\"ksc\"}}";
 		Map<String,String> header = new HashMap<String,String>();
 		header.put("Content-Type", "application/json");
-		header.put("Accept", "application/json");
-		header.put("Cache-Control", "no-cache");
 		String tokenJson = HttpUtils.getPostResponseData(Constants.getPropertyValue(InitConst.TOKEN),requestBody,header);
-		LinkedHashMap map = JSON.parseObject(tokenJson, LinkedHashMap.class);
-		JSONObject access = (JSONObject) map.get("access");
-		JSONObject token = (JSONObject) access.get("token");
-		String result = (String) token.get("id");
-		System.out.println("adminToken: "+ result);
-		return result;
+		System.out.println(tokenJson);
+		AuthenticateDto dto = null;
+		if (tokenJson != null) {
+			
+			LinkedHashMap map = JSON.parseObject(tokenJson, LinkedHashMap.class);
+			Iterator<Map.Entry> iter = map.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = iter.next();
+				String testStr = entry.getValue().toString();
+				dto = JSON.parseObject(testStr, AuthenticateDto.class);
+			}
+			
+			return dto.getToken();
+		}
+		return null;
 	}
 	/**
 	 * 返回普通用户的header
@@ -228,3 +243,4 @@ public class HttpUtils {
 		} 
 	}
 }
+

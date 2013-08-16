@@ -31,7 +31,7 @@
 				}
 			});
 			$( "#systemImage_dialog_"+id ).dialog("open");
-		}else if(type="ebs"){
+		}else if(type=="ebs"){
 			$( "#ebs_dialog_"+id ).dialog({
 				autoOpen: false,
 				postion: "center",
@@ -49,7 +49,25 @@
 				}
 			});
 			$( "#ebs_dialog_"+id ).dialog("open");
-		}
+		}else if(type=="snapshot"){
+            $( "#snapshots_detail_"+id ).dialog({
+                autoOpen: false,
+                postion: "center",
+                modal: true,
+                height:"700",
+                width:"900",
+                show: {
+                    effect: "blind",
+                    duration: 200
+
+                },
+                hide: {
+                    effect: "explode",
+                    duration: 1000
+                }
+            });
+            $( "#snapshots_detail_"+id ).dialog("open");
+        }
    	}
    	function addebs(){
    		$("#addebs_dialog").dialog({
@@ -71,15 +89,14 @@
 				"创建":function(){
 					var ebsname=$("#ebsname").val();
 					var ebssize=$("#ebssize").val();
-					var ebstype=$("#volume").val();
 					var ebsdesc=$("#ebsdesc").val();
-					if(!isnull(ebsname,ebssize,ebstype,ebsdesc)){
+					if(!isnull(ebsname,ebssize,ebsdesc)){
 						return false;
 					}else{
 						$.ajax({
 							url:"/g/user/createebs/${tenantId}/${userId}",
 							type:"POST",
-							data:{name:ebsname,size:ebssize,volume_type:ebstype,desc:ebsdesc},
+							data:{name:ebsname,size:ebssize,desc:ebsdesc},
 							dataType:"text",
 							success:function(data){
 								if(data=="success"){
@@ -95,19 +112,9 @@
 				}
 			}
 		});
-		$.ajax({
-			url:"/g/user/volume_type/${tenantId}/${userId}",
-			dataType:"json",
-			success:function(data){
-				$("#volume").empty();
-				$.each(data,function(index,val){
-					$("#volume").append("<option value='"+val.id+"'>"+val.name+"</option>");
-				});
-				$("#addebs_dialog").dialog("open");
-			}
-		});
+		$("#addebs_dialog").dialog("open");
    	}
-   	function isnull(ebsname,ebssize,ebstype,ebsdesc){
+   	function isnull(ebsname,ebssize,ebsdesc){
    		if(ebsname==null||ebsname==""){
    			alert("name can't be null");
    			return false;
@@ -116,16 +123,64 @@
    			alert("size can't be null");
    			return false;
    		}
-   		if(ebstype==null||ebstype==""){
-   			alert("type can't be null");
-   			return false;
-   		}
    		if(ebsdesc==null||ebsdesc==""){
    			alert("desc can't be null");
    			return false;
    		}
    		return true;
    	}
+    function createsnapshot(ebsid,name,description,status){
+        if(status=="in-use"){
+            alert("使用中不能创建快照");
+            return false;
+        }
+        $.ajax({
+           url:'/g/user/createebsimage/${tenantId}/${userId}',
+           data:{
+               ebsid:ebsid,
+               name:name,
+               desc:description
+           },
+           dataType:'text',
+           success:function(data){
+               document.location.reload();
+           }
+        });
+    }
+    function deleteebs(ebsid,status){
+        if(status=="in-use"){
+            alert("使用中不能删除ebs");
+            return false;
+        }
+        $.ajax({
+            url:'/g/user/deleteebs/${tenantId}/${userId}',
+            type:'POST',
+            data:{
+                ebsid:ebsid
+            },
+            dataType:'text',
+            success:function(data){
+                document.location.reload();
+            }
+        });
+    }
+    function deletesnapshot(ebsid,status){
+        if(status=="in-use"){
+            alert("使用中不能删除ebs快照");
+            return false;
+        }
+        $.ajax({
+            url:'/g/user/deleteebssnapshot/${tenantId}/${userId}',
+            type:'POST',
+            data:{
+                ebssnapshotid:ebsid
+            },
+            dataType:'text',
+            success:function(data){
+                document.location.reload();
+            }
+        });
+    }
  </script>
 </head>
 <body class="main-body">
@@ -150,13 +205,18 @@
                 <th>
                     <div class="th-gap">详情</div>
                 </th>
+                <th>
+                    <div class="th-gap">操作</div>
+                </th>
             </tr>
             </thead>
             <tbody>
             	<c:forEach var="ebs" items="${ebslist}" varStatus="status">
 					<tr>
-						<td>${ebs.display_name} </td>
+						<td>${ebs.name} </td>
 						<td><button onclick="detail('${ebs.display_name}','ebs')">详情</button></td>
+                        <td><button onclick="createsnapshot('${ebs.id}','${ebs.name}','${ebs.description}','${ebs.status}')">创建快照</button>
+                            <button onclick="deleteebs('${ebs.id}','${ebs.status}')">删除ebs</button></td>
 					</tr>
 					<div id="ebs_dialog_${ebs.display_name}" style="display:none;">
 						<fieldset>
@@ -176,11 +236,14 @@
 							<p>size:${ebs.size}</p>
 							<p>attachments:</p>
 							<c:forEach var="atta" items="${ebs.attachments}" varStatus="status">
-								<p>${atta}</p>
+								<p>DEVICE:${atta.device}</p>
+								<p>SERVER_ID:${atta.server_id}</p>
+								<p>ID:${atta.id}</p>
+								<p>VOLUME_ID:${atta.volume_id}</p>
 							</c:forEach>
 							<fieldset>
 								<legend>METADATA</legend>
-								<p>storage_location:${ebs.metadata.storage_location}</p>
+								<p>CONTENTS:${ebs.metadata.contents}</p>
 							</fieldset>
 						</fieldset>
 					</div>
@@ -190,7 +253,7 @@
         <br/>
         
         
-        <p class="tips-desc">系统盘快照列表，系统盘快照数量：<c:out value="${fn:length(imagelist)}"></c:out></p>
+        <p class="tips-desc">系统盘快照列表，系统盘快照数量：<c:out value="${fn:length(systemImagelist)}"></c:out></p>
         <table class="table" cellpadding="0" cellspacing="0" width="100%" border="0">
             <colgroup>
             </colgroup>
@@ -203,10 +266,7 @@
                     <div class="th-gap">id</div>
                 </th>
                 <th width="10%">
-                    <div class="th-gap">status</div>
-                </th>
-                <th width="10%">
-                    <div class="th-gap">progress</div>
+                    <div class="th-gap">SIZE</div>
                 </th>
                <th>
                     <div class="th-gap">详情</div>
@@ -220,48 +280,24 @@
 						<td>${systemImage.name} </td>
 						<td>${systemImage.id} </td>
 						<td>${systemImage.status} </td>
-						<td>${systemImage.progress} </td>
 						<td><button onclick="detail('${systemImage.id}','systemImage')">详情</button></td>
 					</tr>
 					<div id="systemImage_dialog_${systemImage.id}" title="systemImage(${systemImage.id})详情" style="display:none">
 						<fieldset>
 							<legend>SYSTEMIMAGE</legend>
 							<p>STATUS:${systemImage.status}</p>
-							<p>UPDATED:${systemImage.updated}</p>
 							<p>NAME:${systemImage.name}</p>
-							<p>CREATED:${systemImage.created}</p>
+							<p>DELETED:${systemImage.deleted}</p>
 							<p>MINDISK:${systemImage.minDisk}</p>
 							<p>PROGRESS:${systemImage.progress}</p>
 							<p>MINRAM:${systemImage.minRam}</p>
-							<p>SYSTEMIMAGE_LINKS</p>
-							<c:forEach var="link" items="${systemImage.links}" varStatus="status">
-								<p>&nbsp;&nbsp;&nbsp;&nbsp;href: ${link.href}</p>
-								<p>&nbsp;&nbsp;&nbsp;&nbsp;rel: ${link.rel}</p>
-							</c:forEach>
-							<fieldset>
-								<legend>SERVER</legend>
-								<p>SERVER_ID:${systemImage.server.id}</p>
-								<p>SERVER_LINK:</p>
-								<c:forEach var="link" items="${systemImage.server.links}" varStatus="status">
-									<p>&nbsp;&nbsp;&nbsp;&nbsp;href: ${link.href}</p>
-									<p>&nbsp;&nbsp;&nbsp;&nbsp;rel: ${link.rel}</p>
-								</c:forEach>
-							</fieldset>
-							<fieldset>
-							<legend>METADATA</legend>
-								<p>INSTANCE_UUID:${systemImage.metadata.instance_uuid}</p>
-								<p>IMAGE_LOCATION:${systemImage.metadata.image_location}</p>
-								<p>IMAGE_STATE:${systemImage.metadata.image_state}</p>
-								<p>USER_ID:${systemImage.metadata.user_id}</p>
-								<p>IMAGE_TYPE:${systemImage.metadata.image_type}</p>
-								<p>RAMDISK_ID:${systemImage.metadata.ramdisk_id}</p>
-								<p>KERNEL_ID:${systemImage.metadata.kernel_id}</p>
-								<p>USER_ID:${systemImage.metadata.user_id}</p>
-								<p>OS_VERSION:${systemImage.metadata.os_version}</p>
-								<p>STORAGE_LOCATE:${systemImage.metadata.storage_locate}</p>
-								<p>BASE_IMAGE_REF:${systemImage.metadata.base_image_ref}</p>
-								<p>OWNER_ID:${systemImage.metadata.owner_id}</p>
-							</fieldset>
+							<p>ID:${systemImage.id}</p>
+							
+                                <%--<fieldset>
+                                 <legend>PROPERTIES:</legend>
+                                    <p>OS_VERSION:${systemImage.properties.os_version}</p>
+                                    <p>STORAGE_LOCATE:${systemImage.properties.storage_locate}</p>
+                                </fieldset> --%>
 						</fieldset>
 					</div>
 				</c:forEach>
@@ -271,7 +307,7 @@
         <br/>
         
         
-        <p class="tips-desc">数据盘快照列表，数据盘快照数量：<c:out value="${fn:length(ebslist)}"></c:out></p>
+        <p class="tips-desc">数据盘快照列表，数据盘快照数量：<c:out value="${fn:length(snapshotlist)}"></c:out></p>
         <table class="table" cellpadding="0" cellspacing="0" width="100%" border="0">
             <colgroup>
             </colgroup>
@@ -284,14 +320,32 @@
                 <th>
                     <div class="th-gap">详情</div>
                 </th>
+                <th>
+                    <div class="th-gap">操作</div>
+                </th>
             </tr>
             </thead>
             <tbody>
 			
-            	<c:forEach var="ebs" items="${ebslist}" varStatus="status">
+            	<c:forEach var="snapshot" items="${snapshotlist}" varStatus="status">
 					<tr>
-						<td>${ebs.display_name} </td>
-						<td><button onclick="detail('${status.count}')">详情</button></td>
+						<td>${snapshot.name} </td>
+						<td><button onclick="detail('${snapshot.id}','snapshot')">详情</button></td>
+                        <td><button onclick="deletesnapshot('${snapshot.id}','${snapshot.status}')">删除快照</button></td>
+						<div id="snapshots_detail_${snapshot.id}" title="snapshot(${snapshot.id})详情" style="display:none">
+						<fieldset>
+							<legend>snapshot</legend>
+							<p>STATUS:${snapshot.status}</p>
+							<p>PROGRESS:${snapshot.progress}</p>
+							<p>created_at:${snapshot.created_at}</p>
+							<p>display_description:${snapshot.display_description}</p>
+							<p>id:${snapshot.id}</p>
+							<p>volume_id:${snapshot.volume_id}</p>
+							<p>display_name:${snapshot.display_name}</p>
+							<p>size:${snapshot.size}</p>
+							<p>project_id:${snapshot.project_id}</p>
+						</fieldset>
+					</div>
 					</tr>
 				</c:forEach>
 					
@@ -306,7 +360,6 @@
 					<legend>添加EBS</legend>
 					<p>name:<input type="text" value="" id="ebsname" name="ebsname"/></p>
 					<p>size:<input type="text" value="" id="ebssize" name="ebssize"/></p>
-					<p>volume:<select id="volume" name="ebsvolumetype"></select></p>
 					<p>desc:<textarea rows="3" cols="50" id="ebsdesc" name="ebsdesc"></textarea></p>
 					<p><input type="button" value="确定" onclick="addEBS();" /></p>
 				</fieldset>

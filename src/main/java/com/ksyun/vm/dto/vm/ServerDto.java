@@ -34,8 +34,16 @@ public class ServerDto extends CoreDto{
 	private String progress;
 	private String OS_EXT_STS_power_state;
 	private String config_drive;
+	private FaultDto fault;
 	private MetaDto metadata;
 	
+	
+	public FaultDto getFault() {
+		return fault;
+	}
+	public void setFault(FaultDto fault) {
+		this.fault = fault;
+	}
 	public String getProgress() {
 		return progress;
 	}

@@ -1,10 +1,7 @@
 package com.ksyun.vm.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,19 +19,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
 import com.ksyun.vm.dto.ebs.EBSDto;
-import com.ksyun.vm.dto.ebs.VolumeTypeDto;
 import com.ksyun.vm.dto.images.SnapshotsDto;
 import com.ksyun.vm.dto.images.SystemImageDto;
+import com.ksyun.vm.dto.images.SystemSnapshotDto;
+import com.ksyun.vm.dto.securitygroup.SecurityGroupDto;
 import com.ksyun.vm.dto.user.UserDto;
 import com.ksyun.vm.dto.vm.FlavorDto;
 import com.ksyun.vm.dto.vm.ServerDto;
-import com.ksyun.vm.utils.Constants;
-import com.ksyun.vm.utils.InitConst;
 import com.ksyun.vm.utils.JsonMaker;
 import com.ksyun.vm.utils.JsonParser;
 import com.ksyun.vm.utils.OperationVm;
 import com.ksyun.vm.utils.PageWithoutSize;
-import com.ksyun.vm.utils.enumeration.EnumResult;
 
 @Controller
 public class UserController {
@@ -42,10 +37,11 @@ public class UserController {
 	@RequestMapping(value = "/g/user/list/{pagenum}")
 	public ModelAndView userList(@PathVariable("pagenum") String pageNum, ModelAndView mav) throws HttpException, IOException {
 		List<UserDto> list = JsonParser.returnUserList(pageNum);
-		if (list == null) {
-			return null;
-		}
 		PageWithoutSize page = new PageWithoutSize(Integer.valueOf(pageNum));
+		if (list == null) {
+			page.setData(null);
+		}
+		
 		page.setData(list);
 		mav.addObject("page", page);
 		mav.setViewName("/gestion/user/user_list");
@@ -57,7 +53,7 @@ public class UserController {
 	public ModelAndView ebsSnapShotList(@PathVariable("tenant_id") String tenantId, @PathVariable("user_id") String userId, ModelAndView mav)
 			throws HttpException, IOException {
 		List<EBSDto> ebsList = JsonParser.returnEBSList(tenantId, userId);
-		List<SystemImageDto> imageList = JsonParser.returnSysImagesList(tenantId, userId);
+		List<SystemSnapshotDto> imageList = JsonParser.returnSysImagesList(tenantId, userId);
 		List<SnapshotsDto> snapshotList = JsonParser.returnSnapshotsList(tenantId, userId);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("tenantId", tenantId);
@@ -75,8 +71,8 @@ public class UserController {
 	public ModelAndView vmList(@PathVariable("tenant_id") String tenantId, @PathVariable("user_id") String userId, HttpServletRequest request, ModelAndView mav)
 			throws HttpException, IOException {
 		List<ServerDto> vmList = JsonParser.returnServerListByUser(tenantId, userId);
-		request.setAttribute("tenantId", tenantId);
-		request.setAttribute("userId", userId);
+		request.setAttribute("tenantid", tenantId);
+		request.setAttribute("userid", userId);
 		mav.addObject("vmlist", vmList);
 		mav.setViewName("/gestion/user/vm_list");
 		return mav;
@@ -86,33 +82,24 @@ public class UserController {
 	@RequestMapping(value = "/g/user/vmlist/{tenant_id}/{user_id}/{vm_id}")
 	public ModelAndView vm(@PathVariable("tenant_id") String tenantId, @PathVariable("user_id") String userId, @PathVariable("vm_id") String vmId,
 			ModelAndView mav) throws HttpException, IOException {
-		String admintenantId = Constants.getPropertyValue(InitConst.ADMINNAME);
-		ServerDto dto = JsonParser.returnServerDto(admintenantId, vmId);
+		// String admintenantId =
+		// Constants.getPropertyValue(InitConst.ADMINNAME);
+		ServerDto dto = JsonParser.returnServerDto(vmId);
 		mav.addObject("dto", dto);
 		mav.setViewName("/gestion/user/vm");
 		return mav;
 	}
 
 	// 创建vm(ajax请求)
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/g/user/createvm/{tenant_id}/{user_id}")
 	@ResponseBody
 	public String createVm(@PathVariable("tenant_id") String tenantId, @PathVariable("user_id") String userId, @RequestParam("name") String name,
 			@RequestParam("imageRef") String imageRef, @RequestParam("vcpu") String vcpu, @RequestParam("network") String network,
-			@RequestParam("create_on_ebs") String isOnEbs, @RequestParam("data_disk") String dataDisk, @RequestParam("ram") String ram,
+			@RequestParam("create_on_ebs") String isOnEbs, @RequestParam("root_disk") String rootDisk, @RequestParam("ram") String ram,
 			@RequestParam("create_zone") String zone, @RequestParam("count") String count, @RequestParam("adminPass") String adminPass,
 			@RequestParam("security_groups[]") String security_groups, HttpServletResponse response, ModelAndView mav) throws HttpException, IOException {
-		String flavorJsonStr = JsonMaker.createFlavor(tenantId, userId, vcpu, network, dataDisk, ram);
-		System.out.println(flavorJsonStr);
-		LinkedHashMap map = JSON.parseObject(flavorJsonStr, LinkedHashMap.class);
-		Iterator<Map.Entry> iter = map.entrySet().iterator();
-		String flavorRef = null;
-		while (iter.hasNext()) {
-			Map.Entry entry = iter.next();
-			FlavorDto dto = JSON.parseObject(entry.getValue().toString(), FlavorDto.class);
-			flavorRef = dto.getId();
-		}
-		String result = JsonMaker.createVm(tenantId, userId, name, imageRef, flavorRef, count, security_groups, adminPass, isOnEbs, zone);
+		String result = JsonMaker.createVm(tenantId, userId, name, imageRef, count, security_groups, adminPass, isOnEbs, zone, vcpu, network, rootDisk, ram);
+		System.out.println(result);
 		return result;
 	}
 
@@ -141,26 +128,9 @@ public class UserController {
 	@ResponseBody
 	public String userSysImageIdList(@PathVariable("tenant_id") String tenantId, @PathVariable("user_id") String userId, ModelAndView mav)
 			throws HttpException, IOException {
-		List<SystemImageDto> list = JsonParser.returnSysImagesList(tenantId, userId);
+		List<SystemSnapshotDto> list = JsonParser.returnSysImagesList(tenantId, userId);
 		String resultStr = JsonMaker.createFromListToJson(list);
 		return resultStr;
-	}
-
-	// 删除指定虚拟机
-	@RequestMapping(value = "/g/user/delete_vm/{tenant_id}/{user_id}")
-	@ResponseBody
-	public String deleteVm(@PathVariable("tenant_id") String tenantId, @PathVariable("user_id") String userId, @RequestParam("vmids") String vmIds,
-			ModelAndView mav) {
-		String[] vmidArray = vmIds.split(",");
-		Integer result = EnumResult.successful.value();
-		for (String vmid : vmidArray) {
-			String requestStr = Constants.getPropertyValue(InitConst.DELETEVM, tenantId, vmid);
-			result = OperationVm.deleteVm(requestStr, tenantId, userId);
-			if (result == EnumResult.failed.value()) {
-				result = EnumResult.failed.value();
-			}
-		}
-		return String.valueOf(result);
 	}
 
 	// 编辑指定虚拟机
@@ -170,8 +140,7 @@ public class UserController {
 			@RequestParam("vmids") String vmIds, ModelAndView mav) throws HttpException, IOException {
 		String[] vmidArray = vmIds.split(",");
 		for (String vmid : vmidArray) {
-			String requestStr = Constants.getPropertyValue(InitConst.EDITVM, tenantId, vmid);
-			OperationVm.editVm(requestStr, action, tenantId, vmid);
+			OperationVm.editVm(vmid, action, tenantId, userId);
 		}
 		return "success";
 	}
@@ -189,51 +158,124 @@ public class UserController {
 	@ResponseBody
 	public String createSnapShot(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @PathVariable("vmid") String vmId,
 			@PathVariable("snapshot_name") String snapshotName, HttpServletResponse response, ModelAndView mav) throws HttpException, IOException {
-		String requestStr = Constants.getPropertyValue(InitConst.EDITVM, tenantId, vmId);
-		System.out.println(requestStr);
-		OperationVm.createSnapShot(requestStr, tenantId, userId, snapshotName);
+
+		OperationVm.createSnapShot(vmId, tenantId, userId, snapshotName);
 		return "success";
 	}
 
 	// 创建EBS快照
-	@RequestMapping(value = "/g/user/createebsimage/{tenantid}/{userid}/{volumeid}")
-	public String createEBSImage(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @PathVariable("volumeid") String volumeId,
-			@PathVariable("imagename") String name) throws HttpException, IOException {
-		JsonMaker.createEbsImage(tenantId, userId, volumeId, name);
+	@RequestMapping(value = "/g/user/createebsimage/{tenantid}/{userid}")
+    @ResponseBody
+	public String createEBSImage(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("ebsid")String ebsid,@RequestParam("name")String name,@RequestParam("desc")String desc) throws HttpException, IOException {
+		JsonMaker.createEbsImage(tenantId, userId, ebsid,desc, name);
 		return "success";
 	}
 
 	// 创建EBS
-	@RequestMapping(value = "/g/user/createebs/{tenantid}/{userid}",method=RequestMethod.POST)
+	@RequestMapping(value = "/g/user/createebs/{tenantid}/{userid}", method = RequestMethod.POST)
 	@ResponseBody
 	public String createEBS(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("name") String name,
-			@RequestParam("desc") String desc, @RequestParam("size") String size, @RequestParam("volume_type") String volume_type) throws Exception {
-		JsonMaker.createEBS(tenantId, userId, name, desc, size, volume_type);
+			@RequestParam("desc") String desc, @RequestParam("size") String size) throws Exception {
+		JsonMaker.createEBS(tenantId, userId, name, desc, size);
 		return "success";
 	}
-
-	// 获取volume_type列表
-	@RequestMapping(value = "/g/user/volume_type/{tenantid}/{userid}")
+    //删除ebs
+    @RequestMapping(value = "/g/user/deleteebs/{tenantid}/{userid}", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteEBS(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("ebsid") String ebsid) throws Exception {
+        JsonParser.deleteEBS(tenantId, userId, ebsid);
+        return "success";
+    }
+    //删除ebs快照
+    @RequestMapping(value = "/g/user/deleteebssnapshot/{tenantid}/{userid}", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteEBSSnapshot(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("ebssnapshotid") String ebssnapshotid) throws Exception {
+        JsonParser.deleteEBSSnapshot(tenantId, userId, ebssnapshotid);
+        return "success";
+    }
+	// 获取ebs列表
+	@RequestMapping(value = "/g/user/ebslist/{tenantid}/{userid}")
 	@ResponseBody
-	public String getVolumeType(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId) throws Exception {
-		Map<String, List<VolumeTypeDto>> map = JsonParser.returnVolumeTypeList(tenantId, userId);
-		String resultStr = JSON.toJSONString(map.get("volume_types"));
-		return resultStr;
-	}
-	
-	//获取ebs列表
-	@RequestMapping(value="/g/user/ebslist/{tenantid}/{userid}")
-	@ResponseBody
-	public String getVMEBSList(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId)throws Exception{
+	public String getVMEBSList(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId) throws Exception {
 		List<EBSDto> ebsList = JsonParser.returnEBSList(tenantId, userId);
 		return JSON.toJSONString(ebsList);
 	}
-	//绑定虚拟机的ebs
-	@RequestMapping(value="/g/user/setebs/{tenantid}/{userid}")
+
+	// 绑定虚拟机的ebs
+	@RequestMapping(value = "/g/user/setebs/{tenantid}/{userid}")
 	@ResponseBody
-	public String setEBS(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@RequestParam("vmid")String vmid,@RequestParam("ebsid")String ebsId,@RequestParam("device")String device)throws Exception{
-		JsonMaker.setEBS(tenantId, userId, vmid, ebsId, device);
+	public String setEBS(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("vmid") String vmid,
+			@RequestParam("ebsid") String ebsId, @RequestParam("device") String device) throws Exception {
+		String status = JsonMaker.setEBS(tenantId, userId, vmid, ebsId, device);
+		return status;
+	}
+    //解绑虚拟机的ebs
+    @RequestMapping(value="/g/user/unbind/{tenantid}/{userid}", method=RequestMethod.POST)
+    @ResponseBody
+    public String unsetEBS(@PathVariable("tenantid")String tenantid,@PathVariable("userid")String userid,@RequestParam("attach_id")String attach_id,@RequestParam("volumeid")String volumeid) throws Exception {
+    	String status = JsonMaker.unsetEBS(tenantid,userid,attach_id,volumeid);
+        return status;
+    }
+
+	// 查找指定用户的安全组
+	@RequestMapping(value = "/g/user/security_groups/{tenantid}/{userid}")
+	public ModelAndView security_groups(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,ModelAndView mav, HttpServletRequest request) throws HttpException, IOException{
+		List<SecurityGroupDto> list = JsonParser.returnSecurityGroupList(tenantId,userId);
+		request.setAttribute("tenantid", tenantId);
+		request.setAttribute("userid", userId);
+		mav.addObject("sglist", list);
+		mav.setViewName("/gestion/user/sg_list");
+		return mav;
+	}
+	
+	// 创建安全组
+	@RequestMapping(value = "/g/user/createsg/{tenantid}/{userid}")
+	@ResponseBody
+	public String createsg(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@RequestParam("name") String name,@RequestParam("desc") String desc, ModelAndView mav) throws HttpException, IOException{
+		JsonMaker.createSg(tenantId,userId,name,desc);	
 		return "success";
 	}
 	
+	// 删除安全组
+	@RequestMapping(value = "/g/user/deletesgs/{tenantid}/{userid}")
+	@ResponseBody
+	public String deletesgs(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@RequestParam("sgids") String sgids) throws HttpException, IOException{
+		JsonMaker.deleteSgs(tenantId, userId, sgids);
+		return "success";
+	}
+	// 查找指定用户安全组规则
+	@RequestMapping(value = "/g/user/security_groups/rules/{sgid}/{tenantid}/{userid}")
+	public ModelAndView rules(@PathVariable("sgid") String sgid,@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,ModelAndView mav, HttpServletRequest request) throws HttpException, IOException{
+		SecurityGroupDto dto = JsonParser.returnSecurityGroup(sgid,tenantId,userId);
+		mav.addObject("dto",dto);
+		request.setAttribute("sgid", sgid);
+		request.setAttribute("tenantid", tenantId);
+		request.setAttribute("userid", userId);
+		mav.setViewName("/gestion/user/rules");
+		return mav;
+	}
+	
+	// 创建安全组规则
+	@RequestMapping(value = "/g/user/createrule/{sgid}/{tenantid}/{userid}")
+	@ResponseBody
+	public String createRule(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@PathVariable("sgid") String sgid,
+			@RequestParam("protocal") String protocal,@RequestParam("from_port") String fromPort,@RequestParam("to_port") String toPort,@RequestParam("cidr") String cidr) throws HttpException, IOException{
+		JsonMaker.createRule(tenantId,userId,sgid,protocal,fromPort,toPort,cidr);	
+		return "success";
+	}
+	// 删除安全组规则
+	@RequestMapping(value = "/g/user/deleterule/{ruleid}/{tenantid}/{userid}")
+	@ResponseBody
+	public String deleterule(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@PathVariable("ruleid") String ruleId) throws HttpException, IOException{
+		JsonMaker.deleteRule(tenantId, userId, ruleId);
+		return "success";
+	}
+	//获取安全组信息(ajax请求)
+	@RequestMapping(value = "/g/user/security_groups/ajax/{tenantid}/{userid}")
+	@ResponseBody
+	public String security_groups_ajax(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId) throws HttpException, IOException{
+		List<SecurityGroupDto> list = JsonParser.returnSecurityGroupList(tenantId,userId);
+		String resultStr = JsonMaker.createFromListToJson(list);
+		return resultStr;
+	}
 }

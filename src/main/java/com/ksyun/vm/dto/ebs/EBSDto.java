@@ -1,5 +1,7 @@
 package com.ksyun.vm.dto.ebs;
 
+import java.util.List;
+
 import com.alibaba.fastjson.annotation.JSONField;
 import com.ksyun.vm.dto.common.CoreDto;
 import com.ksyun.vm.dto.common.MetaDto;
@@ -7,7 +9,7 @@ import com.ksyun.vm.dto.common.MetaDto;
 public class EBSDto extends CoreDto{
 	private String status;
 	private String display_name;
-	private String[] attachments;
+	private List<Attachments> attachments;
 	private String availability_zone;
 	private String bootable;
 	private String created_at;
@@ -20,6 +22,16 @@ public class EBSDto extends CoreDto{
 	private MetaDto metadata;
 	private String id;
 	private String name;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    private String description;
 	/**
 	 * @return the name
 	 */
@@ -45,10 +57,16 @@ public class EBSDto extends CoreDto{
 	public void setDisplay_name(String displayName) {
 		display_name = displayName;
 	}
-	public String[] getAttachments() {
+	/**
+	 * @return the attachments
+	 */
+	public List<Attachments> getAttachments() {
 		return attachments;
 	}
-	public void setAttachments(String[] attachments) {
+	/**
+	 * @param attachments the attachments to set
+	 */
+	public void setAttachments(List<Attachments> attachments) {
 		this.attachments = attachments;
 	}
 	public String getAvailability_zone() {

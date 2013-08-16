@@ -2,10 +2,9 @@ package com.ksyun.vm.utils.enumeration;
 
 public enum EnumEditVm {
 	
-	reboot("reboot"),
-	pause("pause"),
-	suspend("suspend"),
-	resume("resume"),
+	restart("restart"),
+	changepwd("changepwd"),
+	terminal("terminal"),
 	stop("stop"),
 	start("start");
 	
