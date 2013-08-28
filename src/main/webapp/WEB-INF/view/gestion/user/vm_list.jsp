@@ -415,6 +415,9 @@
                     <div class="th-gap">name</div>
                 </th>
                 <th width="10%">
+                    <div class="th-gap">ip</div>
+                </th>
+                <th width="10%">
                     <div class="th-gap">所属物理机</div>
                 </th>
                  <th width="8%">
@@ -435,6 +438,16 @@
 						<td>${vm.id} </td>
 						<td>${vm.status} </td>
 						<td>${vm.name} </td>
+                        <td><p>public_ip_address: </p>
+                            <c:forEach var="public_address" items="${vm.addresses.publicAddress}" varStatus="status">
+                                <p>&nbsp;&nbsp;version: ${public_address.version}</p>
+                                <p>&nbsp;&nbsp;address: ${public_address.addr}</p>
+                            </c:forEach>
+                            <p>private_ip_address: </p>
+                            <c:forEach var="private_address" items="${vm.addresses.privateAddress}" varStatus="status">
+                                <p>&nbsp;&nbsp;version: ${private_address.version}</p>
+                                <p>&nbsp;&nbsp;address: ${private_address.addr}</p>
+                            </c:forEach></td>
 						<td>${vm.OS_EXT_SRV_ATTR_host} </td>
 						<td><button onclick="detail('${vm.id}')">详情</button></td>
 						<td><button onclick="createsnapshot('<%=tenantId %>','<%=userId %>','${vm.id}')">创建</button></td>
