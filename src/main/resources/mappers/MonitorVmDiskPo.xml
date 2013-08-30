@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ksyun.monitor.pojo.MonitorVmDiskPo" >
+  <resultMap id="BaseResultMap" type="com.ksyun.monitor.pojo.MonitorVmDiskPo" >
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="vm_uuid" jdbcType="VARCHAR" property="vmUuid" />
+    <result column="vm_name" jdbcType="VARCHAR" property="vmName" />
+    <result column="read_times" jdbcType="VARCHAR" property="readTimes" />
+    <result column="write_times" jdbcType="VARCHAR" property="writeTimes" />
+    <result column="log_time" jdbcType="VARCHAR" property="logTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, vm_uuid, vm_name, read_times, write_times, log_time
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from monitor_vm_disk
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" parameterType="com.ksyun.monitor.pojo.MonitorVmDiskPo"  useGeneratedKeys="true" keyProperty="id">
+    insert into monitor_vm_disk (id, vm_uuid, vm_name, 
+      read_times, write_times, log_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{vmUuid,jdbcType=VARCHAR}, #{vmName,jdbcType=VARCHAR}, 
+      #{readTimes,jdbcType=INTEGER}, #{writeTimes,jdbcType=INTEGER}, #{logTime,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateIfNecessary" parameterType="com.ksyun.monitor.pojo.MonitorVmDiskPo" >
+    update monitor_vm_disk
+    <set>
+      <if test="vmUuid != null">
+        vm_uuid = #{vmUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="vmName != null">
+        vm_name = #{vmName,jdbcType=VARCHAR},
+      </if>
+      <if test="readTimes != null">
+        read_times = #{readTimes,jdbcType=INTEGER},
+      </if>
+      <if test="writeTimes != null">
+        write_times = #{writeTimes,jdbcType=INTEGER},
+      </if>
+      <if test="logtime != null">
+        log_time = #{log_time,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="update" parameterType="com.ksyun.monitor.pojo.MonitorVmDiskPo" >
+    update monitor_vm_disk
+    set vm_uuid = #{vmUuid,jdbcType=VARCHAR},
+      vm_name = #{vmName,jdbcType=VARCHAR},
+      read_times = #{readTimes,jdbcType=INTEGER},
+      write_times = #{writeTimes,jdbcType=INTEGER},
+      log_time = #{logTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getLatestVmDiskData" resultMap="BaseResultMap" >
+  	SELECT 
+	<include refid="Base_Column_List" />
+ FROM (SELECT * FROM `monitor_vm_disk` ORDER BY `log_time` DESC) `temp`  GROUP BY vm_uuid ORDER BY `log_time` DESC;
+  </select>
+</mapper>

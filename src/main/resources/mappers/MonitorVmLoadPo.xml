@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ksyun.monitor.pojo.MonitorVmLoadPo" >
+  <resultMap id="BaseResultMap" type="com.ksyun.monitor.pojo.MonitorVmLoadPo" >
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="vm_name" jdbcType="VARCHAR" property="vmName" />
+    <result column="vm_uuid" jdbcType="VARCHAR" property="vmUuid" />
+    <result column="cpu_load" jdbcType="VARCHAR" property="cpuLoad" />
+    <result column="memory_load" jdbcType="VARCHAR" property="memoryLoad" />
+    <result column="log_time" jdbcType="VARCHAR" property="logTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, vm_name, vm_uuid, cpu_load, memory_load, log_time
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from monitor_vm_load
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from monitor_vm_load
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ksyun.monitor.pojo.MonitorVmLoadPo"  useGeneratedKeys="true" keyProperty="id" >
+    insert into monitor_vm_load (id, vm_name, vm_uuid, 
+      cpu_load, memory_load, log_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{vmName,jdbcType=VARCHAR}, #{vmUuid,jdbcType=VARCHAR}, 
+      #{cpuLoad,jdbcType=INTEGER}, #{memoryLoad,jdbcType=INTEGER}, #{logTime,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateIfNecessary" parameterType="com.ksyun.monitor.pojo.MonitorVmLoadPo" >
+    update monitor_vm_load
+    <set>
+      <if test="vmName != null">
+        vm_name = #{vmName,jdbcType=VARCHAR},
+      </if>
+      <if test="vmUuid != null">
+        vm_uuid = #{vmUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="cpuLoad != null">
+        cpu_load = #{cpuLoad,jdbcType=INTEGER},
+      </if>
+      <if test="memoryLoad != null">
+        memory_load = #{memoryLoad,jdbcType=INTEGER},
+      </if>
+      <if test="logTime != null">
+        log_time = #{logTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="update" parameterType="com.ksyun.monitor.pojo.MonitorVmLoadPo" >
+    update monitor_vm_load
+    set vm_name = #{vmName,jdbcType=VARCHAR},
+      vm_uuid = #{vmUuid,jdbcType=VARCHAR},
+      cpu_load = #{cpuLoad,jdbcType=INTEGER},
+      memory_load = #{memoryLoad,jdbcType=INTEGER},
+      log_time = #{logTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <select id="getLatestVmLoadData" resultMap="BaseResultMap" >
+  	SELECT 
+	<include refid="Base_Column_List" />
+ FROM (SELECT * FROM `monitor_vm_load` ORDER BY `log_time` DESC) `temp`  GROUP BY vm_uuid ORDER BY `log_time` DESC;
+  </select>
+
+</mapper>

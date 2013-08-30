@@ -405,13 +405,13 @@
             	<th width="7%">
             		<div class="th-gap"><input name="vm_list_all" type="checkbox" onclick="selectAll(this.checked)"/></div>
             	</th>
-                <th width="25%">
+                <th width="15%">
                     <div class="th-gap">虚拟机id</div>
                 </th>
                 <th width="7%">
                     <div class="th-gap">状态</div>
                 </th>	
-                <th width="12%">
+                <th width="10%">
                     <div class="th-gap">name</div>
                 </th>
                 <th width="10%">
@@ -423,10 +423,10 @@
                  <th width="8%">
                     <div class="th-gap">详情</div>
                 </th>
-                 <th >
+                 <th width="8%">
                     <div class="th-gap">创建系统快照</div>
                 </th>
-                <th width="22%">
+                <th width="12%">
                     <div class="th-gap">操作ebs</div>
                 </th>
             </tr>

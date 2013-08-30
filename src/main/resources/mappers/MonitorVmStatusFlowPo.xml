@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ksyun.monitor.pojo.MonitorVmStatusFlowPo" >
+  <resultMap id="BaseResultMap" type="com.ksyun.monitor.pojo.MonitorVmStatusFlowPo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="vm_uuid" property="vmUuid" jdbcType="VARCHAR" />
+    <result column="vm_name" property="vmName" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="log_time" property="logTime" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, vm_uuid, vm_name, status, log_time
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from monitor_vm_status_flow
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" parameterType="com.ksyun.monitor.pojo.MonitorVmStatusFlowPo" useGeneratedKeys="true" keyProperty="id" >
+    insert into monitor_vm_status_flow (id, vm_uuid, vm_name, 
+      status, log_time)
+    values (#{id,jdbcType=INTEGER}, #{vmUuid,jdbcType=VARCHAR}, #{vmName,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{logTime,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateIfNecessary" parameterType="com.ksyun.monitor.pojo.MonitorVmStatusFlowPo" >
+    update monitor_vm_status_flow
+    <set >
+      <if test="vmUuid != null" >
+        vm_uuid = #{vmUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="vmName != null" >
+        vm_name = #{vmName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="logTime != null" >
+        log_time = #{logTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="update" parameterType="com.ksyun.monitor.pojo.MonitorVmStatusFlowPo" >
+    update monitor_vm_status_flow
+    set vm_uuid = #{vmUuid,jdbcType=VARCHAR},
+      vm_name = #{vmName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      log_time = #{logTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <select id="getLatestVmStatusData" resultMap="BaseResultMap" >
+  	SELECT 
+	<include refid="Base_Column_List" />
+	FROM (SELECT * FROM `monitor_vm_status_flow` ORDER BY `log_time` DESC) `temp`  GROUP BY vm_uuid ORDER BY `log_time` DESC;
+  </select>
+</mapper>

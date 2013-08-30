@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ksyun.monitor.pojo.MonitorVmNetworkPo" >
+  <resultMap id="BaseResultMap" type="com.ksyun.monitor.pojo.MonitorVmNetworkPo" >
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="vm_uuid" jdbcType="VARCHAR" property="vmUuid" />
+    <result column="vm_name" jdbcType="VARCHAR" property="vmName" />
+    <result column="rxp" jdbcType="VARCHAR" property="rxp" />
+    <result column="txp" jdbcType="VARCHAR" property="txp" />
+    <result column="rxb" jdbcType="VARCHAR" property="rxb" />
+    <result column="txb" jdbcType="VARCHAR" property="txb" />
+    <result column="mac" jdbcType="VARCHAR" property="mac" />
+    <result column="log_time" jdbcType="VARCHAR" property="logTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, vm_uuid, vm_name, rxp, txp, rxb, txb, mac, log_time
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from monitor_vm_network
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" parameterType="com.ksyun.monitor.pojo.MonitorVmNetworkPo" useGeneratedKeys="true" keyProperty="id"  >
+    insert into monitor_vm_network (id, vm_uuid, vm_name, 
+      rxp, txp, rxb, txb, 
+      mac, log_time)
+    values (#{id,jdbcType=INTEGER}, #{vmUuid,jdbcType=VARCHAR}, #{vmName,jdbcType=VARCHAR}, 
+      #{rxp,jdbcType=INTEGER}, #{txp,jdbcType=INTEGER}, #{rxb,jdbcType=INTEGER}, #{txb,jdbcType=INTEGER}, 
+      #{mac,jdbcType=VARCHAR}, #{logTime,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateIfNecessary" parameterType="com.ksyun.monitor.pojo.MonitorVmNetworkPo" >
+    update monitor_vm_network
+    <set>
+      <if test="vmUuid != null">
+        vm_uuid = #{vmUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="vmName != null">
+        vm_name = #{vmName,jdbcType=VARCHAR},
+      </if>
+      <if test="rxp != null">
+        rxp = #{rxp,jdbcType=INTEGER},
+      </if>
+      <if test="txp != null">
+        txp = #{txp,jdbcType=INTEGER},
+      </if>
+      <if test="rxb != null">
+        rxb = #{rxb,jdbcType=INTEGER},
+      </if>
+      <if test="txb != null">
+        txb = #{txb,jdbcType=INTEGER},
+      </if>
+      <if test="mac != null">
+        mac = #{mac,jdbcType=VARCHAR},
+      </if>
+      <if test="logTime != null">
+        log_time = #{logTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="update" parameterType="com.ksyun.monitor.pojo.MonitorVmNetworkPo" >
+    update monitor_vm_network
+    set vm_uuid = #{vmUuid,jdbcType=VARCHAR},
+      vm_name = #{vmName,jdbcType=VARCHAR},
+      rxp = #{rxp,jdbcType=INTEGER},
+      txp = #{txp,jdbcType=INTEGER},
+      rxb = #{rxb,jdbcType=INTEGER},
+      txb = #{txb,jdbcType=INTEGER},
+      mac = #{mac,jdbcType=VARCHAR},
+      log_time = #{logTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+      <select id="getLatestVmNetworkData" resultMap="BaseResultMap" >
+  	SELECT 
+	<include refid="Base_Column_List" />
+	FROM (SELECT * FROM `monitor_vm_network` ORDER BY `log_time` DESC) `temp`  GROUP BY vm_uuid ORDER BY `log_time` DESC;
+  </select>
+</mapper>

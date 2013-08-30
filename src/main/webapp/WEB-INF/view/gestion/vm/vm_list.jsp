@@ -26,6 +26,18 @@
 		});
 		$( "#vm_dialog_"+id ).dialog("open");
    	}
+    function chart_load(id){
+        window.location.href="/g/chart/load/"+id;
+    }
+    function chart_disk(id){
+        window.location.href="/g/chart/disk/"+id;
+    }
+    function chart_network(id){
+        window.location.href="/g/chart/network/"+id;
+    }
+    function chart_status(id){
+        window.location.href="/g/chart/status/"+id;
+    }
  </script>
 </head>
 <body class="main-body">
@@ -59,6 +71,9 @@
                  <th width="10%">
                     <div class="th-gap">详情</div>
                 </th>
+                <th width="12%">
+                    <div class="th-gap">状态查看</div>
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -70,6 +85,10 @@
 						<td>${vm.OS_EXT_SRV_ATTR_host} </td>
                         <td>${vm.tenant_id} </td>
 						<td><button onclick="detail('${status.count}')">详情</button></td>
+						<td><button onclick="chart_load('${vm.id}')">查看cpu内存</button>
+                            <button onclick="chart_network('${vm.id}')">查看网络</button>
+                            <button onclick="chart_disk('${vm.id}')">查看硬盘</button>
+                            <button onclick="chart_status('${vm.id}')">查看状态</button></td>
 						<div id="vm_dialog_${status.count}" title="vm_${status.count}详情" style="display:none">
 							<p>status: ${vm.status}</p>
 							<p>updated: ${vm.updated}</p>
