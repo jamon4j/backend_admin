@@ -1,8 +1,8 @@
 package com.ksyun.vm.pojo;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+import java.io.Serializable;
 
 public class MonitorVmDiskPo implements VmBasePo{
     private Integer id;

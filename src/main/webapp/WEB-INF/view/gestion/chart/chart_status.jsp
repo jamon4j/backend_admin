@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE HTML>
 <html>
@@ -8,43 +8,68 @@
     <script type="text/javascript" src="/js/jquery/core/jquery-1.9.1.js"></script>
     <script src="/js/highchart/highstock.js"></script>
     <script src="/js/highchart/modules/exporting.js"></script>
+    <script type="text/javascript" src="http://www.highcharts.com/samples/data/usdeur.js"></script>
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             Highcharts.setOptions({
-                global : {
-                    useUTC : false
-                }
+                global: {
+                    useUTC: false
+                },
+                colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655',
+                    '#FFF263', '#6AF9C4']
             });
             $.ajax({
-                url:"/g/chart/${vmuuid}/initNetwork",
+                url:"/g/chart/${vmuuid}/initStatus",
                 dataType:"json",
                 async:'false',
-                success:function(networkdata){
-                    if(networkdata==""||networkdata==null){
+                success:function(statusdata){
+                    if(statusdata==""||statusdata==null){
                         $("#warn").text("没有数据");
                     }
                     $('#container').highcharts('StockChart', {
-                        chart : {
+                        chart: {
                             events : {
                                 load : function() {
-
                                     var series = this.series[0];
-                                    var series1 = this.series[1];
                                     setInterval(function() {
                                         $.ajax({
-                                            url:"/g/chart/${vmuuid}/getNetwork",
+                                            url:"/g/chart/${vmuuid}/getStatus",
                                             dataType:"json",
-                                            success:function(network){
-                                                var date = parseInt(network.logTime)*1000;
-                                                series1.addPoint([date, parseInt(network.txb)], true, true);
-                                                series.addPoint([date,parseInt(network.rxb)], true, true);
+                                            success:function(status){
+                                                var ss;
+                                                var date = parseInt(status.logTime)*1000;
+                                                if(status.status=="RUNNING"){
+                                                    ss=1;
+                                                }else if(status.status=="NEW"){
+                                                    ss=0;
+                                                }else if(status.status=="DESTROYED"){
+                                                    ss=-1;
+                                                }
+                                                series.addPoint([date,parseInt(ss)], true, true);
                                             }
                                         })
-                                    }, 30000);
+                                    }, 3000);
                                 }
                             }
                         },
+                        tooltip: {
+                            formatter: function() {
+                                var s = '<b>'+ Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'</b>';
 
+                                $.each(this.points, function(i, point) {
+                                    if(point.y==1){
+                                        s += '<br/>状态:<strong style="color:green;">RUNNING</strong>';
+                                    }else if(point.y==0){
+                                        s += '<br/>状态:<strong style="color:yellow;">RUNNING</strong>';
+                                    }else if(point.y==-1){
+                                        s += '<br/>状态:<strong style="color:red;">DESTROYED</strong>';
+                                    }
+
+                                });
+
+                                return s;
+                            }
+                        },
                         rangeSelector: {
                             buttons: [{
                                 count: 10,
@@ -61,25 +86,24 @@
                             inputEnabled: false,
                             selected: 0
                         },
-
                         title : {
-                            text : 'cpu与内存使用率'
+                            text : '虚机状态'
                         },
-
-                        exporting: {
-                            enabled: false
-                        },
-
-                        series : [{
-                            name : '网络入口流量',
-                            data : (function() {
+                        series: [{
+                            name: '状态',
+                            data: (function() {
                                 var data = []
-                                $.each(networkdata,function(index,obj){
+                                $.each(statusdata,function(index,obj){
+                                    var ss;
                                     var date = parseInt(obj.logTime)*1000;
-                                    data.push([
-                                        date,
-                                        parseInt(obj.rxb)
-                                    ]);
+                                    if(obj.status=="RUNNING"){
+                                        ss=1;
+                                    }else if(obj.status=="NEW"){
+                                        ss=0;
+                                    }else if(obj.status=="DESTROYED"){
+                                        ss=-1;
+                                    }
+                                    data.push([date,parseInt(ss)]);
                                 });
                                 return data;
                             })(),
@@ -87,32 +111,6 @@
                             marker : {
                                 enabled : true,
                                 radius : 3
-                            },
-                            tooltip:{
-                                valueDecimals:1,
-                                valueSuffix:'byte/s'
-                            }
-                        },{
-                            name : '网络出口流量',
-                            data : (function() {
-                                var data = []
-                                $.each(networkdata,function(index,obj){
-                                    var date = parseInt(obj.logTime)*1000;
-                                    data.push([
-                                        date,
-                                        parseInt(obj.txb)
-                                    ]);
-                                });
-                                return data;
-                            })(),
-                            shadow:true,
-                            marker : {
-                                enabled : true,
-                                radius : 3
-                            },
-                            tooltip:{
-                                valueDecimals:1,
-                                valueSuffix:'byte/s'
                             }
                         }]
                     });

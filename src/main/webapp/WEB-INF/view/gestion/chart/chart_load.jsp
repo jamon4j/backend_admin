@@ -13,7 +13,9 @@
             Highcharts.setOptions({
                 global : {
                     useUTC : false
-                }
+                },
+                colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655',
+                    '#FFF263', '#6AF9C4']
             });
             $.ajax({
                 url:"/g/chart/${vmuuid}/initLoad",
@@ -27,7 +29,6 @@
                         chart : {
                             events : {
                                 load : function() {
-
                                     var series = this.series[0];
                                     var series1 = this.series[1];
                                     setInterval(function() {
@@ -40,7 +41,7 @@
                                                 series.addPoint([date,parseFloat(cpu.cpuLoad)], true, true);
                                             }
                                         })
-                                    }, 30000);
+                                    }, 3000);
                                 }
                             }
                         },

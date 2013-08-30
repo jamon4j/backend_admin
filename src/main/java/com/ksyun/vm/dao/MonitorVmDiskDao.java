@@ -1,9 +1,11 @@
 package com.ksyun.vm.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class MonitorVmDiskDao<MonitorVmDiskPo> extends BaseDao<MonitorVmDiskPo,Integer> {
@@ -15,5 +17,18 @@ public class MonitorVmDiskDao<MonitorVmDiskPo> extends BaseDao<MonitorVmDiskPo,I
 		}
 		return list;
     }
-    
+    public MonitorVmDiskPo getLastestVmDisk(String vmuuid){
+        MonitorVmDiskPo po = sqlSession.selectOne(nameSpace+".getLatestVmDisk",vmuuid);
+        return po;
+    }
+    public List<MonitorVmDiskPo> getVmDiskByTime(String vmuuid,String log_time){
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("vmUuid",vmuuid);
+        map.put("logTime",log_time);
+        List<MonitorVmDiskPo> pos = sqlSession.selectList(nameSpace+".getVmDiskByTime",map);
+        if (pos == null || pos.isEmpty()) {
+            return new ArrayList<MonitorVmDiskPo>();
+        }
+        return pos;
+    }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ksyun.monitor.pojo.MonitorVmStatusFlowPo" >
-  <resultMap id="BaseResultMap" type="com.ksyun.monitor.pojo.MonitorVmStatusFlowPo" >
+<mapper namespace="com.ksyun.vm.pojo.MonitorVmStatusFlowPo" >
+  <resultMap id="BaseResultMap" type="com.ksyun.vm.pojo.MonitorVmStatusFlowPo" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="vm_uuid" property="vmUuid" jdbcType="VARCHAR" />
     <result column="vm_name" property="vmName" jdbcType="VARCHAR" />
@@ -20,14 +20,14 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <insert id="insert" parameterType="com.ksyun.monitor.pojo.MonitorVmStatusFlowPo" useGeneratedKeys="true" keyProperty="id" >
+  <insert id="insert" parameterType="com.ksyun.vm.pojo.MonitorVmStatusFlowPo" useGeneratedKeys="true" keyProperty="id" >
     insert into monitor_vm_status_flow (id, vm_uuid, vm_name, 
       status, log_time)
     values (#{id,jdbcType=INTEGER}, #{vmUuid,jdbcType=VARCHAR}, #{vmName,jdbcType=VARCHAR}, 
       #{status,jdbcType=VARCHAR}, #{logTime,jdbcType=VARCHAR})
   </insert>
 
-  <update id="updateIfNecessary" parameterType="com.ksyun.monitor.pojo.MonitorVmStatusFlowPo" >
+  <update id="updateIfNecessary" parameterType="com.ksyun.vm.pojo.MonitorVmStatusFlowPo" >
     update monitor_vm_status_flow
     <set >
       <if test="vmUuid != null" >
@@ -45,7 +45,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="update" parameterType="com.ksyun.monitor.pojo.MonitorVmStatusFlowPo" >
+  <update id="update" parameterType="com.ksyun.vm.pojo.MonitorVmStatusFlowPo" >
     update monitor_vm_status_flow
     set vm_uuid = #{vmUuid,jdbcType=VARCHAR},
       vm_name = #{vmName,jdbcType=VARCHAR},
@@ -59,4 +59,19 @@
 	<include refid="Base_Column_List" />
 	FROM (SELECT * FROM `monitor_vm_status_flow` ORDER BY `log_time` DESC) `temp`  GROUP BY vm_uuid ORDER BY `log_time` DESC;
   </select>
+    <select id="getLatestVmStatusFlow" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from monitor_vm_status_flow
+        where vm_uuid=#{vmUuid}
+        order by log_time desc limit 1;
+    </select>
+    <select id="getVmStatusFlowByTime" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from monitor_vm_status_flow
+        where vm_uuid=#{vmUuid}
+        and log_time>=#{logTime}
+        order by log_time asc;
+    </select>
 </mapper>

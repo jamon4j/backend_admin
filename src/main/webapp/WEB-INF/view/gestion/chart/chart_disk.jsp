@@ -13,14 +13,16 @@
             Highcharts.setOptions({
                 global : {
                     useUTC : false
-                }
+                },
+                colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655',
+                    '#FFF263', '#6AF9C4']
             });
             $.ajax({
-                url:"/g/chart/${vmuuid}/initNetwork",
+                url:"/g/chart/${vmuuid}/initDisk",
                 dataType:"json",
                 async:'false',
-                success:function(networkdata){
-                    if(networkdata==""||networkdata==null){
+                success:function(diskdata){
+                    if(diskdata==""||diskdata==null){
                         $("#warn").text("没有数据");
                     }
                     $('#container').highcharts('StockChart', {
@@ -32,15 +34,15 @@
                                     var series1 = this.series[1];
                                     setInterval(function() {
                                         $.ajax({
-                                            url:"/g/chart/${vmuuid}/getNetwork",
+                                            url:"/g/chart/${vmuuid}/getDisk",
                                             dataType:"json",
-                                            success:function(network){
-                                                var date = parseInt(network.logTime)*1000;
-                                                series1.addPoint([date, parseInt(network.txb)], true, true);
-                                                series.addPoint([date,parseInt(network.rxb)], true, true);
+                                            success:function(disk){
+                                                var date = parseInt(disk.logTime)*1000;
+                                                series1.addPoint([date, parseInt(disk.readTimes)], true, true);
+                                                series.addPoint([date,parseInt(disk.writeTimes)], true, true);
                                             }
                                         })
-                                    }, 30000);
+                                    }, 3000);
                                 }
                             }
                         },
@@ -63,7 +65,7 @@
                         },
 
                         title : {
-                            text : 'cpu与内存使用率'
+                            text : '硬盘使用率'
                         },
 
                         exporting: {
@@ -71,14 +73,14 @@
                         },
 
                         series : [{
-                            name : '网络入口流量',
+                            name : '磁盘写次数',
                             data : (function() {
                                 var data = []
-                                $.each(networkdata,function(index,obj){
+                                $.each(diskdata,function(index,obj){
                                     var date = parseInt(obj.logTime)*1000;
                                     data.push([
                                         date,
-                                        parseInt(obj.rxb)
+                                        parseInt(obj.writeTimes)
                                     ]);
                                 });
                                 return data;
@@ -90,17 +92,17 @@
                             },
                             tooltip:{
                                 valueDecimals:1,
-                                valueSuffix:'byte/s'
+                                valueSuffix:'次/s'
                             }
                         },{
-                            name : '网络出口流量',
+                            name : '硬盘读次数',
                             data : (function() {
                                 var data = []
-                                $.each(networkdata,function(index,obj){
+                                $.each(diskdata,function(index,obj){
                                     var date = parseInt(obj.logTime)*1000;
                                     data.push([
                                         date,
-                                        parseInt(obj.txb)
+                                        parseInt(obj.readTimes)
                                     ]);
                                 });
                                 return data;
@@ -112,7 +114,7 @@
                             },
                             tooltip:{
                                 valueDecimals:1,
-                                valueSuffix:'byte/s'
+                                valueSuffix:'次/s'
                             }
                         }]
                     });
