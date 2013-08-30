@@ -21,6 +21,18 @@ import com.ksyun.vm.utils.enumeration.EnumResult;
 public class JsonMaker {
 
 
+    public static String getVNC(String instanceId) throws IOException {
+        String requestStr = Constants.getPropertyValue(InitConst.VNC);
+        Map<String, String> header = new HashMap<String, String>();
+        header.put("X-Auth-Token",HttpUtils.getAdminToken());
+        header.put("Content-Type", "application/json");
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("instance_id",instanceId);
+        String requestBody = JSON.toJSONString(map);
+        String resultJson = HttpUtils.getPostResponseData(requestStr,requestBody, header);
+        return resultJson;
+    }
+
     //创建虚拟机
     public static String createVm(String tenantId, String userId, String name, String imageRef, String count, String securityGroups, String adminPass, String isOnEbs, String zone, String vcpu, String network, String rootDisk, String ram) throws HttpException, IOException {
         String requestStr = Constants.getPropertyValue(InitConst.CREATEVM, tenantId);

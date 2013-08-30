@@ -38,11 +38,28 @@
     function chart_status(id){
         window.location.href="/g/chart/status/"+id;
     }
+    function vnc(instanceId){
+        $("#vncDialog").dialog({
+            autoOpen: false,
+            postion: "center",
+            height:"450",
+            width:"550",
+            modal: true
+        });
+        $.ajax({
+            url:"/g/vnc/"+instanceId,
+            dataType:"json",
+            success:function(data){
+                window.open(data.url);
+            }
+        })
+    }
  </script>
 </head>
 <body class="main-body">
 <div class="path"><p>当前位置：机器管理<span>&gt;</span><a href="/g/zonelist">zone列表</a><span>&gt;</span><a href="javascript:history.go(-1)">host列表</a><span>&gt;</span>vm列表</p></div>
-
+<div id="vncDialog" title="vnc" style="display:none">
+</div>
 <div class="main-cont">
     <h3 class="title">vm列表
     </h3>
@@ -84,7 +101,8 @@
 						<td>${vm.name} </td>
 						<td>${vm.OS_EXT_SRV_ATTR_host} </td>
                         <td>${vm.tenant_id} </td>
-						<td><button onclick="detail('${status.count}')">详情</button></td>
+						<td><button onclick="detail('${status.count}')">详情</button>
+                            <button onclick="vnc('${vm.id}')">登陆机器</button></td>
 						<td><button onclick="chart_load('${vm.id}')">查看cpu内存</button>
                             <button onclick="chart_network('${vm.id}')">查看网络</button>
                             <button onclick="chart_disk('${vm.id}')">查看硬盘</button>

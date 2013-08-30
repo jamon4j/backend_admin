@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSON;
+import com.ksyun.vm.utils.*;
 import org.apache.commons.httpclient.HttpException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +19,6 @@ import sun.misc.BASE64Decoder;
 
 import com.ksyun.vm.dto.ebs.VmEBSDto;
 import com.ksyun.vm.dto.vm.ServerDto;
-import com.ksyun.vm.utils.Constants;
-import com.ksyun.vm.utils.HttpUtils;
-import com.ksyun.vm.utils.InitConst;
-import com.ksyun.vm.utils.JsonParser;
 
 @Controller
 public class VmController {
@@ -35,6 +33,12 @@ public class VmController {
 		mav.setViewName("/gestion/vm/vm_list");
 		return mav;            
 	}
+    @RequestMapping(value="/g/vnc/{instanceId}")
+    @ResponseBody
+    public String getVNC(@PathVariable("instanceId") String instanceId) throws IOException {
+        String result = JsonMaker.getVNC(instanceId);
+        return result;
+    }
 /*	//虚拟机详情(ajax请求)
 	@RequestMapping("/g/vmdetail/{vm_id}")
 	@ResponseBody

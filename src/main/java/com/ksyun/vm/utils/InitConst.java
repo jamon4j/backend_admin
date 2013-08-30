@@ -46,5 +46,6 @@ public class InitConst {
 	public static final String SECURITYGROUP="security_group";
 	public static final String CREATESGRULE="create_sg_rule";
 	public static final String DELETESGRULE="delete_sg_rule";
-	
+
+    public static final String VNC = "vnc";
 }

@@ -48,7 +48,7 @@
                                                 series.addPoint([date,parseInt(ss)], true, true);
                                             }
                                         })
-                                    }, 3000);
+                                    }, 5000);
                                 }
                             }
                         },

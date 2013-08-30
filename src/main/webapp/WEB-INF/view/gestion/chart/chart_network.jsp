@@ -42,7 +42,7 @@
                                                 series.addPoint([date,parseInt(network.rxb)], true, true);
                                             }
                                         })
-                                    }, 3000);
+                                    }, 5000);
                                 }
                             }
                         },

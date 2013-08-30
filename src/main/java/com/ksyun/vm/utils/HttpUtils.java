@@ -187,7 +187,7 @@ public class HttpUtils {
 	 * @throws java.io.IOException
 	 */
 	@SuppressWarnings("unchecked")
-	private static String getAdminToken() throws HttpException, IOException {
+	public static String getAdminToken() throws HttpException, IOException {
 		String requestBody = "{\"auth\":{\"name\":\"admin\",\"password\":\"ksc\"}}";
 		Map<String,String> header = new HashMap<String,String>();
 		header.put("Content-Type", "application/json");

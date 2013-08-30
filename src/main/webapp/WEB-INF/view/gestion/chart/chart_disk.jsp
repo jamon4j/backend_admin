@@ -42,7 +42,7 @@
                                                 series.addPoint([date,parseInt(disk.writeTimes)], true, true);
                                             }
                                         })
-                                    }, 3000);
+                                    }, 5000);
                                 }
                             }
                         },
