@@ -1,8 +1,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link type="text/css" rel="stylesheet" href="http://tcg0.hongtium.com/static/css/admin/admin.css" media="screen"/>
-<script type="text/javascript" src="http://tcg0.hongtium.com/static/js/jquery.min.js"></script>
-<script type="text/javascript" src="http://tcg0.hongtium.com/static/js/admin/admin.js"></script>
-<script type="text/javascript" src="http://tcg0.hongtium.com/static/js/admin-all.js"></script>
+<link type="text/css" rel="stylesheet" href="/js/frame/admin.css" media="screen"/>
+<script type="text/javascript" src="/js/frame/jquery.min.js"></script>
+<script type="text/javascript" src="/js/frame/admin.js"></script>
+<script type="text/javascript" src="/js/frame/admin-all.js"></script>
 
 <%
 	String webRootPath = request.getScheme() + "://" 

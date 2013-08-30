@@ -254,8 +254,13 @@
 										ram:create_ram.val(),
 										adminPass:create_adminPass.val()},
 								success : function(data) {
+									if(data == "failed"){
+										alert("创建虚拟机失败!");
+										window.location.href="/g/user/vmlist/"+tenantid+"/"+userid;
+										return;
+									}
 									var jsonobj=eval('('+data+')');
-									window.location.href="/g/user/vmlist/"+tenantid+"/"+userid+"/"+jsonobj.id;
+									window.location.href="/g/user/vmlist/"+tenantid+"/"+userid;
 								},
 								error : function(XMLHttpRequest,textStatus,errorThrown) {
 									alert("创建虚拟机失败!");
@@ -342,17 +347,6 @@
                 }
             });
             $( "#create_root_disk" ).val($( "#slider-range-min" ).slider( "value" ));
-            $.ajax({
-                url:"/g/user/ebslist/${tenantid}/${userid}",
-                dataType:'json',
-                success:function(data){
-                    $.each(data,function(index,val){
-                        if(val.status!="in-use"){
-                            $("#setebs").append("<option value='"+val.id+"'>"+val.name+"</option>");
-                        }
-                    });
-                }
-            });
 	   	});
 	   	function ebslist(tenantid,vmid){
 	   		window.location.href="/g/vm_ebs/"+tenantid+"/${userid}/"+vmid;
@@ -384,6 +378,17 @@
 					}
 				}
 	   		});
+	   		$.ajax({
+	   			url:"/g/user/ebslist/${tenantid}/${userid}",
+	   			dataType:'json',
+	   			success:function(data){
+	   				$.each(data,function(index,val){
+                        if(val.status!="in-use"){
+	   					    $("#setebs").append("<option value='"+val.id+"'>"+val.name+"</option>");
+                        }
+	   				});
+	   			}
+	   		});
 	   		$("#setebs_dialog").dialog("open");
 	   	}
  	</script>
@@ -405,17 +410,14 @@
             	<th width="7%">
             		<div class="th-gap"><input name="vm_list_all" type="checkbox" onclick="selectAll(this.checked)"/></div>
             	</th>
-                <th width="15%">
+                <th width="25%">
                     <div class="th-gap">虚拟机id</div>
                 </th>
                 <th width="7%">
                     <div class="th-gap">状态</div>
                 </th>	
-                <th width="10%">
+                <th width="12%">
                     <div class="th-gap">name</div>
-                </th>
-                <th width="10%">
-                    <div class="th-gap">ip</div>
                 </th>
                 <th width="10%">
                     <div class="th-gap">所属物理机</div>
@@ -423,10 +425,10 @@
                  <th width="8%">
                     <div class="th-gap">详情</div>
                 </th>
-                 <th width="8%">
+                 <th >
                     <div class="th-gap">创建系统快照</div>
                 </th>
-                <th width="12%">
+                <th width="22%">
                     <div class="th-gap">操作ebs</div>
                 </th>
             </tr>
@@ -438,16 +440,6 @@
 						<td>${vm.id} </td>
 						<td>${vm.status} </td>
 						<td>${vm.name} </td>
-                        <td><p>public_ip_address: </p>
-                            <c:forEach var="public_address" items="${vm.addresses.publicAddress}" varStatus="status">
-                                <p>&nbsp;&nbsp;version: ${public_address.version}</p>
-                                <p>&nbsp;&nbsp;address: ${public_address.addr}</p>
-                            </c:forEach>
-                            <p>private_ip_address: </p>
-                            <c:forEach var="private_address" items="${vm.addresses.privateAddress}" varStatus="status">
-                                <p>&nbsp;&nbsp;version: ${private_address.version}</p>
-                                <p>&nbsp;&nbsp;address: ${private_address.addr}</p>
-                            </c:forEach></td>
 						<td>${vm.OS_EXT_SRV_ATTR_host} </td>
 						<td><button onclick="detail('${vm.id}')">详情</button></td>
 						<td><button onclick="createsnapshot('<%=tenantId %>','<%=userId %>','${vm.id}')">创建</button></td>
