@@ -50,7 +50,7 @@
             url:"/g/vnc/"+instanceId,
             dataType:"json",
             success:function(data){
-                window.open(data.url,'VNC','height=400,width=600');
+                window.open(data.url,instanceId,'height=600,width=800');
             }
         })
     }
