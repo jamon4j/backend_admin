@@ -24,6 +24,34 @@
 	</style>
    	<script language="javascript">
    		var j = jQuery.noConflict(true);
+        function chart_load(id){
+            window.location.href="/g/chart/load/"+id;
+        }
+        function chart_disk(id){
+            window.location.href="/g/chart/disk/"+id;
+        }
+        function chart_network(id){
+            window.location.href="/g/chart/network/"+id;
+        }
+        function chart_status(id){
+            window.location.href="/g/chart/status/"+id;
+        }
+        function vnc(instanceId){
+            $("#vncDialog").dialog({
+                autoOpen: false,
+                postion: "center",
+                height:"450",
+                width:"550",
+                modal: true
+            });
+            $.ajax({
+                url:"/g/vnc/"+instanceId,
+                dataType:"json",
+                success:function(data){
+                    window.open(data.url,instanceId,'height=600,width=800');
+                }
+            })
+        }
    		function checknull( tips, o, n ) {
 			if ( o.val() == null || o.val() == "" ) {
 				alert( n + " 不能为空!!!" );
@@ -431,6 +459,9 @@
                 <th width="22%">
                     <div class="th-gap">操作ebs</div>
                 </th>
+                <th width="12%">
+                    <div class="th-gap">状态查看</div>
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -444,7 +475,13 @@
 						<td><button onclick="detail('${vm.id}')">详情</button></td>
 						<td><button onclick="createsnapshot('<%=tenantId %>','<%=userId %>','${vm.id}')">创建</button></td>
 						<td><button onclick="ebslist('${vm.tenant_id}','${vm.id}')">查看ebs列表</button><button onclick="setEBS('${vm.tenant_id}','${vm.id}')">关联ebs</button></td>
-						<div id="vm_dialog_${vm.id}" title="vm_${vm.id}详情" style="display:none">
+						<td><button onclick="chart_load('${vm.id}')">查看cpu及内存</button>
+                            <button onclick="chart_network('${vm.id}')">查看网络</button>
+                            <button onclick="chart_status('${vm.id}')">查看状态</button>
+                            <button onclick="chart_disk('${vm.id}')">查看硬盘</button>
+                            <button onclick="vnc('${vm.id}')">登陆机器</button>
+                        </td>
+                        <div id="vm_dialog_${vm.id}" title="vm_${vm.id}详情" style="display:none">
 							<p>status: ${vm.status}</p>
 							<p>updated: ${vm.updated}</p>
 							<p>OS-EXT-SRV-ATTR:host: ${vm.OS_EXT_SRV_ATTR_host}</p>

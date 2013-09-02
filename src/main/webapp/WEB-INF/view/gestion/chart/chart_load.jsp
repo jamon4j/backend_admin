@@ -115,7 +115,24 @@
                                 valueDecimals:1,
                                 valueSuffix:'%'
                             }
-                        }]
+                        }],
+                        credits: {
+                            enabled: true,
+                            text: 'KSYUN.COM',
+                            href: 'http://KSYUN.COM',
+                            position: {
+                                align: 'right',
+                                x: -10,
+                                verticalAlign: 'bottom',
+                                y: -5
+                            },
+                            style: {
+                                cursor: 'pointer',
+                                color: '#909090',
+                                fontSize: '9px'
+                            }
+                        }
+
                     });
                 }
             });
@@ -125,5 +142,8 @@
 <body>
 <div id="warn"></div>
 <div id="container" style="height: 500px; min-width: 500px"></div>
+<div><a href="/g/chart/disk/${vmuuid}">查看硬盘</a>
+    <a href="/g/chart/network/${vmuuid}">查看网络</a>
+    <a href="/g/chart/status/${vmuuid}">查看状态</a></div>
 </body>
 </html>
