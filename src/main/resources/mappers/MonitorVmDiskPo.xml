@@ -5,13 +5,14 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="vm_uuid" jdbcType="VARCHAR" property="vmUuid" />
     <result column="vm_name" jdbcType="VARCHAR" property="vmName" />
+    <result column="disk" jdbcType="VARCHAR" property="disk" />
     <result column="read_times" jdbcType="VARCHAR" property="readTimes" />
     <result column="write_times" jdbcType="VARCHAR" property="writeTimes" />
     <result column="log_time" jdbcType="VARCHAR" property="logTime" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, vm_uuid, vm_name, read_times, write_times, log_time
+    id, vm_uuid, vm_name, disk ,read_times, write_times, log_time
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -71,6 +72,7 @@
         <include refid="Base_Column_List" />
         from monitor_vm_disk
         where vm_uuid=#{vmUuid}
+        and disk=#{disk}
         order by log_time desc limit 1;
     </select>
     <select id="getVmDiskByTime" resultMap="BaseResultMap" >

@@ -25,114 +25,117 @@
                     if(diskdata==""||diskdata==null){
                         $("#warn").text("没有数据");
                     }
-                    $('#container').highcharts('StockChart', {
-                        chart : {
-                            events : {
-                                load : function() {
+                    $.each(diskdata,function(key,value){
+                        $("<div id='"+key+"' style='height: 500px; min-width: 500px'></div>").insertAfter("#warn");
+                        $('#'+key).highcharts('StockChart', {
+                            chart : {
+                                events : {
+                                    load : function() {
 
-                                    var series = this.series[0];
-                                    var series1 = this.series[1];
-                                    setInterval(function() {
-                                        $.ajax({
-                                            url:"/g/chart/${vmuuid}/getDisk",
-                                            dataType:"json",
-                                            success:function(disk){
-                                                var date = parseInt(disk.logTime)*1000;
-                                                series1.addPoint([date, parseInt(disk.readTimes)], true, true);
-                                                series.addPoint([date,parseInt(disk.writeTimes)], true, true);
-                                            }
-                                        })
-                                    }, 5000);
+                                        var series = this.series[0];
+                                        var series1 = this.series[1];
+                                        setInterval(function() {
+                                            $.ajax({
+                                                url:"/g/chart/${vmuuid}/getDisk/"+key,
+                                                dataType:"json",
+                                                success:function(disk){
+                                                    var date = parseInt(disk.logTime)*1000;
+                                                    series1.addPoint([date, parseInt(disk.readTimes)], true, true);
+                                                    series.addPoint([date,parseInt(disk.writeTimes)], true, true);
+                                                }
+                                            })
+                                        }, 5000);
+                                    }
+                                }
+                            },
+
+                            rangeSelector: {
+                                buttons: [{
+                                    count: 10,
+                                    type: 'minute',
+                                    text: '10M'
+                                }, {
+                                    count: 30,
+                                    type: 'minute',
+                                    text: '30M'
+                                }, {
+                                    type: 'all',
+                                    text: 'All'
+                                }],
+                                inputEnabled: false,
+                                selected: 0
+                            },
+
+                            title : {
+                                text : '硬盘使用率'+key
+                            },
+
+                            exporting: {
+                                enabled: false
+                            },
+
+                            series : [{
+                                name : '磁盘写次数',
+                                data : (function() {
+                                    var data = []
+                                    $.each(value,function(index,obj){
+                                        var date = parseInt(obj.logTime)*1000;
+                                        data.push([
+                                            date,
+                                            parseInt(obj.writeTimes)
+                                        ]);
+                                    });
+                                    return data;
+                                })(),
+                                shadow:true,
+                                marker : {
+                                    enabled : true,
+                                    radius : 3
+                                },
+                                tooltip:{
+                                    valueDecimals:1,
+                                    valueSuffix:'次/s'
+                                }
+                            },{
+                                name : '硬盘读次数',
+                                data : (function() {
+                                    var data = []
+                                    $.each(value,function(index,obj){
+                                        var date = parseInt(obj.logTime)*1000;
+                                        data.push([
+                                            date,
+                                            parseInt(obj.readTimes)
+                                        ]);
+                                    });
+                                    return data;
+                                })(),
+                                shadow:true,
+                                marker : {
+                                    enabled : true,
+                                    radius : 3
+                                },
+                                tooltip:{
+                                    valueDecimals:1,
+                                    valueSuffix:'次/s'
+                                }
+                            }],
+                            credits: {
+                                enabled: true,
+                                text: 'KSYUN.COM',
+                                href: 'http://KSYUN.COM',
+                                position: {
+                                    align: 'right',
+                                    x: -10,
+                                    verticalAlign: 'bottom',
+                                    y: -5
+                                },
+                                style: {
+                                    cursor: 'pointer',
+                                    color: '#909090',
+                                    fontSize: '9px'
                                 }
                             }
-                        },
-
-                        rangeSelector: {
-                            buttons: [{
-                                count: 10,
-                                type: 'minute',
-                                text: '10M'
-                            }, {
-                                count: 30,
-                                type: 'minute',
-                                text: '30M'
-                            }, {
-                                type: 'all',
-                                text: 'All'
-                            }],
-                            inputEnabled: false,
-                            selected: 0
-                        },
-
-                        title : {
-                            text : '硬盘使用率'
-                        },
-
-                        exporting: {
-                            enabled: false
-                        },
-
-                        series : [{
-                            name : '磁盘写次数',
-                            data : (function() {
-                                var data = []
-                                $.each(diskdata,function(index,obj){
-                                    var date = parseInt(obj.logTime)*1000;
-                                    data.push([
-                                        date,
-                                        parseInt(obj.writeTimes)
-                                    ]);
-                                });
-                                return data;
-                            })(),
-                            shadow:true,
-                            marker : {
-                                enabled : true,
-                                radius : 3
-                            },
-                            tooltip:{
-                                valueDecimals:1,
-                                valueSuffix:'次/s'
-                            }
-                        },{
-                            name : '硬盘读次数',
-                            data : (function() {
-                                var data = []
-                                $.each(diskdata,function(index,obj){
-                                    var date = parseInt(obj.logTime)*1000;
-                                    data.push([
-                                        date,
-                                        parseInt(obj.readTimes)
-                                    ]);
-                                });
-                                return data;
-                            })(),
-                            shadow:true,
-                            marker : {
-                                enabled : true,
-                                radius : 3
-                            },
-                            tooltip:{
-                                valueDecimals:1,
-                                valueSuffix:'次/s'
-                            }
-                        }],
-                        credits: {
-                            enabled: true,
-                            text: 'KSYUN.COM',
-                            href: 'http://KSYUN.COM',
-                            position: {
-                                align: 'right',
-                                x: -10,
-                                verticalAlign: 'bottom',
-                                y: -5
-                            },
-                            style: {
-                                cursor: 'pointer',
-                                color: '#909090',
-                                fontSize: '9px'
-                            }
-                        }
+                        });
                     });
                 }
             });

@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: liuchuandong
@@ -59,13 +62,22 @@ public class ChartController {
     @ResponseBody
     public String initDisk(@PathVariable("id")String vmuuid){
         List<MonitorVmDiskPo> poList = chartService.getDiskThreeDaysAgo(vmuuid);
-        String result = JSONArray.toJSONString(poList);
+        Map<String,List<MonitorVmDiskPo>> map = new HashMap<String,List<MonitorVmDiskPo>>();
+        for(MonitorVmDiskPo po:poList){
+            List<MonitorVmDiskPo> tmp = new ArrayList<MonitorVmDiskPo>();
+            if(map.containsKey(po.getDisk())){
+                tmp = map.get(po.getDisk());
+            }
+            tmp.add(po);
+            map.put(po.getDisk(),tmp);
+        }
+        String result = JSONObject.toJSONString(map);
         return result;
     }
-    @RequestMapping(value = "/g/chart/{id}/getDisk")
+    @RequestMapping(value = "/g/chart/{id}/getDisk/${disk}")
     @ResponseBody
-    public String getDisk(@PathVariable("id")String vmuuid){
-        MonitorVmDiskPo network = chartService.getDisk(vmuuid);
+    public String getDisk(@PathVariable("id")String vmuuid,@PathVariable("disk")String disk){
+        MonitorVmDiskPo network = chartService.getDisk(vmuuid,disk);
         String result = JSONObject.toJSONString(network);
         return result;
     }
@@ -101,13 +113,22 @@ public class ChartController {
     @ResponseBody
     public String initNetwork(@PathVariable("id")String vmuuid){
         List<MonitorVmNetworkPo> poList = chartService.getNetworkThreeDaysAgo(vmuuid);
-        String result = JSONArray.toJSONString(poList);
+        Map<String,List<MonitorVmNetworkPo>> map = new HashMap<String,List<MonitorVmNetworkPo>>();
+        for(MonitorVmNetworkPo po:poList){
+            List<MonitorVmNetworkPo> tmp = new ArrayList<MonitorVmNetworkPo>();
+            if(map.containsKey(po.getMac())){
+                tmp = map.get(po.getMac());
+            }
+            tmp.add(po);
+            map.put(po.getMac(),tmp);
+        }
+        String result = JSONObject.toJSONString(map);
         return result;
     }
-    @RequestMapping(value = "/g/chart/{id}/getNetwork")
+    @RequestMapping(value = "/g/chart/{id}/getNetwork/{mac}")
     @ResponseBody
-    public String getNetwork(@PathVariable("id")String vmuuid){
-        MonitorVmNetworkPo network = chartService.getNetwork(vmuuid);
+    public String getNetwork(@PathVariable("id")String vmuuid,@PathVariable("mac")String mac){
+        MonitorVmNetworkPo network = chartService.getNetwork(vmuuid,mac);
         String result = JSONObject.toJSONString(network);
         return result;
     }

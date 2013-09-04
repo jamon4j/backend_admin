@@ -10,16 +10,19 @@ import java.util.Map;
 
 @Repository
 public class MonitorVmNetworkDao<MonitorVmNetworkPo> extends BaseDao<MonitorVmNetworkPo,Integer> {
-    @SuppressWarnings("unchecked")
-	public List<MonitorVmNetworkPo> getLatestVmNetworkData(){
+
+    public List<MonitorVmNetworkPo> getLatestVmNetworkData(){
 		List<MonitorVmNetworkPo> list = (List<MonitorVmNetworkPo>)sqlSession.selectList(nameSpace + ".getLatestVmNetworkData");
 		if(list == null || list.isEmpty()){
 			return new ArrayList<MonitorVmNetworkPo>();
 		}
 		return list;
     }
-    public MonitorVmNetworkPo getLastestVmNetwork(String vmuuid){
-        MonitorVmNetworkPo po = sqlSession.selectOne(nameSpace+".getLatestVmNetwork",vmuuid);
+    public MonitorVmNetworkPo getLastestVmNetwork(String vmuuid,String mac){
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("vmUuid",vmuuid);
+        map.put("mac",mac);
+        MonitorVmNetworkPo po = sqlSession.selectOne(nameSpace+".getLatestVmNetwork",map);
         return po;
     }
 
