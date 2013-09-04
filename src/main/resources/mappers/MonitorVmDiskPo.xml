@@ -64,7 +64,7 @@
   <select id="getLatestVmDiskData" resultMap="BaseResultMap" >
   	SELECT 
 	<include refid="Base_Column_List" />
- FROM (SELECT * FROM `monitor_vm_disk` ORDER BY `log_time` DESC) `temp`  GROUP BY vm_uuid ORDER BY `log_time` DESC;
+ FROM (SELECT * FROM `monitor_vm_disk` where log_time>(UNIX_TIMESTAMP(NOW())-3600*24) ORDER BY `log_time` DESC) `temp`  GROUP BY vm_uuid ORDER BY `log_time` DESC;
   </select>
     <select id="getLatestVmDisk" resultMap="BaseResultMap" >
         select
