@@ -66,7 +66,7 @@
     <select id="getLatestVmLoadData" resultMap="BaseResultMap" >
   	SELECT 
 	<include refid="Base_Column_List" />
- FROM (SELECT * FROM `monitor_vm_load` ORDER BY `log_time` DESC) `temp`  GROUP BY vm_uuid ORDER BY `log_time` DESC;
+ FROM (SELECT * FROM `monitor_vm_load` where log_time>(UNIX_TIMESTAMP(NOW())-3600*24) ORDER BY `log_time` DESC) `temp`  GROUP BY vm_uuid ORDER BY `log_time` DESC;
   </select>
     <select id="getLatestVmLoad" resultMap="BaseResultMap" >
         select

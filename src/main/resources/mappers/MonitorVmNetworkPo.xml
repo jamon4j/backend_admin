@@ -78,7 +78,7 @@
       <select id="getLatestVmNetworkData" resultMap="BaseResultMap" >
   	SELECT 
 	<include refid="Base_Column_List" />
-	FROM (SELECT * FROM `monitor_vm_network` ORDER BY `log_time` DESC) `temp`  GROUP BY vm_uuid ORDER BY `log_time` DESC;
+	FROM (SELECT * FROM `monitor_vm_network` where log_time>(UNIX_TIMESTAMP(NOW())-3600*24) ORDER BY `log_time` DESC) `temp`  GROUP BY vm_uuid ORDER BY `log_time` DESC;
   </select>
     <select id="getLatestVmNetwork" resultMap="BaseResultMap" >
         select <include refid="Base_Column_List" />

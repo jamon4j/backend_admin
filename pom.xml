@@ -5,18 +5,6 @@
 	<artifactId>mvn_vm_web</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 	<distributionManagement>
 		<repository>
 			<id>repo</id>
@@ -252,5 +240,72 @@
 			<artifactId>cglib-nodep</artifactId>
 			<version>2.1_3</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
+		</dependency>
 	</dependencies>
+	<build>
+		<outputDirectory>
+			${basedir}/src/main/webapp/WEB-INF/classes
+		</outputDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<projectnatures>
+						<java.lang.String>
+							com.genuitec.eclipse.j2eedt.core.webnature
+						</java.lang.String>
+						<java.lang.String>
+							org.eclipse.jdt.core.javanature
+						</java.lang.String>
+					</projectnatures>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${basedir}/src/main/webapp/WEB-INF/classes/
+							</outputDirectory>
+							<resources>
+								<resource>
+									<directory>
+										src/main/resources
+									</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
