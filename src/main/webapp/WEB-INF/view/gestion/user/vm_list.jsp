@@ -438,7 +438,7 @@
             	<th width="7%">
             		<div class="th-gap"><input name="vm_list_all" type="checkbox" onclick="selectAll(this.checked)"/></div>
             	</th>
-                <th width="25%">
+                <th width="10%">
                     <div class="th-gap">虚拟机id</div>
                 </th>
                 <th width="7%">

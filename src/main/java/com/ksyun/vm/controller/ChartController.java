@@ -74,7 +74,7 @@ public class ChartController {
         String result = JSONObject.toJSONString(map);
         return result;
     }
-    @RequestMapping(value = "/g/chart/{id}/getDisk/${disk}")
+    @RequestMapping(value = "/g/chart/{id}/getDisk/{disk}")
     @ResponseBody
     public String getDisk(@PathVariable("id")String vmuuid,@PathVariable("disk")String disk){
         MonitorVmDiskPo network = chartService.getDisk(vmuuid,disk);
