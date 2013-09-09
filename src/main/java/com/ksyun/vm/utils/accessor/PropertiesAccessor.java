@@ -102,11 +102,6 @@ public class PropertiesAccessor implements Accessor<String, String> {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.aipi.content.core.Accesser#getKeys()
-	 */
 	public String[] getKeys() {
 		List<String> keysList = new ArrayList<String>();
 
@@ -118,30 +113,14 @@ public class PropertiesAccessor implements Accessor<String, String> {
 		return keysList.toArray(new String[keysList.size()]);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.aipi.content.core.Accesser#getValue(java.lang.Object)
-	 */
 	public String getValue(String key) {
 		return properties.getProperty(key);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.aipi.content.core.Accesser#remove(java.lang.Object)
-	 */
 	public String remove(String key) {
 		return (String) properties.remove(key);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.aipi.content.core.Accesser#setValue(java.lang.Object,
-	 * java.lang.Object)
-	 */
 	public String setValue(String key, String value) {
 		if (!isOverride && properties.containsKey(key)) {
 			String originalVal = properties.getProperty(key);
@@ -151,12 +130,6 @@ public class PropertiesAccessor implements Accessor<String, String> {
 		return (String) properties.put(key, value);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.aipi.channel.core.accessor.Accessor#getValue(java.lang.Object,
-	 * java.lang.Object[])
-	 */
 	public String getValue(String key, Object... arguments) {
 		String value = getValue(key);
 		if (value == null) {
