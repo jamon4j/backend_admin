@@ -25,15 +25,14 @@
                         您现在访问的是<b style="color:red;">公有云</b>,请小心使用!
                     </c:if>
                     <c:if test="${type=='private'}">
-                        您现在访问的是<b style="color:yellow;">私有云</b>,请小心使用!
+                        您现在访问的是<b style="color:orange;">私有云</b>,请小心使用!
                     </c:if>
                     <c:if test="${type=='test'}">
-                        您现在访问的是<b style="color:green;">测试环境</b>,请放心使用!
+                        您现在访问的是<b style="color:green;">测试环境</b>,请玩命造吧!
                     </c:if>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
