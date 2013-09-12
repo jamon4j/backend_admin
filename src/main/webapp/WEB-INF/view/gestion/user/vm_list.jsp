@@ -438,7 +438,7 @@
             	<th width="7%">
             		<div class="th-gap"><input name="vm_list_all" type="checkbox" onclick="selectAll(this.checked)"/></div>
             	</th>
-                <th width="25%">
+                <th width="10%">
                     <div class="th-gap">虚拟机id</div>
                 </th>
                 <th width="7%">
@@ -459,6 +459,9 @@
                 <th width="22%">
                     <div class="th-gap">操作ebs</div>
                 </th>
+                <th width="5%">
+                    <div class="th-gap">迁移</div>
+                </th>
                 <th width="12%">
                     <div class="th-gap">状态查看</div>
                 </th>
@@ -475,6 +478,7 @@
 						<td><button onclick="detail('${vm.id}')">详情</button></td>
 						<td><button onclick="createsnapshot('<%=tenantId %>','<%=userId %>','${vm.id}')">创建</button></td>
 						<td><button onclick="ebslist('${vm.tenant_id}','${vm.id}')">查看ebs列表</button><button onclick="setEBS('${vm.tenant_id}','${vm.id}')">关联ebs</button></td>
+						<td><button onclick="detail('${vm.id}')">迁移</button></td>
 						<td><button onclick="chart_load('${vm.id}')">查看cpu及内存</button>
                             <button onclick="chart_network('${vm.id}')">查看网络</button>
                             <button onclick="chart_status('${vm.id}')">查看状态</button>
