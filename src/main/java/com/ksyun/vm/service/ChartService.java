@@ -39,12 +39,12 @@ public class ChartService {
         return (MonitorVmLoadPo) monitorVmLoadDao.getLastestVmLoad(vmuuid);
     }
 
-    public MonitorVmDiskPo getDisk(String vmuuid){
-        return (MonitorVmDiskPo) monitorVmDiskDao.getLastestVmDisk(vmuuid);
+    public MonitorVmDiskPo getDisk(String vmuuid,String disk){
+        return (MonitorVmDiskPo) monitorVmDiskDao.getLastestVmDisk(vmuuid,disk);
     }
 
-    public MonitorVmNetworkPo getNetwork(String vmuuid){
-        return (MonitorVmNetworkPo) monitorVmNetworkDao.getLastestVmNetwork(vmuuid);
+    public MonitorVmNetworkPo getNetwork(String vmuuid,String mac){
+        return (MonitorVmNetworkPo) monitorVmNetworkDao.getLastestVmNetwork(vmuuid,mac);
     }
 
     public MonitorVmStatusFlowPo getStatus(String vmuuid){
@@ -53,28 +53,28 @@ public class ChartService {
 
     public List<MonitorVmLoadPo> getLoadThreeDaysAgo(String vmuuid){
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE,-3);
+        c.add(Calendar.DATE,-1);
         long time = c.getTimeInMillis()/1000;
         return monitorVmLoadDao.getVmLoadByTime(vmuuid,time+"");
     }
 
     public List<MonitorVmNetworkPo> getNetworkThreeDaysAgo(String vmuuid) {
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE,-3);
+        c.add(Calendar.DATE,-1);
         long time = c.getTimeInMillis()/1000;
         return monitorVmNetworkDao.getVmNetworkByTime(vmuuid,time+"");
     }
 
     public List<MonitorVmDiskPo> getDiskThreeDaysAgo(String vmuuid) {
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE,-3);
+        c.add(Calendar.DATE,-1);
         long time = c.getTimeInMillis()/1000;
         return monitorVmDiskDao.getVmDiskByTime(vmuuid,time+"");
     }
 
     public List<MonitorVmStatusFlowPo> getStatusFlowThreeDaysAgo(String vmuuid) {
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE,-3);
+        c.add(Calendar.DATE,-1);
         long time = c.getTimeInMillis()/1000;
         return monitorVmStatusFlowDao.getVmStatusFlowByTime(vmuuid,time+"");
     }

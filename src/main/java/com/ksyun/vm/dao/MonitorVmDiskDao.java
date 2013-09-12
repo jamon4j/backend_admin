@@ -17,8 +17,11 @@ public class MonitorVmDiskDao<MonitorVmDiskPo> extends BaseDao<MonitorVmDiskPo,I
 		}
 		return list;
     }
-    public MonitorVmDiskPo getLastestVmDisk(String vmuuid){
-        MonitorVmDiskPo po = sqlSession.selectOne(nameSpace+".getLatestVmDisk",vmuuid);
+    public MonitorVmDiskPo getLastestVmDisk(String vmuuid,String disk){
+        Map<String,String> map = new HashMap<String, String>();
+        map.put("vmUuid",vmuuid);
+        map.put("disk",disk);
+        MonitorVmDiskPo po = sqlSession.selectOne(nameSpace+".getLatestVmDisk",map);
         return po;
     }
     public List<MonitorVmDiskPo> getVmDiskByTime(String vmuuid,String log_time){

@@ -81,11 +81,9 @@
 	FROM (SELECT * FROM `monitor_vm_network` where log_time>(UNIX_TIMESTAMP(NOW())-3600*24) ORDER BY `log_time` DESC) `temp`  GROUP BY vm_uuid ORDER BY `log_time` DESC;
   </select>
     <select id="getLatestVmNetwork" resultMap="BaseResultMap" >
-        select
-        <include refid="Base_Column_List" />
+        select <include refid="Base_Column_List" />
         from monitor_vm_network
-        where vm_uuid=#{vmUuid}
-        order by log_time desc limit 1;
+        where vm_uuid=#{vmUuid} and mac=#{mac} order by log_time desc limit 1;
     </select>
     <select id="getVmNetworkByTime" resultMap="BaseResultMap" >
         select

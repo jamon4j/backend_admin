@@ -1,5 +1,6 @@
 package com.ksyun.vm.controller;
 
+import com.ksyun.vm.utils.Constants;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,7 +19,9 @@ public class GestionController {
     }
 
     @RequestMapping("/g/home")
-    public String adminHome(ModelAndView mav) throws IOException {
-        return "/gestion/home";
+    public ModelAndView adminHome(ModelAndView mav) throws IOException {
+        mav.addObject("type",Constants.getPropertyValue("sys.type"));
+        mav.setViewName("/gestion/home");
+        return mav;
     }
 }
