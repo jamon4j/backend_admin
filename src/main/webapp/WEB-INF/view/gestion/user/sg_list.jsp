@@ -13,17 +13,23 @@
 		div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 		.ui-dialog .ui-state-error { padding: .3em; }
 		.validateTips { border: 1px solid transparent; padding: 0.3em; }
+        ul#icons {margin: 0; padding: 0;}
+        ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+        ul#icons span.ui-icon {float: left; margin: 0 4px;}
 </style>
    	<%@include file="../inc/meta.jspf"%>
-   	<%
-		String tenantId = (String)request.getAttribute("tenantid");
-		String userId = (String)request.getAttribute("userid");
- 	%>
  	<script type="text/javascript" src="/js/kingsoft/vm_oper.js"></script>
     <title>安全组 - 安全组列表</title>
    	<script>
    	var j = jQuery.noConflict(true);
-   	//全选操作
+    $(function(){
+        $("li").hover(function(){
+            $(this).addClass("ui-state-hover");
+        },function(){
+            $(this).removeClass("ui-state-hover");
+        })
+    });
+    //全选操作
 	function selectAll(checked) {
 		var sgs = $("input[name='sg_list']");
 		if (sgs == 0) {
@@ -96,7 +102,7 @@
 								url : "/g/user/createsg/"+tenantId+"/"+userId,
 								data : {name:$("#create_name").val(),desc:$("#create_desc").val()},
 								success : function(data) {
-									if(data == "failed"){
+									if(data == "false"){
 										alert("创建安全组失败");
 										return;
 									}else{
@@ -151,7 +157,7 @@
 			url : "/g/user/deletesgs/"+tenantId+"/"+userId,
 			data : {sgids:sgids},
 			success : function(data) {
-				if(data == "failed"){
+				if(data == "false"){
 					alert("删除安全组失败");
 					return;
 				}else{
@@ -173,14 +179,21 @@
  </script>
 </head>
 <body class="main-body">
-<div class="path"><p>当前位置：安全组管理<span>&gt;</span>安全组列表</p></div>
+<div class="path"><p>当前位置：<a href="/g/user/list/1">用户信息</a><span>&gt;</span>安全组管理<span>&gt;</span>安全组列表</p></div>
 
 <div class="main-cont">
     <h3 class="title">安全组列表
     </h3>
 
-    <div class="set-area">
-        <p class="tips-desc">安全组列表<span><img onclick ="addsecuritygroup('<%=tenantId %>','<%=userId %>')" src="/img/add.jpg" alt="新增安全组" height="100%" width="20px" style="float:right;margin-right:100px;"/></span><span><img onclick="delsecuritygroup('<%=tenantId %>','<%=userId %>')" src="/img/delete.jpg" alt="编辑虚拟机" height="100%" width="20px" style="float:right;margin-right:20px;"/></span></p>
+    <div class="set-area">安全组列表
+        <ul id="icons" class="ui-widget ui-helper-clearfix" style="float: right;">
+            <li class="ui-state-default ui-corner-all" onclick="delsecuritygroup('${tenantid}','${userid}');">
+                <span class="ui-icon ui-icon-circle-minus"></span>
+            </li>
+            <li class="ui-state-default ui-corner-all" onclick="addsecuritygroup('${tenantid}','${userid}');">
+                <span class="ui-icon ui-icon-circle-plus"></span>
+            </li>
+        </ul>
         <table class="table" cellpadding="0" cellspacing="0" width="100%" border="0">
             <colgroup>
             </colgroup>
@@ -212,26 +225,25 @@
 						<td><input type="checkbox" name="sg_list" id="${dto.id}" value="${dto.id}"/></td>
 						<td>${dto.id} </td>
 						<td>${dto.name} </td>
-						<td>${dto.tenantId} </td>
+						<td>${dto.tenant_id} </td>
 						<td><button onclick="detail(${dto.id})">详情</button></td>
-						<td><button onclick="rules(${dto.id},'<%=tenantId %>','<%=userId %>')">查看</button></td>
+						<td><button onclick="rules(${dto.id},'${tenantid}','${userid}')">查看</button></td>
 						<div id="sg_dialog_${dto.id}" title="安全组${dto.id}详情" style="display:none">
 							<p>id:${dto.id}</p>
 							<p>name:${dto.name}</p>
 							<p>description:${dto.description}</p>
 							<c:forEach var="rule" items="${dto.rules}" varStatus="status">
-								<p>rule${rule.id}</p>
-								<p>&nbsp;&nbsp;from_port:${rule.fromPort}</p>
-								<p>&nbsp;&nbsp;ip_protocol:${rule.ipProtocol}</p>
-								<p>&nbsp;&nbsp;to_port:${rule.toPort}</p>
-								<p>&nbsp;&nbsp;parent_group_id:${rule.parentGroupId}</p>
+								<p>[rule==${rule.id}]</p>
+								<p>&nbsp;&nbsp;from_port:${rule.from_port}</p>
+								<p>&nbsp;&nbsp;ip_protocol:${rule.ip_protocol}</p>
+								<p>&nbsp;&nbsp;to_port:${rule.to_port}</p>
+								<p>&nbsp;&nbsp;parent_group_id:${rule.parent_group_id}</p>
 								<p>&nbsp;&nbsp;id:${rule.id}</p>
-								<p>&nbsp;&nbsp;ip_range:${rule.ipRange}</p>
+								<p>&nbsp;&nbsp;ip_range:${rule.ip_range.cidr}</p>
 							</c:forEach>
 						</div>
 					</tr>
 				</c:forEach>
-
             </tbody>
         </table>
     </div>
@@ -240,9 +252,9 @@
 	<p class="validateTips">安全组名称必填</p>
 	<form>
 		<fieldset>
-			<label for="name">安全组名称</label>
+			<label for="create_name">安全组名称</label>
 			<input type="text" name="name" id="create_name" value="" class="text ui-widget-content ui-corner-all" />
-			<label for="desc">安全组描述</label>
+			<label for="create_desc">安全组描述</label>
 			<input type="text" name="description" id="create_desc" value="" class="text ui-widget-content ui-corner-all" />
 		</fieldset>
 	</form>

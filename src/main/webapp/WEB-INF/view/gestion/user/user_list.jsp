@@ -13,12 +13,22 @@
 		div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 		.ui-dialog .ui-state-error { padding: .3em; }
 		.validateTips { border: 1px solid transparent; padding: 0.3em; }
+        ul#icons {margin: 0; padding: 0;}
+        ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+        ul#icons span.ui-icon {float: left; margin: 0 4px;}
 </style>
 <head>
    	<%@include file="../inc/meta.jspf"%>
     <title>用户 - 用户列表</title>
    	<script>
    	var j = jQuery.noConflict(true);
+    $(function(){
+       $("li").hover(function(){
+           $(this).addClass("ui-state-hover");
+       },function(){
+           $(this).removeClass("ui-state-hover");
+       })
+    });
    	function ebs_snapshot_list(tenantId, userId){
    		window.location.href="/g/user/ebs_snapshot_list/"+tenantId+"/"+userId;
    	}
@@ -66,9 +76,12 @@
 							$.ajax({
 								type: "POST",
 								url : "/g/user/createuser",
-								data : {name:$("#create_name").val()},
+								data : {
+                                    name:$("#create_name").val(),
+                                    email:$("#email").val()
+                                },
 								success : function(data) {
-									if(data.indexOf("token") != -1){
+									if(data=="true"){
 										alert("创建用户成功!");
 										window.location.href="/g/user/list/1";
 									}else{
@@ -76,6 +89,7 @@
 									}
 								},
 								error : function(XMLHttpRequest,textStatus,errorThrown) {
+                                    alert(errorThrown.toString());
 									alert("创建用户失败!");
 									alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
 									alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
@@ -105,8 +119,13 @@
     <h3 class="title">用户信息
     </h3>
 
-    <div class="set-area">
-        <p class="tips-desc">目前仅提供查看功能，其他功能请稍后。<img onclick ="adduser()" src="/img/add.jpg" alt="新增用户" height="100%" width="20px" style="float:right;margin-right:100px;"/></p>
+    <div class="set-area">目前仅提供查看功能，其他功能请稍后。
+        <ul id="icons" class="ui-widget ui-helper-clearfix" style="float: right;">
+            <li class="ui-state-default ui-corner-all" onclick="adduser();">
+                <span class="ui-icon ui-icon-circle-plus"></span>
+            </li>
+        </ul>
+
         <table class="table" cellpadding="0" cellspacing="0" width="100%" border="0">
             <colgroup>
             </colgroup>
@@ -173,8 +192,10 @@
 	<p class="validateTips">所有字段均必填</p>
 	<form>
 		<fieldset>
-			<label for="name">用户名(必填)</label>
+			<label for="create_name">用户名(必填)</label>
 			<input type="text" name="name" id="create_name" value="" class="text ui-widget-content ui-corner-all" />
+            <label for="email">邮箱(必填)</label>
+            <input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all" />
 		</fieldset>
 	</form>
 </div>
