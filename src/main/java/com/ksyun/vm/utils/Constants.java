@@ -7,7 +7,7 @@ public class Constants {
 	public static final Long DEFAULT_PAGEINDEX = 1L;
 	public static final Integer DEFAULT_PAGESIZE = 10;
 
-	private static PropertiesAccessor propertiesAccessor = AccessorFactory.createPropertiesAccessor(new String[]{"vm.properties","conf.properties"});
+	private static PropertiesAccessor propertiesAccessor = AccessorFactory.createPropertiesAccessor(new String[]{"api.properties","conf.properties"});
 
 	public static String getPropertyValue(String key) {
 		return propertiesAccessor.getValue(key);

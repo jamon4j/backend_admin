@@ -15,18 +15,22 @@
 		div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 		.ui-dialog .ui-state-error { padding: .3em; }
 		.validateTips { border: 1px solid transparent; padding: 0.3em; }
+        ul#icons {margin: 0; padding: 0;}
+        ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+        ul#icons span.ui-icon {float: left; margin: 0 4px;}
 	</style>
 <head>
     <%@include file="../inc/meta.jspf"%>
-    <%
-		String tenantId = (String)request.getAttribute("tenantid");
-		String userId = (String)request.getAttribute("userid");
-		String sgId = (String)request.getAttribute("sgid");
-		System.out.println(tenantId+ "  "+userId+" "+sgId);
- 	%>
     <title>安全组规则列表</title>
    	<script language="javascript">
    	var j = jQuery.noConflict(true);
+    $(function(){
+        $("li").hover(function(){
+            $(this).addClass("ui-state-hover");
+        },function(){
+            $(this).removeClass("ui-state-hover");
+        });
+    });
    	//全选操作
 	function selectAll(checked) {
 		var sgs = $("input[name='rule_list']");
@@ -128,7 +132,7 @@
    	}
    	function delrule(ruleId,tenantId, userId){
   		$.ajax({
-			type: "GET",
+			type: "POST",
 			url : "/g/user/deleterule/"+ruleId+"/"+tenantId+"/"+userId,
 			success : function(data) {
 				if(data == "failed"){
@@ -137,7 +141,7 @@
 				}else{
 					alert("删除安全组规则成功");
 				}
-				window.location.href="/g/user/security_groups/"+tenantId+"/"+userId;
+                window.location.reload();
 			},
 			error : function(XMLHttpRequest,textStatus,errorThrown) {
 				alert("删除安全组规则失败!");
@@ -150,13 +154,20 @@
  	</script>
 </head>
 <body class="main-body">
-<div class="path"><p>当前位置：机器管理<span>&gt;</span><a href="/g/user/list/1">用户信息</a><span>&gt;</span>vm列表</div>
+<div class="path"><p>当前位置：机器管理<span>&gt;</span><a href="/g/user/list/1">用户信息</a><span>&gt;</span>rule列表</div>
 <div class="main-cont">
     <h3 class="title">安全组规则列表
     </h3>
 
     <div class="set-area">
-        <div><p class="tips-desc">安全组规则列表<span><img src="/img/refresh.jpg" height="100%" width="20px" style="margin-left:20px;" onclick="window.location.reload()"/></span><img onclick ="addrule('<%=sgId %>','<%=tenantId %>','<%=userId %>')" src="/img/add.jpg" alt="新增安全组" height="100%" width="20px" style="float:right;margin-right:100px;"/></p></div>
+        <div>安全组规则列表<ul id="icons" class="ui-widget ui-helper-clearfix" style="float: right;">
+            <li class="ui-state-default ui-corner-all" onclick="window.location.reload();">
+                <span class="ui-icon ui-icon-refresh"></span>
+            </li>
+            <li class="ui-state-default ui-corner-all" onclick="addrule('${sgid}','${tenantid}','${userid}');">
+                <span class="ui-icon ui-icon-circle-plus"></span>
+            </li>
+        </ul></div>
         <table class="table" cellpadding="0" cellspacing="0" width="100%" border="0">
             <colgroup>
             </colgroup>
@@ -189,34 +200,34 @@
             </tr>
             </thead>
             <tbody>
-					<c:forEach var="rule" items="${dto.rules}" varStatus="status">
-						<tr>
-								<%-- <td><input type="checkbox" name="rule_list" id="${rule.id}" value="${rule.id}"/></td> --%>
-								<td>${rule.id}</td>
-								<td>${rule.fromPort}</td>
-								<td>${rule.ipProtocol}</td>
-								<td>${rule.toPort}</td>
-								<td>${rule.parentGroupId}</td>
-								<td>${rule.ipRange}</td>
-								<td><button onclick="delrule(${rule.id},'<%=tenantId %>','<%=userId %>')">删除</button></td>
-							</c:forEach>
-							</tr>
+                <c:forEach var="rule" items="${dto.rules}" varStatus="status">
+                <tr>
+                    <%-- <td><input type="checkbox" name="rule_list" id="${rule.id}" value="${rule.id}"/></td> --%>
+                    <td>${rule.id}</td>
+                    <td>${rule.from_port}</td>
+                    <td>${rule.ip_protocol}</td>
+                    <td>${rule.to_port}</td>
+                    <td>${rule.parent_group_id}</td>
+                    <td>${rule.ip_range.cidr}</td>
+                    <td><button onclick="delrule(${rule.id},'${tenantid}','${userid}')">删除</button></td>
+                </tr>
+                </c:forEach>
             </tbody>
         </table>
     </div>
 </div>
-<div id="addrule_form" title="新建安全组" style="display: none">
-	<p class="validateTips">以下均必填</p>
+<div id="addrule_form" title="新建规则" style="display: none">
+	<p>以下均必填</p>
 	<form>
 		<fieldset>
-			<label for="name">protocal</label>
-			<input type="text" name="protocal" id="create_protocal" value="tcp" class="text ui-widget-content ui-corner-all" />
-			<label for="desc">from_port</label>
-			<input type="text" name="from_port" id="create_from_port" value="10" class="text ui-widget-content ui-corner-all" />
-			<label for="desc">to_port</label>
-			<input type="text" name="to_port" id="create_to_port" value="10" class="text ui-widget-content ui-corner-all" />
-			<label for="desc">cidr</label>
-			<input type="text" name="cidr" id="create_cidr" value="0.0.0.0/0" class="text ui-widget-content ui-corner-all" />
+			<label for="create_protocal">protocal</label>
+			<input type="text" name="protocal" id="create_protocal" placeholder="tcp/udp/icmp" class="text ui-widget-content ui-corner-all" />
+			<label for="create_from_port">from_port</label>
+			<input type="text" name="from_port" id="create_from_port" placeholder="10" class="text ui-widget-content ui-corner-all" />
+			<label for="create_to_port">to_port</label>
+			<input type="text" name="to_port" id="create_to_port" placeholder="10" class="text ui-widget-content ui-corner-all" />
+			<label for="create_cidr">cidr</label>
+			<input type="text" name="cidr" id="create_cidr" placeholder="0.0.0.0/0" class="text ui-widget-content ui-corner-all" />
 		</fieldset>
 	</form>
 </div>

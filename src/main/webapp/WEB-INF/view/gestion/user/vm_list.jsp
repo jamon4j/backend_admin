@@ -21,6 +21,9 @@
 			div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 			.ui-dialog .ui-state-error { padding: .3em; }
 			.validateTips { border: 1px solid transparent; padding: 0.3em; }
+            ul#icons {margin: 0; padding: 0;}
+            ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+            ul#icons span.ui-icon {float: left; margin: 0 4px;}
 	</style>
    	<script language="javascript">
    		var j = jQuery.noConflict(true);
@@ -130,8 +133,12 @@
 							url : "/g/user/edit_vm/"+action+"/<%=tenantId %>/<%=userId %>",
 							data : {"vmids":vmids},
 							success : function(data) {
-								alert(action+"虚拟机成功，因机器情况各异，可能需要稍等片刻!");
-								window.location.href="/g/user/vmlist/<%=tenantId %>/<%=userId %>";
+                                if(data=="true"){
+                                    alert(action+"虚拟机成功，因机器情况各异，可能需要稍等片刻!");
+                                    window.location.href="/g/user/vmlist/<%=tenantId %>/<%=userId %>";
+                                }else{
+                                    alert(action+"虚拟机失败!");
+                                }
 							},
 							error : function(XMLHttpRequest,textStatus,errorThrown) {
 								alert(action+"虚拟机失败!");
@@ -357,6 +364,11 @@
 	   	}
 	   	
 	   	$(function(){
+            $("li").hover(function(){
+                $(this).addClass("ui-state-hover");
+            },function(){
+                $(this).removeClass("ui-state-hover");
+            });
 	   		$("#withSysImage").change(function(){
 	   			$("#sysImage").show();
 	   			$("#selfImage").hide();
@@ -425,12 +437,21 @@
 <body class="main-body">
 <div class="path"><p>当前位置：机器管理<span>&gt;</span><a href="/g/user/list/1">用户信息</a><span>&gt;</span>vm列表</p></div>
 <div class="main-cont">
-    <h3 class="title">vm列表
-    </h3>
-
+    <h3 class="title">vm列表</h3>
     <div class="set-area">
-        <div><p class="tips-desc">vm列表，vm数量：<c:out value="${fn:length(vmlist)}"></c:out><span><img src="/img/refresh.jpg" height="100%" width="20px" style="margin-left:20px;" onclick="window.location.reload()"/></span><img onclick ="addvm('<%=tenantId %>','<%=userId %>')" src="/img/add.jpg" alt="新增虚拟机" height="100%" width="20px" style="float:right;margin-right:100px;"/></span><span><img onclick="editvm()" src="/img/edit.jpg" alt="编辑虚拟机" height="100%" width="20px" style="float:right;margin-right:20px;"/></span></p></div>
-			        <table class="table" cellpadding="0" cellspacing="0" width="100%" border="0">
+        <div>vm列表，vm数量：<c:out value="${fn:length(vmlist)}"></c:out>
+        <ul id="icons" class="ui-widget ui-helper-clearfix" style="float: right;">
+            <li class="ui-state-default ui-corner-all" onclick="window.location.reload();">
+                <span class="ui-icon ui-icon-refresh"></span>
+            </li>
+            <li class="ui-state-default ui-corner-all" onclick="editvm();">
+                <span class="ui-icon ui-icon-tag"></span>
+            </li>
+            <li class="ui-state-default ui-corner-all" onclick="addvm('<%=tenantId %>','<%=userId %>');">
+                <span class="ui-icon ui-icon-circle-plus"></span>
+            </li>
+        </ul>
+        <table class="table" cellpadding="0" cellspacing="0" width="100%" border="0">
             <colgroup>
             </colgroup>
             <thead class="tb-tit-bg">
@@ -438,16 +459,16 @@
             	<th width="7%">
             		<div class="th-gap"><input name="vm_list_all" type="checkbox" onclick="selectAll(this.checked)"/></div>
             	</th>
-                <th width="10%">
+                <th width="12%">
                     <div class="th-gap">虚拟机id</div>
                 </th>
-                <th width="7%">
-                    <div class="th-gap">状态</div>
-                </th>	
-                <th width="12%">
+                <th width="10%">
+                    <div class="th-gap">虚拟机状态</div>
+                </th>
+                <th width="15%">
                     <div class="th-gap">name</div>
                 </th>
-                <th width="10%">
+                <th width="15%">
                     <div class="th-gap">所属物理机</div>
                 </th>
                  <th width="8%">
@@ -456,7 +477,7 @@
                  <th >
                     <div class="th-gap">创建系统快照</div>
                 </th>
-                <th width="22%">
+                <th width="12%">
                     <div class="th-gap">操作ebs</div>
                 </th>
                 <th width="12%">
@@ -468,10 +489,10 @@
             	<c:forEach var="vm" items="${vmlist}" varStatus="status">
 					<tr>
 						<td><input type="checkbox" name="vm_list" id="${vm.id}" value="${vm.id}"/></td>
-						<td>${vm.id} </td>
-						<td>${vm.status} </td>
-						<td>${vm.name} </td>
-						<td>${vm.OS_EXT_SRV_ATTR_host} </td>
+                        <td>${vm.id} </td>
+                        <td>${vm.status} </td>
+                        <td>${vm.name} </td>
+                        <td>${vm.host} </td>
 						<td><button onclick="detail('${vm.id}')">详情</button></td>
 						<td><button onclick="createsnapshot('<%=tenantId %>','<%=userId %>','${vm.id}')">创建</button></td>
 						<td><button onclick="ebslist('${vm.tenant_id}','${vm.id}')">查看ebs列表</button><button onclick="setEBS('${vm.tenant_id}','${vm.id}')">关联ebs</button></td>
@@ -482,50 +503,40 @@
                             <button onclick="vnc('${vm.id}')">登陆机器</button>
                         </td>
                         <div id="vm_dialog_${vm.id}" title="vm_${vm.id}详情" style="display:none">
-							<p>status: ${vm.status}</p>
-							<p>updated: ${vm.updated}</p>
-							<p>OS-EXT-SRV-ATTR:host: ${vm.OS_EXT_SRV_ATTR_host}</p>
-							<p>key_name: ${vm.key_name}</p>
-							<p>OS-EXT-STS:task_state: ${vm.OS_EXT_STS_task_state}</p>
-							<p>OS-EXT-STS:vm_state: ${vm.OS_EXT_STS_vm_state}</p>
-							<p>OS-EXT-SRV-ATTR:instance_name: ${vm.OS_EXT_SRV_ATTR_instance_name}</p>
-							<p>OS-EXT-SRV-ATTR:hypervisor_hostname: ${vm.OS_EXT_SRV_ATTR_hypervisor_hostname}</p>
-							<p>id: ${vm.id}</p>
-							<p>user_id: ${vm.user_id}</p>
-							<p>name: ${vm.name}</p>
-							<p>created: ${vm.created}</p>
-							<p>tenant_id: ${vm.tenant_id}</p>
-							<p>OS-DCF:diskConfig: ${vm.OS_DCF_diskConfig}</p>
-							<p>public_ip_address: </p>
-							<c:forEach var="public_address" items="${vm.addresses.publicAddress}" varStatus="status">
-								<p>&nbsp;&nbsp;version: ${public_address.version}</p>
-								<p>&nbsp;&nbsp;address: ${public_address.addr}</p>
-							</c:forEach>
-							<p>private_ip_address: </p>
-							<c:forEach var="private_address" items="${vm.addresses.privateAddress}" varStatus="status">
-								<p>&nbsp;&nbsp;version: ${private_address.version}</p>
-								<p>&nbsp;&nbsp;address: ${private_address.addr}</p>
-							</c:forEach>
-							<p>progress: ${vm.progress}</p>
-							<p>OS-EXT-STS:power_state: ${vm.OS_EXT_STS_power_state}</p>
-							<p>config_drive: ${vm.config_drive}</p>
-							<p>security_groups: </p>
-							<c:forEach var="security_group" items="${vm.security_groups}" varStatus="status">
-								<p>&nbsp;&nbsp;name: ${security_group.name}</p>
-							</c:forEach>
-							<p>flavor: </p>
-							<p>&nbsp;&nbsp;id: ${vm.flavor.id}</p>
-							<p>&nbsp;&nbsp;links: </p>
-							<c:forEach var="link" items="${vm.flavor.links}" varStatus="status">
-								<p>&nbsp;&nbsp;&nbsp;&nbsp;href: ${link.href}</p>
-								<p>&nbsp;&nbsp;&nbsp;&nbsp;rel: ${link.rel}</p>
-							</c:forEach>
-							<p>&nbsp;&nbsp;faults: </p>
-							<p>&nbsp;&nbsp;&nbsp;&nbsp;message: ${vm.fault.message}</p>
-							<p>&nbsp;&nbsp;&nbsp;&nbsp;code: ${vm.fault.code}</p>
-							<p>&nbsp;&nbsp;&nbsp;&nbsp;created: ${vm.fault.created}</p>
-							<p>&nbsp;&nbsp;metadata: </p>
-							<p>&nbsp;&nbsp;&nbsp;&nbsp;storage_location: ${vm.metadata.storage_location}</p>
+                            <p>status: ${vm.status}</p>
+                            <p>updated: ${vm.updated}</p>
+                            <p>host: ${vm.host}</p>
+                            <p>task_state: ${vm.task_state}</p>
+                            <p>vm_state: ${vm.vm_status}</p>
+                            <p>instance_name: ${vm.instance_name}</p>
+                            <p>hypervisor_hostname: ${vm.hypervisor_hostname}</p>
+                            <p>id: ${vm.id}</p>
+                            <p>image_id:${vm.image_id}</p>
+                            <p>user_id: ${vm.user_id}</p>
+                            <p>name: ${vm.name}</p>
+                            <p>created: ${vm.created}</p>
+                            <p>tenant_id: ${vm.tenant_id}</p>
+                            <p>public_ip_address: </p>
+                            <c:forEach var="public_address" items="${vm.addresses.pubaddress}" varStatus="status">
+                                <p>&nbsp;&nbsp;version: ${public_address.version}</p>
+                                <p>&nbsp;&nbsp;address: ${public_address.addr}</p>
+                            </c:forEach>
+                            <p>private_ip_address: </p>
+                            <c:forEach var="private_address" items="${vm.addresses.priaddress}" varStatus="status">
+                                <p>&nbsp;&nbsp;version: ${private_address.version}</p>
+                                <p>&nbsp;&nbsp;address: ${private_address.addr}</p>
+                            </c:forEach>
+                            <p>progress: ${vm.progress}</p>
+                            <p>OS-EXT-STS:power_state: ${vm.power_state}</p>
+                            <p>security_groups: </p>
+                            <c:forEach var="security_group" items="${vm.security_groups}" varStatus="status">
+                                <p>&nbsp;&nbsp;name: ${security_group.name}</p>
+                            </c:forEach>
+                            <p>&nbsp;&nbsp;instance_type:</p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;ram:${vm.instance_type.ram}</p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;cpu:${vm.instance_type.cpu}</p>
+                            <p>&nbsp;&nbsp;metadata: </p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;storage_location: ${vm.metadata.storage_location}</p>
 						</div>
 					</tr>
 				</c:forEach>
@@ -548,7 +559,7 @@
 	<p class="validateTips">所有字段均必填</p>
 	<form>
 		<fieldset>
-			<label for="name">快照名称(必填)</label>
+			<label for="snapshot_name">快照名称(必填)</label>
 			<input type="text" name="name" id="snapshot_name" value="" class="text ui-widget-content ui-corner-all" />
 		</fieldset>
 	</form>
@@ -557,48 +568,48 @@
 	<p class="validateTips"><b style="color:red">下列所有值均必填</b></p>
 	<form>
 		<fieldset>
-			<label for="name">name<b>(必填)</b></label>
+			<label for="create_name">name<b>(必填)</b></label>
 			<input type="text" name="name" id="create_name" value="None" class="text ui-widget-content ui-corner-all" />
-			<label for="name">请选择创建虚机的镜像类型<b>(必选)</b></label>
+			<label for="withSysImage">请选择创建虚机的镜像类型<b>(必选)</b></label>
 			<div>
 			<span><input type="radio" name="imageType" value="sys" id="withSysImage" style="float:left;"/><span style="float:left;">系统镜像</span></span>
 			<span><input type="radio" name="imageType" value="self" id="withSelfImage" style="float:left;margin-left:20px;"/>自有镜像</span>
 			</div>
 			<div id="sysImage" style="display: none">
-			<label for="imageRef">系统镜像<b>(必选)</b></label>
+			<label for="create_imageRef">系统镜像<b>(必选)</b></label>
 			<select name="imageRef" id="create_imageRef" class="text ui-widget-content ui-corner-all" >
 			<option value="">请选择镜像</option>
 			</select>
 			</div>
 			<div id="selfImage" style="display: none">
-			<label for="imageRef">自定义镜像<b>(必选)</b></label>
+			<label for="create_imageRef_self">自定义镜像<b>(必选)</b></label>
 			<select name="imageRefSelf" id="create_imageRef_self" class="text ui-widget-content ui-corner-all" >
 			<option value="">请选择镜像</option>
 			</select>
 			</div>
-			<label for="flavorRef">指定创建于该zone<b>(可选)</b></label>
+			<label for="create_zone">指定创建于该zone<b>(可选)</b></label>
 			<select name="zone" id="create_zone" class="text ui-widget-content ui-corner-all" >
 			<option value="">请选zone</option>
 			</select>
-			<label for="name">cpu核数<b>(只需填入数字，如1，必填)</b></label>
+			<label for="create_vcpu">cpu核数<b>(只需填入数字，如1，必填)</b></label>
 			<input type="text" name="vcpu" id="create_vcpu" value="1" class="text ui-widget-content ui-corner-all" />
-			<label for="name">带宽<b>(只需填入数字，单位：MB，如5或20，必填)</b></label>
+			<label for="create_network">带宽<b>(只需填入数字，单位：MB，如5或20，必填)</b></label>
 			<input type="text" name="network" id="create_network" value="10" class="text ui-widget-content ui-corner-all" />
 			<label for="create_root_disk">系统盘大小<b>(必填,单位:<input type="text" name="root_disk" id="create_root_disk" style="width:28px;border:0;color: #f6931f; font-weight: bold;display: inline-block;" />GB)</b></label>
             <div id="slider-range-min" style="width:81%;"></div>
 			<!--<input type="text" name="root_disk" id="create_root_disk" value="" class="text ui-widget-content ui-corner-all" />-->
-			<label for="name">内存大小<b>(只需填入数字，单位：M，如512或者2048，必填)</b></label>
+			<label for="create_ram">内存大小<b>(只需填入数字，单位：M，如512或者2048，必填)</b></label>
 			<input type="text" name="ram" id="create_ram" value="512" class="text ui-widget-content ui-corner-all" />
-			<label for="name">系统盘是否在ebs上创建<b>(必选)</b></label>
+			<label for="create_ebs">系统盘是否在ebs上创建<b>(必选)</b></label>
 			<div>
 			<span><input type="radio" name="is_ebs" value="True" id="create_ebs" style="float:left;"/><span style="float:left;">是</span></span>
 			<span><input type="radio" name="is_ebs" value="False" id="create_not_ebs" style="float:left;margin-left:20px;"/>否</span>
 			</div>
-			<label for="count">虚拟机数量<b>(必填)</b></label>
+			<label for="create_count">虚拟机数量<b>(必填)</b></label>
 			<input type="text" name="count" id="create_count" value="1" class="text ui-widget-content ui-corner-all" />
-			<label for="adminPass">初始密码<b>(必填)</b></label>
+			<label for="create_adminPass">初始密码<b>(必填)</b></label>
 			<input type="text" name="adminPass" id="create_adminPass" value="" class="text ui-widget-content ui-corner-all" />
-			<label for="security_groups">security_groups<b>(必选)</b></label>
+			<label for="create_security_groups">security_groups<b>(必选)</b></label>
 			<select multiple="multiple" name="security_groups" id="create_security_groups" class="text ui-widget-content ui-corner-all" >
 			</select>
 		</fieldset>

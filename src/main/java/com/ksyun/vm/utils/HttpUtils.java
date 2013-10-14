@@ -1,256 +1,219 @@
 package com.ksyun.vm.utils;
 
+import com.ksyun.vm.pojo.OpenStackResult;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.*;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.HttpParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
 
-import com.alibaba.fastjson.JSON;
-import com.ksyun.vm.dto.admin.AuthenticateDto;
-import com.ksyun.vm.utils.enumeration.EnumResult;
-@SuppressWarnings("rawtypes")
+/**
+ * User: liuchuandong
+ * Date: 13-9-5
+ * Time: 下午3:13
+ * Func: httpclient处理类
+ */
 public class HttpUtils {
-	/**
-	 * 构造httpClient对象
-	 * @return
-	 */
-	private static HttpClient getHttpClient() {
-		MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-		HttpClient client = new HttpClient(connectionManager);
-		// 设置连接和读取超时时间
-		client.getHttpConnectionManager().getParams().setConnectionTimeout(Integer.valueOf(Constants.getPropertyValue(InitConst.CONNECTION_TIMEOUT)));
-		client.getHttpConnectionManager().getParams().setSoTimeout(Integer.valueOf(Constants.getPropertyValue(InitConst.SOCKET_TIMEOUT)));
-		return client;
-	}
-	
-	private static String inputStreamToString(InputStream input) throws IOException {
-		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-		byte[] data = new byte[1024];
-		int count = -1;
-		while ((count = input.read(data, 0, 1024)) != -1)
-			outStream.write(data, 0, count);
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
-		data = null;
-		return new String(outStream.toByteArray(), "UTF-8");
-	}
+    static PoolingClientConnectionManager cm;
+    static HttpParams params;
+    static final int TIMEOUT = 20000;//连接超时时间
+    static final int SO_TIMEOUT = 60000;//数据传输超时
+    static HttpClient client;
 
-	/**
-	 * admin账户get请求返回的信息
-	 * 
-	 * @param url
-	 * @return
-	 * @throws org.apache.commons.httpclient.HttpException
-	 * @throws java.io.IOException
-	 */
-	public static String getAdminResponseData(String url) throws HttpException, IOException {
-		HttpClient client = getHttpClient();
-		GetMethod getMethod = new GetMethod(url);
-		setAdminHeader(getMethod);
-		Integer status = client.executeMethod(getMethod);
-		if (status == 200) {
-			InputStream input = getMethod.getResponseBodyAsStream();
-			String responseBody = inputStreamToString(input);
-			return responseBody;
-		}
-		return null;
-	}
+    /**
+     * 静态初始化
+     */
+    static{
+        SchemeRegistry schemeRegistry = new SchemeRegistry();
+        schemeRegistry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
+        schemeRegistry.register(new Scheme("https", 443, SSLSocketFactory.getSocketFactory()));
+        cm = new PoolingClientConnectionManager(schemeRegistry);
+        cm.setMaxTotal(200);
+        cm.setDefaultMaxPerRoute(20);
+        params = new BasicHttpParams();
+        params.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, TIMEOUT);
+        params.setParameter(CoreConnectionPNames.SO_TIMEOUT, SO_TIMEOUT);
+    }
 
-	/**
-	 * 普通账户get请求返回的信息
-	 * 
-	 * @param url
-	 * @param headerArgs
-	 * @return
-	 * @throws org.apache.commons.httpclient.HttpException
-	 * @throws java.io.IOException
-	 */
-	public static String getResponseData(String url, Map<String, String> headerArgs) throws HttpException, IOException {
-		HttpClient client = getHttpClient();
-		GetMethod getMethod = new GetMethod(url);
-		setHeader(getMethod, headerArgs);
-		Integer status = client.executeMethod(getMethod);
-		if (status == 200) {
-			InputStream input = getMethod.getResponseBodyAsStream();
-			String responseBody = inputStreamToString(input);
-			return responseBody;
-		}
-		return null;
-	}
+    /**
+     * 获取client
+     * @return
+     */
+    public static DefaultHttpClient getHttpClient(){
+        DefaultHttpClient client = new DefaultHttpClient(cm,params);
+        return client;
+    }
 
-	/**
-	 * 设置普通账户查找时http request头信息
-	 * 
-	 * @param httpMethod
-	 * @param headerArgs
-	 */
-	private static void setHeader(HttpMethod httpMethod, Map<String, String> headerArgs) {
-		if(headerArgs == null)
-			return;
-		Set<Map.Entry<String, String>> set = headerArgs.entrySet();
-		for (Iterator<Map.Entry<String, String>> it = set.iterator(); it.hasNext();) {
-			Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
-			httpMethod.setRequestHeader(entry.getKey(), entry.getValue());
-		}
-	}
+    /**
+     * post请求
+     * @param url
+     * @param header
+     * @param requestBody
+     * @return
+     */
+    public static OpenStackResult post(String url,Map<String,String> header,String requestBody) {
+        client = getHttpClient();
+        HttpPost post = new HttpPost(url);
+        try {
+            setHeader(post,header);
+            StringEntity stringEntity = new StringEntity(requestBody,"UTF-8");
+            post.setEntity(stringEntity);
+            HttpResponse response = client.execute(post);
+            OpenStackResult result = getResult(response);
+            close();
+            return result;
+        }catch (IOException e){
+            post.abort();
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	/**
-	 * 设置admin账户查找时http request头信息
-	 * 
-	 * @param getMethod
-	 */
-	private static void setAdminHeader(GetMethod getMethod) {
-		getMethod.setRequestHeader("Content-Type", "application/json");
-		try {
-			getMethod.setRequestHeader("X-Auth-Token", getAdminToken());
-		} catch (HttpException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-//		getMethod.setRequestHeader("X-Auth-Token", "bf6f39d9024947c8ac91a0c2af1f6fd7:3ed3e7a66ec549a89f9fe8b713b07506");
-	}
-	/**
-	 * 获取reponse数据
-	 * @param url
-	 * @param requestBody
-	 * @param headerArgs
-	 * @return
-	 * @throws org.apache.commons.httpclient.HttpException
-	 * @throws java.io.IOException
-	 */
-	public static String getPostResponseData(String url,String requestBody,Map<String,String> headerArgs) throws HttpException, IOException {
-		HttpClient client = getHttpClient();
-		PostMethod postMethod = new PostMethod(url);
-		RequestEntity entity = new ByteArrayRequestEntity(requestBody.getBytes());
-		postMethod.setRequestEntity(entity);
-		setHeader(postMethod, headerArgs);
-		int status=client.executeMethod(postMethod);
-		if(status == HttpStatus.SC_OK){
-			InputStream input = postMethod.getResponseBodyAsStream();
-			if(input != null){
-				String responseBody = inputStreamToString(input);
-				return responseBody;
-			}
-		}
-		return EnumResult.failed.value();
-	}
-	
-	
-	/**
-	 * 获取reponse数据，如果传入了tenantId和userId则按照默认方式构建header
-	 * @param url
-	 * @param requestBody
-	 * @param tenantId
-	 * @param userId
-	 * @return
-	 * @throws org.apache.commons.httpclient.HttpException
-	 * @throws java.io.IOException
-	 */
-	public static String getPostResponseData(String url,String requestBody,String tenantId, String userId) throws HttpException, IOException {
-		HttpClient client = getHttpClient();
-		PostMethod postMethod = new PostMethod(url);
-		RequestEntity entity = new ByteArrayRequestEntity(requestBody.getBytes());
-		postMethod.setRequestEntity(entity);
-		Map<String,String> header = returnDefaultHeader(tenantId, userId);
-		setHeader(postMethod, header);
-		int status=client.executeMethod(postMethod);
-		if(status == HttpStatus.SC_OK){
-			InputStream input = postMethod.getResponseBodyAsStream();
-			if(input != null){
-				String responseBody = inputStreamToString(input);
-				return responseBody;
-			}
-		}
-		return EnumResult.failed.value();
-	}
-	
-	
-	/**
-	 * 获得admin的token
-	 * @return
-	 * @throws org.apache.commons.httpclient.HttpException
-	 * @throws java.io.IOException
-	 */
-	@SuppressWarnings("unchecked")
-	public static String getAdminToken() throws HttpException, IOException {
-		String requestBody = "{\"auth\":{\"name\":\"admin\",\"password\":\"ksc\"}}";
-		Map<String,String> header = new HashMap<String,String>();
-		header.put("Content-Type", "application/json");
-		String tokenJson = HttpUtils.getPostResponseData(Constants.getPropertyValue(InitConst.TOKEN),requestBody,header);
-		System.out.println(tokenJson);
-		AuthenticateDto dto = null;
-		if (tokenJson != null) {
-			
-			LinkedHashMap map = JSON.parseObject(tokenJson, LinkedHashMap.class);
-			Iterator<Map.Entry> iter = map.entrySet().iterator();
-			while (iter.hasNext()) {
-				Map.Entry entry = iter.next();
-				String testStr = entry.getValue().toString();
-				dto = JSON.parseObject(testStr, AuthenticateDto.class);
-			}
-			
-			return dto.getToken();
-		}
-		return null;
-	}
-	/**
-	 * 返回普通用户的header
-	 * @param tenantId
-	 * @param userId
-	 * @return
-	 */
-	public static Map<String, String> returnDefaultHeader(String tenantId, String userId){
-		Map<String, String> header = new HashMap<String, String>();
-		header.put("Content-Type", "application/json");
-		header.put("X-Auth-Token", createDefaultToken(tenantId, userId));
-		return header;
-	}
-	/**
-	 * 创建普通用户token
-	 * @param userId
-	 * @param tenantId
-	 * @return
-	 */
-	public static String createDefaultToken(String tenantId, String userId){
-		return userId+":"+tenantId;
-	}
-	/**
-	 * http delete方法
-	 * @param url
-	 * @param tenantId
-	 * @param userId
-	 */
-	public static String deleteMethod(String url,String tenantId, String userId){
-		HttpClient client = getHttpClient();
-		DeleteMethod method = new DeleteMethod(url);
-		Map<String,String> header = returnDefaultHeader(tenantId, userId);
-		setHeader(method, header);
-		try {
-			Integer stauts = client.executeMethod(method);
-			if(stauts == HttpStatus.SC_NO_CONTENT){
-				return EnumResult.successful.value();
-			}else{
-				return EnumResult.failed.value();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return EnumResult.failed.value();
-		} 
-	}
+    /**
+     * get请求
+     * @param url
+     * @param header
+     * @return
+     */
+    public static OpenStackResult get(String url,Map<String,String> header){
+        client = getHttpClient();
+        HttpGet get = new HttpGet(url);
+        try{
+            setHeader(get,header);
+            HttpResponse response = client.execute(get);
+            OpenStackResult result = getResult(response);
+            close();
+            return result;
+        } catch (IOException e) {
+            get.abort();
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * delete 请求
+     * @param url
+     * @param header
+     * @return
+     */
+    public static OpenStackResult delete(String url,Map<String,String> header){
+        client = getHttpClient();
+        HttpDelete delete = new HttpDelete(url);
+        try{
+            setHeader(delete,header);
+            HttpResponse response = client.execute(delete);
+            OpenStackResult result = getResult(response);
+            close();
+            return result;
+        } catch (IOException e) {
+            delete.abort();
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * put请求
+     * @param url
+     * @param header
+     * @param requestBody
+     * @return
+     */
+    public static OpenStackResult put(String url,Map<String,String> header,String requestBody){
+        client = getHttpClient();
+        HttpPut put = new HttpPut(url);
+        try {
+            setHeader(put,header);
+            StringEntity stringEntity = new StringEntity(requestBody);
+            put.setEntity(stringEntity);
+            HttpResponse response = client.execute(put);
+            OpenStackResult result = getResult(response);
+            close();
+            return result;
+        }catch (IOException e){
+            put.abort();
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 释放连接
+     */
+    public static void close(){
+        client.getConnectionManager().closeIdleConnections(0L, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 通用请求
+     * @param response
+     * @return
+     * @throws java.io.IOException
+     */
+    private static OpenStackResult getResult(HttpResponse response) throws IOException {
+        HttpEntity entity = response.getEntity();
+        String content = null;
+        int status = response.getStatusLine().getStatusCode();
+        if(entity!=null){
+            content = inputStreamToString(entity.getContent());
+        }
+        close();
+        OpenStackResult result = new OpenStackResult();
+        result.setStatus(status);
+        result.setMessage(content);
+        return result;
+    }
+
+    /**
+     * 设置请求头
+     * @param base
+     * @param header
+     */
+    private static void setHeader(HttpRequestBase base,Map<String,String> header){
+        Iterator<Map.Entry<String,String>> it = header.entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry<String,String> entry = it.next();
+            base.setHeader(entry.getKey(),entry.getValue());
+        }
+    }
+
+    /**
+     * 获取内容
+     * @param input
+     * @return
+     * @throws java.io.IOException
+     */
+    private static String inputStreamToString(InputStream input) throws IOException {
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        byte[] data = new byte[1024];
+        int count = -1;
+        while ((count = input.read(data, 0, 1024)) != -1)
+            outStream.write(data, 0, count);
+        data = null;
+        return new String(outStream.toByteArray(), "UTF-8");
+    }
+
+
 }
-

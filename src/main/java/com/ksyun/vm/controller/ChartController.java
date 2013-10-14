@@ -2,10 +2,10 @@ package com.ksyun.vm.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.ksyun.vm.pojo.MonitorVmDiskPo;
-import com.ksyun.vm.pojo.MonitorVmLoadPo;
-import com.ksyun.vm.pojo.MonitorVmNetworkPo;
-import com.ksyun.vm.pojo.MonitorVmStatusFlowPo;
+import com.ksyun.vm.pojo.chart.MonitorVmDiskPo;
+import com.ksyun.vm.pojo.chart.MonitorVmLoadPo;
+import com.ksyun.vm.pojo.chart.MonitorVmNetworkPo;
+import com.ksyun.vm.pojo.chart.MonitorVmStatusFlowPo;
 import com.ksyun.vm.service.ChartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

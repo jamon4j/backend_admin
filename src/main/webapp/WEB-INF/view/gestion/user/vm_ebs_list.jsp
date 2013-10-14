@@ -61,8 +61,8 @@
                 <tr>
                     <td>${ebs.id }</td>
                     <td>${ebs.device }</td>
-                    <td>${ebs.serverId }</td>
-                    <td><button onclick="unsetebs('${ebs.id}','${ebs.serverId}');">解绑</button></td>
+                    <td>${ebs.vm_id }</td>
+                    <td><button onclick="unsetebs('${ebs.id}','${ebs.vm_id}');">解绑</button></td>
                 </tr>
             </c:forEach>
             </tbody>

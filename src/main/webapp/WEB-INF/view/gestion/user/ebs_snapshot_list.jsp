@@ -7,8 +7,20 @@
 <head>
    	<%@include file="../inc/meta.jspf"%>
     <title>用户 - EBS，快照列表</title>
+    <style type="text/css">
+        ul#icons {margin: 0; padding: 0;}
+        ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+        ul#icons span.ui-icon {float: left; margin: 0 4px;}
+    </style>
    	<script>
    	var j = jQuery.noConflict(true);
+    $(function(){
+        $("li").hover(function(){
+            $(this).addClass("ui-state-hover");
+        },function(){
+            $(this).removeClass("ui-state-hover");
+        })
+    });
    	function showhostlist(zoneid){
    		window.location.href="/g/hostlistbyzone/"+zoneid;
    	}
@@ -59,7 +71,6 @@
                 show: {
                     effect: "blind",
                     duration: 200
-
                 },
                 hide: {
                     effect: "explode",
@@ -99,9 +110,11 @@
 							data:{name:ebsname,size:ebssize,desc:ebsdesc},
 							dataType:"text",
 							success:function(data){
-								if(data=="success"){
+								if(data=="true"){
 									location.reload();
-								}
+								}else{
+                                    alert("创建失败");
+                                }
 							}
 						});
 					}
@@ -143,13 +156,18 @@
            },
            dataType:'text',
            success:function(data){
-               document.location.reload();
+               if(data=="false"){
+                    alert("创建失败");
+               }else{
+                   alert("创建成功");
+                   document.location.reload();
+               }
            }
         });
     }
     function deleteebs(ebsid,status){
-        if(status=="in-use"){
-            alert("使用中不能删除ebs");
+        if(status=="in-use"||status=="creating"){
+            alert("删除ebs的状态必须为available!");
             return false;
         }
         $.ajax({
@@ -160,7 +178,12 @@
             },
             dataType:'text',
             success:function(data){
-                document.location.reload();
+                if(data=="true"){
+                    alert("删除成功");
+                    document.location.reload();
+                }else{
+                    alert("删除失败");
+                }
             }
         });
     }
@@ -177,7 +200,30 @@
             },
             dataType:'text',
             success:function(data){
-                document.location.reload();
+                if(data=="true"){
+                    alert("删除成功");
+                    document.location.reload();
+                }else{
+                    alert("删除失败");
+                }
+            }
+        });
+    }
+    function delSysImg(snapshotId){
+        $.ajax({
+            url:'/g/user/deletesnapshot/${tenantId}/${userId}',
+            type:'POST',
+            data:{
+                snapshotid:snapshotId
+            },
+            dataType:'text',
+            success:function(data){
+                if(data=="true"){
+                    alert("删除成功");
+                    document.location.reload();
+                }else{
+                    alert("删除失败");
+                }
             }
         });
     }
@@ -189,10 +235,12 @@
 <div class="main-cont">
     <h3 class="title">EBS，快照信息
     </h3>
-    <div class="set-area">
-    	<div><span><img onclick ="addebs()" src="/img/add.jpg" alt="新增EBS" height="100%" width="20px" style="float:right;margin-right:100px;"/></span></div>
-        <p class="tips-desc">ebs列表，ebs数量：<c:out value="${fn:length(ebslist)}"></c:out></p>
-        
+    <div class="set-area">ebs列表，ebs数量：<c:out value="${fn:length(ebslist)}"></c:out>
+        <ul id="icons" class="ui-widget ui-helper-clearfix" style="float: right;">
+            <li class="ui-state-default ui-corner-all" onclick="addebs();">
+                <span class="ui-icon ui-icon-circle-plus"></span>
+            </li>
+        </ul>
         <table class="table" cellpadding="0" cellspacing="0" width="100%" border="0">
             <colgroup>
             </colgroup>
@@ -201,7 +249,9 @@
                 <th width="22%">
                     <div class="th-gap">display_name</div>
                 </th>
-               
+                <th>
+                    <div class="th-gap">status</div>
+                </th>
                 <th>
                     <div class="th-gap">详情</div>
                 </th>
@@ -214,37 +264,30 @@
             	<c:forEach var="ebs" items="${ebslist}" varStatus="status">
 					<tr>
 						<td>${ebs.name} </td>
-						<td><button onclick="detail('${ebs.display_name}','ebs')">详情</button></td>
+                        <td>${ebs.status}</td>
+						<td><button onclick="detail('${ebs.name}','ebs')">详情</button></td>
                         <td><button onclick="createsnapshot('${ebs.id}','${ebs.name}','${ebs.description}','${ebs.status}')">创建快照</button>
                             <button onclick="deleteebs('${ebs.id}','${ebs.status}')">删除ebs</button></td>
 					</tr>
-					<div id="ebs_dialog_${ebs.display_name}" style="display:none;">
+					<div id="ebs_dialog_${ebs.name}" style="display:none;">
 						<fieldset>
 							<legend>EBS</legend>
 							<p>status:${ebs.status}</p>
-							<p>display_name:${ebs.display_name}</p>
-							<p>availability_zone:${ebs.availability_zone}</p>
-							<p>bootable:${ebs.bootable}</p>
+							<p>name:${ebs.name}</p>
+							<p>description:${ebs.description}</p>
 							<p>created_at:${ebs.created_at}</p>
-							<p>tenant_id:${ebs.os_vol_tenant_attr_tenant_id}</p>
-							<p>display_description:${ebs.display_description}</p>
-							<p>host:${ebs.os_vol_host_attr_host}</p>
-							<p>volume_type:${ebs.volume_type}</p>
 							<p>snapshot_id:${ebs.snapshot_id}</p>
-							<p>source_volid:${ebs.source_volid}</p>
 							<p>id:${ebs.id}</p>
 							<p>size:${ebs.size}</p>
-							<p>attachments:</p>
-							<c:forEach var="atta" items="${ebs.attachments}" varStatus="status">
-								<p>DEVICE:${atta.device}</p>
-								<p>SERVER_ID:${atta.server_id}</p>
-								<p>ID:${atta.id}</p>
-								<p>VOLUME_ID:${atta.volume_id}</p>
-							</c:forEach>
-							<fieldset>
-								<legend>METADATA</legend>
-								<p>CONTENTS:${ebs.metadata.contents}</p>
-							</fieldset>
+                            <fieldset>
+							<legend>attachments:</legend>
+                                <c:forEach var="atta" items="${ebs.attachments}" varStatus="status">
+                                    <p>DEVICE:${atta.device}</p>
+                                    <p>SERVER_ID:${atta.server_id}</p>
+                                    <p>ID:${atta.id}</p>
+                                    <p>VOLUME_ID:${atta.volume_id}</p>
+                                </c:forEach>
+                            </fieldset>
 						</fieldset>
 					</div>
 				</c:forEach>
@@ -271,6 +314,9 @@
                <th>
                     <div class="th-gap">详情</div>
                 </th>
+                <th>
+                    <div class="th-gap">操作</div>
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -281,23 +327,20 @@
 						<td>${systemImage.id} </td>
 						<td>${systemImage.status} </td>
 						<td><button onclick="detail('${systemImage.id}','systemImage')">详情</button></td>
+                        <td><button onclick="delSysImg('${systemImage.id}')">删除快照</button></td>
 					</tr>
 					<div id="systemImage_dialog_${systemImage.id}" title="systemImage(${systemImage.id})详情" style="display:none">
 						<fieldset>
 							<legend>SYSTEMIMAGE</legend>
 							<p>STATUS:${systemImage.status}</p>
 							<p>NAME:${systemImage.name}</p>
-							<p>DELETED:${systemImage.deleted}</p>
+							<p>CREATED:${systemImage.created}</p>
+							<p>UPDATED:${systemImage.updated}</p>
 							<p>MINDISK:${systemImage.minDisk}</p>
 							<p>PROGRESS:${systemImage.progress}</p>
 							<p>MINRAM:${systemImage.minRam}</p>
 							<p>ID:${systemImage.id}</p>
-							
-                                <%--<fieldset>
-                                 <legend>PROPERTIES:</legend>
-                                    <p>OS_VERSION:${systemImage.properties.os_version}</p>
-                                    <p>STORAGE_LOCATE:${systemImage.properties.storage_locate}</p>
-                                </fieldset> --%>
+							<p>VM_ID:${systemImage.vm_id}</p>
 						</fieldset>
 					</div>
 				</c:forEach>
@@ -326,7 +369,6 @@
             </tr>
             </thead>
             <tbody>
-			
             	<c:forEach var="snapshot" items="${snapshotlist}" varStatus="status">
 					<tr>
 						<td>${snapshot.name} </td>
@@ -338,12 +380,11 @@
 							<p>STATUS:${snapshot.status}</p>
 							<p>PROGRESS:${snapshot.progress}</p>
 							<p>created_at:${snapshot.created_at}</p>
-							<p>display_description:${snapshot.display_description}</p>
+							<p>description:${snapshot.description}</p>
 							<p>id:${snapshot.id}</p>
-							<p>volume_id:${snapshot.volume_id}</p>
-							<p>display_name:${snapshot.display_name}</p>
+							<p>display_name:${snapshot.name}</p>
 							<p>size:${snapshot.size}</p>
-							<p>project_id:${snapshot.project_id}</p>
+							<p>ebs_id:${snapshot.ebs_id}</p>
 						</fieldset>
 					</div>
 					</tr>
@@ -358,10 +399,14 @@
 			<form id="ebs_form" action="/g/user/createebs/">
 				<fieldset>
 					<legend>添加EBS</legend>
-					<p>name:<input type="text" value="" id="ebsname" name="ebsname"/></p>
-					<p>size:<input type="text" value="" id="ebssize" name="ebssize"/></p>
-					<p>desc:<textarea rows="3" cols="50" id="ebsdesc" name="ebsdesc"></textarea></p>
-					<p><input type="button" value="确定" onclick="addEBS();" /></p>
+                    <label for="ebsname">name:</label>
+					<input type="text" value="" id="ebsname" name="ebsname"/>
+                    <label for="ebssize">size:</label>
+					<input type="text" value="" id="ebssize" name="ebssize"/>
+                    <br/>
+                    <br/>
+                    <label for="ebsdesc">desc:</label>
+					<textarea rows="3" cols="50" id="ebsdesc" name="ebsdesc"></textarea>
 				</fieldset>
 			</form>
 		</div>

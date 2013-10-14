@@ -4,10 +4,10 @@ import com.ksyun.vm.dao.MonitorVmDiskDao;
 import com.ksyun.vm.dao.MonitorVmLoadDao;
 import com.ksyun.vm.dao.MonitorVmNetworkDao;
 import com.ksyun.vm.dao.MonitorVmStatusFlowDao;
-import com.ksyun.vm.pojo.MonitorVmDiskPo;
-import com.ksyun.vm.pojo.MonitorVmLoadPo;
-import com.ksyun.vm.pojo.MonitorVmNetworkPo;
-import com.ksyun.vm.pojo.MonitorVmStatusFlowPo;
+import com.ksyun.vm.pojo.chart.MonitorVmDiskPo;
+import com.ksyun.vm.pojo.chart.MonitorVmLoadPo;
+import com.ksyun.vm.pojo.chart.MonitorVmNetworkPo;
+import com.ksyun.vm.pojo.chart.MonitorVmStatusFlowPo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

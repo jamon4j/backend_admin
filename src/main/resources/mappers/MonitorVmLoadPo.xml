@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ksyun.vm.pojo.MonitorVmLoadPo" >
-  <resultMap id="BaseResultMap" type="com.ksyun.vm.pojo.MonitorVmLoadPo" >
+<mapper namespace="com.ksyun.vm.pojo.chart.MonitorVmLoadPo" >
+  <resultMap id="BaseResultMap" type="com.ksyun.vm.pojo.chart.MonitorVmLoadPo" >
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="vm_name" jdbcType="VARCHAR" property="vmName" />
     <result column="vm_uuid" jdbcType="VARCHAR" property="vmUuid" />
@@ -24,7 +24,7 @@
     delete from monitor_vm_load
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.ksyun.vm.pojo.MonitorVmLoadPo"  useGeneratedKeys="true" keyProperty="id" >
+  <insert id="insert" parameterType="com.ksyun.vm.pojo.chart.MonitorVmLoadPo"  useGeneratedKeys="true" keyProperty="id" >
     insert into monitor_vm_load (id, vm_name, vm_uuid, 
       cpu_load, memory_load, log_time
       )
@@ -33,7 +33,7 @@
       )
   </insert>
 
-  <update id="updateIfNecessary" parameterType="com.ksyun.vm.pojo.MonitorVmLoadPo" >
+  <update id="updateIfNecessary" parameterType="com.ksyun.vm.pojo.chart.MonitorVmLoadPo" >
     update monitor_vm_load
     <set>
       <if test="vmName != null">
@@ -54,7 +54,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="update" parameterType="com.ksyun.vm.pojo.MonitorVmLoadPo" >
+  <update id="update" parameterType="com.ksyun.vm.pojo.chart.MonitorVmLoadPo" >
     update monitor_vm_load
     set vm_name = #{vmName,jdbcType=VARCHAR},
       vm_uuid = #{vmUuid,jdbcType=VARCHAR},

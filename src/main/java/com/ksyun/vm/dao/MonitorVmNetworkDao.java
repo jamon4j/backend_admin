@@ -1,6 +1,6 @@
 package com.ksyun.vm.dao;
 
-import com.ksyun.vm.pojo.MonitorVmLoadPo;
+import com.ksyun.vm.pojo.chart.MonitorVmLoadPo;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

@@ -99,7 +99,7 @@
 						<td>${vm.id} </td>
 						<td>${vm.status} </td>
 						<td>${vm.name} </td>
-						<td>${vm.OS_EXT_SRV_ATTR_host} </td>
+						<td>${vm.host} </td>
                         <td>${vm.tenant_id} </td>
 						<td><button onclick="detail('${status.count}')">详情</button>
                             <button onclick="vnc('${vm.id}')">登陆机器</button></td>
@@ -110,46 +110,36 @@
 						<div id="vm_dialog_${status.count}" title="vm_${status.count}详情" style="display:none">
 							<p>status: ${vm.status}</p>
 							<p>updated: ${vm.updated}</p>
-							<p>OS-EXT-SRV-ATTR:host: ${vm.OS_EXT_SRV_ATTR_host}</p>
-							<p>key_name: ${vm.key_name}</p>
-							<p>OS-EXT-STS:task_state: ${vm.OS_EXT_STS_task_state}</p>
-							<p>OS-EXT-STS:vm_state: ${vm.OS_EXT_STS_vm_state}</p>
-							<p>OS-EXT-SRV-ATTR:instance_name: ${vm.OS_EXT_SRV_ATTR_instance_name}</p>
-							<p>OS-EXT-SRV-ATTR:hypervisor_hostname: ${vm.OS_EXT_SRV_ATTR_hypervisor_hostname}</p>
+							<p>host: ${vm.host}</p>
+							<p>task_state: ${vm.task_state}</p>
+							<p>vm_state: ${vm.vm_status}</p>
+							<p>instance_name: ${vm.instance_name}</p>
+							<p>hypervisor_hostname: ${vm.hypervisor_hostname}</p>
 							<p>id: ${vm.id}</p>
+                            <p>image_id:${vm.image_id}</p>
 							<p>user_id: ${vm.user_id}</p>
 							<p>name: ${vm.name}</p>
 							<p>created: ${vm.created}</p>
 							<p>tenant_id: ${vm.tenant_id}</p>
-							<p>OS-DCF:diskConfig: ${vm.OS_DCF_diskConfig}</p>
 							<p>public_ip_address: </p>
-							<c:forEach var="public_address" items="${vm.addresses.publicAddress}" varStatus="status">
+							<c:forEach var="public_address" items="${vm.addresses.pubaddress}" varStatus="status">
 								<p>&nbsp;&nbsp;version: ${public_address.version}</p>
 								<p>&nbsp;&nbsp;address: ${public_address.addr}</p>
 							</c:forEach>
 							<p>private_ip_address: </p>
-							<c:forEach var="private_address" items="${vm.addresses.privateAddress}" varStatus="status">
+							<c:forEach var="private_address" items="${vm.addresses.priaddress}" varStatus="status">
 								<p>&nbsp;&nbsp;version: ${private_address.version}</p>
 								<p>&nbsp;&nbsp;address: ${private_address.addr}</p>
 							</c:forEach>
 							<p>progress: ${vm.progress}</p>
-							<p>OS-EXT-STS:power_state: ${vm.OS_EXT_STS_power_state}</p>
-							<p>config_drive: ${vm.config_drive}</p>
+							<p>OS-EXT-STS:power_state: ${vm.power_state}</p>
 							<p>security_groups: </p>
 							<c:forEach var="security_group" items="${vm.security_groups}" varStatus="status">
 								<p>&nbsp;&nbsp;name: ${security_group.name}</p>
 							</c:forEach>
-							<p>flavor: </p>
-							<p>&nbsp;&nbsp;id: ${vm.flavor.id}</p>
-							<p>&nbsp;&nbsp;links: </p>
-							<c:forEach var="link" items="${vm.flavor.links}" varStatus="status">
-								<p>&nbsp;&nbsp;&nbsp;&nbsp;href: ${link.href}</p>
-								<p>&nbsp;&nbsp;&nbsp;&nbsp;rel: ${link.rel}</p>
-							</c:forEach>
-							<p>&nbsp;&nbsp;faults: </p>
-							<p>&nbsp;&nbsp;&nbsp;&nbsp;message: ${vm.fault.message}</p>
-							<p>&nbsp;&nbsp;&nbsp;&nbsp;code: ${vm.fault.code}</p>
-							<p>&nbsp;&nbsp;&nbsp;&nbsp;created: ${vm.fault.created}</p>
+                            <p>&nbsp;&nbsp;instance_type:</p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;ram:${vm.instance_type.ram}</p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;cpu:${vm.instance_type.cpu}</p>
 							<p>&nbsp;&nbsp;metadata: </p>
 							<p>&nbsp;&nbsp;&nbsp;&nbsp;storage_location: ${vm.metadata.storage_location}</p>
 						</div>
