@@ -8,11 +8,13 @@
     <result column="disk" jdbcType="VARCHAR" property="disk" />
     <result column="read_times" jdbcType="VARCHAR" property="readTimes" />
     <result column="write_times" jdbcType="VARCHAR" property="writeTimes" />
+    <result column="read_bytes" jdbcType="VARCHAR" property="readBytes" />
+    <result column="write_bytes" jdbcType="VARCHAR" property="writeBytes" />
     <result column="log_time" jdbcType="VARCHAR" property="logTime" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, vm_uuid, vm_name, disk ,read_times, write_times, log_time
+    id, vm_uuid, vm_name, disk ,read_times, write_times,read_bytes,write_bytes, log_time
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -24,7 +26,7 @@
 
   <insert id="insert" parameterType="com.ksyun.vm.pojo.chart.MonitorVmDiskPo"  useGeneratedKeys="true" keyProperty="id">
     insert into monitor_vm_disk (id, vm_uuid, vm_name, 
-      read_times, write_times, log_time
+      read_times, write_times,read_bytes,write_bytes, log_time
       )
     values (#{id,jdbcType=INTEGER}, #{vmUuid,jdbcType=VARCHAR}, #{vmName,jdbcType=VARCHAR}, 
       #{readTimes,jdbcType=INTEGER}, #{writeTimes,jdbcType=INTEGER}, #{logTime,jdbcType=VARCHAR}
@@ -46,6 +48,12 @@
       <if test="writeTimes != null">
         write_times = #{writeTimes,jdbcType=INTEGER},
       </if>
+      <if test="readBytes != null">
+        read_bytes = #{readBytes,jdbcType=INTEGER},
+      </if>
+      <if test="writeBytes != null">
+        write_bytes = #{writeBytes,jdbcType=INTEGER},
+      </if>
       <if test="logtime != null">
         log_time = #{log_time,jdbcType=VARCHAR},
       </if>
@@ -58,6 +66,8 @@
       vm_name = #{vmName,jdbcType=VARCHAR},
       read_times = #{readTimes,jdbcType=INTEGER},
       write_times = #{writeTimes,jdbcType=INTEGER},
+      read_bytes = #{readBytes,jdbcType=INTEGER},
+      write_bytes = #{writeBytes,jdbcType=INTEGER},
       log_time = #{logTime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>

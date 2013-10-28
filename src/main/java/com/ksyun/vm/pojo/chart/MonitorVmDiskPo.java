@@ -26,6 +26,26 @@ public class MonitorVmDiskPo implements VmBasePo {
 
     private String writeTimes;
 
+    private String readBytes;
+
+    private String writeBytes;
+
+    public String getReadBytes() {
+        return readBytes;
+    }
+
+    public void setReadBytes(String readBytes) {
+        this.readBytes = readBytes;
+    }
+
+    public String getWriteBytes() {
+        return writeBytes;
+    }
+
+    public void setWriteBytes(String writeBytes) {
+        this.writeBytes = writeBytes;
+    }
+
     private String logTime;
 
     public Integer getId() {

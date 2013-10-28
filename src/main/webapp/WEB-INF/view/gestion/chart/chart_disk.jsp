@@ -14,8 +14,8 @@
                 global : {
                     useUTC : false
                 },
-                colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655',
-                    '#FFF263', '#6AF9C4']
+                colors: ['#058DC7', '#50B432', '#ED561B','#24CBE5', '#64E572', '#FF9655',
+                    '#FFF263', '#6AF9C4','#DDDF00']
             });
             $.ajax({
                 url:"/g/chart/${vmuuid}/initDisk",
@@ -34,14 +34,18 @@
 
                                         var series = this.series[0];
                                         var series1 = this.series[1];
+                                        var series2 = this.series[2];
+                                        var series3 = this.series[3];
                                         setInterval(function() {
                                             $.ajax({
                                                 url:"/g/chart/${vmuuid}/getDisk/"+key,
                                                 dataType:"json",
                                                 success:function(disk){
                                                     var date = parseInt(disk.logTime)*1000;
-                                                    series1.addPoint([date, parseInt(disk.readTimes)], true, true);
                                                     series.addPoint([date,parseInt(disk.writeTimes)], true, true);
+                                                    series1.addPoint([date, parseInt(disk.readTimes)], true, true);
+                                                    series2.addPoint([date, parseInt(disk.writeBytes)], true, true);
+                                                    series3.addPoint([date, parseInt(disk.readBytes)], true, true);
                                                 }
                                             })
                                         }, 5000);
@@ -118,11 +122,55 @@
                                     valueDecimals:1,
                                     valueSuffix:'次/s'
                                 }
+                            },{
+                                name : '硬盘写流量',
+                                data : (function() {
+                                    var data = []
+                                    $.each(value,function(index,obj){
+                                        var date = parseInt(obj.logTime)*1000;
+                                        data.push([
+                                            date,
+                                            parseInt(obj.writeBytes)
+                                        ]);
+                                    });
+                                    return data;
+                                })(),
+                                shadow:true,
+                                marker : {
+                                    enabled : true,
+                                    radius : 3
+                                },
+                                tooltip:{
+                                    valueDecimals:1,
+                                    valueSuffix:'bytes/s'
+                                }
+                            },{
+                                name : '硬盘读流量',
+                                data : (function() {
+                                    var data = []
+                                    $.each(value,function(index,obj){
+                                        var date = parseInt(obj.logTime)*1000;
+                                        data.push([
+                                            date,
+                                            parseInt(obj.readBytes)
+                                        ]);
+                                    });
+                                    return data;
+                                })(),
+                                shadow:true,
+                                marker : {
+                                    enabled : true,
+                                    radius : 3
+                                },
+                                tooltip:{
+                                    valueDecimals:1,
+                                    valueSuffix:'bytes/s'
+                                }
                             }],
                             credits: {
                                 enabled: true,
-                                text: 'KSYUN.COM',
-                                href: 'http://KSYUN.COM',
+                                text: 'KVM.KSYUN.COM',
+                                href: 'http://KVM.KSYUN.COM',
                                 position: {
                                     align: 'right',
                                     x: -10,
