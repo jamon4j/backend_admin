@@ -97,7 +97,7 @@ $(function() {
 					success : function(data) {
 						if (data.success == "false") {
 							$.globalMessenger().post({
-								message : data.msg,
+								message : "登陆失败",
 								type : "error",
 								id : "logining"
 							});
