@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ksyun.vm.pojo.login.User" >
+  <resultMap id="BaseResultMap" type="com.ksyun.vm.pojo.login.User" >
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    username,password
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" parameterType="com.ksyun.vm.pojo.login.User"  useGeneratedKeys="true" keyProperty="id">
+    insert into user (id, username,password)
+    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateIfNecessary" parameterType="com.ksyun.vm.pojo.login.User" >
+    update user
+    <set>
+      <if test="username != null">
+          username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+          password = #{password,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="update" parameterType="com.ksyun.vm.pojo.login.User" >
+    update user
+    set username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="findUser" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from user where username=#{username,jdbcType=VARCHAR} and password=#{password,jdbcType=VARCHAR};
+  </select>
+</mapper>

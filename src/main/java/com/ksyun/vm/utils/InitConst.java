@@ -5,6 +5,7 @@ public class InitConst {
 
     public static final String ADMIN = "admin";
     public static final String PASSWORD = "ksc";
+    public static final String BACKEND = "backend";
     public static final String HTTP_COOKIE = "kscdigest";
 
     public static final String HTTP_HOST = "http.host";

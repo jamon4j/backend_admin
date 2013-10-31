@@ -160,14 +160,14 @@
             <tbody>
             	<c:forEach var="dto" items="${page.data}" varStatus="status">
 					<tr>
-						<td>${dto.id} </td>
-						<td>${dto.name} </td>
+						<td>${dto.user_id} </td>
+						<td>${dto.user_name} </td>
 						<td>${dto.enabled}</td>
 						<td>${dto.email}</td>
-						<td>${dto.tenantId}</td>
-						<td><button onclick="security_groups('${dto.tenantId}','${dto.id}')">查看</button></td>
-						<td><button onclick="ebs_snapshot_list('${dto.tenantId}','${dto.id}')">查看</button></td>
-						<td><button onclick="vm_list('${dto.tenantId}','${dto.id}')">查看</button></td>
+						<td>${dto.tenant_id}</td>
+						<td><button onclick="security_groups('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
+						<td><button onclick="ebs_snapshot_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
+						<td><button onclick="vm_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
 					</tr>
 				</c:forEach>
             </tbody>
