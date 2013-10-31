@@ -34,7 +34,7 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
                     response.sendRedirect("/login");
                     return false;
                 }
-                if(now.getTimeInMillis()-time.getTimeInMillis()>10000) {
+                if(now.getTimeInMillis()-time.getTimeInMillis()>1800000) {
                     map.remove(backend);
                     response.sendRedirect("/login");
                     return false;
