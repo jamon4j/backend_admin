@@ -48,11 +48,20 @@
             type:'post',
             success:function(data){
                 $.each(data,function(index,val){
-                    var $tt='<tr>' +
+                    var $tt
+                    if(val.resource.project=='total'){
+                        $tt='<tr style="color: red;">' +
                             '<td>'+val.resource.project+'</td>' +
                             '<td>'+val.resource.email+'</td>' +
                             '<td>'+val.resource.memory_mb+'MB</td>' +
                             '<td>'+val.resource.cpu+'核</td></tr>';
+                    }else{
+                        $tt='<tr>' +
+                            '<td>'+val.resource.project+'</td>' +
+                            '<td>'+val.resource.email+'</td>' +
+                            '<td>'+val.resource.memory_mb+'MB</td>' +
+                            '<td>'+val.resource.cpu+'核</td></tr>';
+                    }
                     $( "#contain-"+id).find("table").find("tbody").append($tt);
                 });
             }

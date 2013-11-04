@@ -31,7 +31,7 @@ public class StatService {
     public List<StatHost> getStatHost(String hostname,List<UserPojo> userList) throws ErrorCodeException, NoTokenException {
         List<StatHost> list = jsonService.getPoList(InitConst.KVM_STAT_HOST, InitConst.ADMIN, InitConst.PASSWORD, StatHost.class, hostname);
         for(StatHost host:list){
-            if(host.getResource().getProject().equals("(user_max)")){
+            if(host.getResource().getProject().equals("(used_max)")){
                 host.getResource().setEmail("");
                 host.getResource().setProject("total");
             }
