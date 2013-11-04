@@ -6,9 +6,14 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.ksyun.vm.exception.ErrorCodeException;
 import com.ksyun.vm.exception.NoTokenException;
+import com.ksyun.vm.pojo.stat.CpuInfos;
+import com.ksyun.vm.pojo.stat.HostUsage;
+import com.ksyun.vm.pojo.stat.StatZone;
 import com.ksyun.vm.pojo.zone.ZonePojo;
+import com.ksyun.vm.service.StatService;
 import com.ksyun.vm.service.ZoneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,12 +30,27 @@ public class ZoneController {
 
     @Autowired
     private ZoneService zoneService;
+    @Autowired
+    private StatService statService;
 	//zone列表
 	@RequestMapping("/g/zonelist")
 	public ModelAndView returnZoneList(HttpServletRequest request, ModelAndView mav) {
         List<ZonePojo> list = null;
+        List<StatZone> stat_zone = null;
         try {
             list = zoneService.getZoneList();
+            stat_zone = statService.getStatZone();
+            for(ZonePojo pojo:list){
+                for(StatZone zone:stat_zone){
+                    if(pojo.getName().equals(zone.getZone_name())){
+                        pojo.setStatZone(zone);
+                        for(HostUsage usage:zone.getHost_usage()){
+                            usage.setCpu_infos(JSONObject.parseObject(usage.getCpu_info(),CpuInfos.class));
+                        }
+                        break;
+                    }
+                }
+            }
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
         }

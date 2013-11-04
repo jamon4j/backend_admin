@@ -6,7 +6,7 @@
     <%@include file="../inc/meta.jspf"%>
     <title>Host - Host列表</title>
    	<script language="javascript">
-   	var j = jQuery.noConflict(true);
+   	var j = jQuery.noConflict(true)
    	//物理机详情
  	function detail(id){
 		//物理机详情窗口
@@ -27,6 +27,38 @@
 		});
 		$( "#host_detail_"+id).dialog("open");
  	}
+    $(function(){
+        $(document).on('click', '.useClick', useOnClick)
+    })
+    var useOnClick = function(e){
+        var $target = $(e.target),
+            $tr =  $target.closest('tr'),
+            tmpCount = $tr.data('count'),
+            id = $tr.data('id'),
+            name = $tr.find('td:nth-child(2)').text()
+            $tr.data('count',tmpCount+1)
+        show(id,name, $tr.data('count'))
+    }
+    function show(id,name, count){
+        if(count < 2)
+        $.ajax({
+            url:'/g/stathost',
+            dataType:'json',
+            data:{hostname:name},
+            type:'post',
+            success:function(data){
+                $.each(data,function(index,val){
+                    var $tt='<tr>' +
+                            '<td>'+val.resource.project+'</td>' +
+                            '<td>'+val.resource.email+'</td>' +
+                            '<td>'+val.resource.memory_mb+'MB</td>' +
+                            '<td>'+val.resource.cpu+'核</td></tr>';
+                    $( "#contain-"+id).find("table").find("tbody").append($tt);
+                });
+            }
+        });
+        $( "#contain-"+id ).toggle('500');
+    }
  	//虚拟机列表
  	function showvmlist(hostname){
    		window.location.href="/g/vmlist/"+hostname;
@@ -59,15 +91,19 @@
                 <th>
                     <div class="th-gap">查看该host下虚拟机</div>
                 </th>
+                <th>
+                    <div class="th-gap">查看每个用户使用量</div>
+                </th>
             </tr>
             </thead>
             <tbody>
             	<c:forEach var="hostdto" items="${hostdtolist}" varStatus="status">
-					<tr>
+					<tr data-id="${hostdto.id}" data-count="0">
 						<td>${hostdto.id} </td>
 						<td>${hostdto.hypervisor_hostname}</td>
 						<td><button onclick="detail('${hostdto.id}')">详情</button></td>
 						<td><button onclick="showvmlist('${hostdto.hypervisor_hostname}')" >查看虚拟机</button></td>
+                        <td><button class="useClick" >查看使用量</button></td>
 						<div id="host_detail_${hostdto.id}" title="host${hostdto.id}详情" style="display:none">
 							<p>vcpus_used:${hostdto.vcpus_used}</p>
 							<p>hypervisor_type:${hostdto.hypervisor_type}</p>
@@ -94,6 +130,22 @@
 							<p>sockets:${host.cpu_info.topology.sockets}</p> --%>
 						</div>
 					</tr>
+                    <tr id="contain-${hostdto.id}" style="display: none;">
+                        <td colspan="5">
+                            <div>
+                                <table class="table">
+                                    <thead class="tb-tit-bg">
+                                    <th>用户名</th>
+                                    <th>邮箱</th>
+                                    <th>内存使用量</th>
+                                    <th>cpu使用量(可能超过物理机)</th>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
 				</c:forEach>
 
             </tbody>

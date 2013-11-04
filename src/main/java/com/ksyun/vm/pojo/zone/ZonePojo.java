@@ -1,6 +1,7 @@
 package com.ksyun.vm.pojo.zone;
 
 import com.ksyun.vm.pojo.BasePo;
+import com.ksyun.vm.pojo.stat.StatZone;
 
 import java.util.List;
 
@@ -21,6 +22,15 @@ public class ZonePojo extends BasePo {
     private String deleted_at;
     private String id;
     private Metadata metadata;
+    private StatZone statZone;
+
+    public StatZone getStatZone() {
+        return statZone;
+    }
+
+    public void setStatZone(StatZone statZone) {
+        this.statZone = statZone;
+    }
 
     public String getName() {
         return name;

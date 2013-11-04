@@ -1,6 +1,5 @@
 package com.ksyun.vm.interceptor;
 
-import com.ksyun.vm.pojo.login.Msg;
 import com.ksyun.vm.utils.InitConst;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -21,8 +20,9 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String uri = request.getRequestURI();
+        String host = request.getRemoteHost();
         Cookie cookie = getCookieByName(request, InitConst.BACKEND);
-        if(uri.indexOf("/login")>-1||uri.indexOf("/html")>-1||uri.indexOf("/js")>-1||uri.indexOf("img")>-1){
+        if(uri.indexOf("/login")>-1||uri.indexOf("/html")>-1||uri.indexOf("/js")>-1||uri.indexOf("/img")>-1||host.equals("127.0.0.1")){
             return true;
         }
         if(cookie!=null){

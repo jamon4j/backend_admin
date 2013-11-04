@@ -1,6 +1,7 @@
 package com.ksyun.vm.pojo.zone;
 
 import com.ksyun.vm.pojo.BasePo;
+import com.ksyun.vm.pojo.stat.StatHost;
 
 import java.util.List;
 
@@ -28,6 +29,15 @@ public class HostPojo extends BasePo {
     private String local_gb;
     private String cpu_info;
     private String memory_mb_used;
+    private List<StatHost> statHost;
+
+    public List<StatHost> getStatHost() {
+        return statHost;
+    }
+
+    public void setStatHost(List<StatHost> statHost) {
+        this.statHost = statHost;
+    }
 
     public Service getService() {
         return service;

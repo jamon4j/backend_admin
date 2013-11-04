@@ -56,5 +56,9 @@ public class InitConst {
     public static final String KVM_SNAPSHOT_EBS_CREATE = "kvm.snapshot.ebs.create";
     public static final String KVM_SNAPSHOT_EBS_DELETE = "kvm.snapshot.ebs.delete";
 
+    public static final String KVM_STAT_ZONE="kvm.stat.zone";
+    public static final String KVM_STAT_HOST="kvm.stat.host";
+
+
     public static final String KVM_VNC = "kvm.vnc";
 }

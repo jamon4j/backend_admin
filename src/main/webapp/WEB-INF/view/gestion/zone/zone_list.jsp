@@ -26,6 +26,9 @@
 		});
 		$( "#zone_dialog_"+id ).dialog("open");
    	}
+    function show(id){
+        $( "#contain-"+id ).toggle('500')
+    }
    	function showhostlist(zoneid){
    		window.location.href="/g/hostlistbyzone/"+zoneid;
    	}
@@ -60,6 +63,9 @@
                 <th>
                     <div class="th-gap">查看该zone下物理机</div>
                 </th>
+                <th>
+                    <div class="th-gap">查看容量</div>
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -71,6 +77,7 @@
 						<td><c:if test="${dto.deleted=='false'}">是</c:if><c:if test="${dto.deleted=='true'}">否</c:if> </td>
 						<td><button onclick="detail(${dto.id})">详情</button></td>
 						<td><button onclick="showhostlist(${dto.id})">查看物理机</button></td>
+                        <td><button onclick="show(${dto.id})">容量查看</button></td>
 						<div id="zone_dialog_${dto.id}" title="zone${dto.id}详情" style="display:none">
 							<p>id:${dto.id}</p>
 							<p>name:${dto.name}</p>
@@ -81,6 +88,54 @@
 							<p>deleted_at:${dto.deleted_at}</p>
 						</div>
 					</tr>
+                    <tr id="contain-${dto.id}" style="display: none;">
+                        <td colspan="6">
+                        <div>
+                           <table class="table">
+                               <thead class="tb-tit-bg">
+                                   <th>hostname</th>
+                                   <th>hypervisor类型</th>
+                                   <th>运行虚机个数</th>
+                                   <th>总cpu数</th>
+                                   <th>使用的cpu数</th>
+                                   <th>总磁盘空间</th>
+                                   <th>已使用磁盘大小</th>
+                                   <th>剩余磁盘大小</th>
+                                   <th>总内存数</th>
+                                   <th>内存使用</th>
+                                   <th>剩余内存</th>
+                                   <th width="12%">cpu信息</th>
+                               </thead>
+                               <tbody>
+                                    <c:forEach items="${dto.statZone.host_usage}" var="husage" varStatus="status">
+                                        <tr>
+                                            <td>${husage.hostname}</td>
+                                            <td>${husage.hypervisor_type}</td>
+                                            <td>${husage.running_vms}个</td>
+                                            <td>${husage.vcpus}核</td>
+                                            <td>${husage.vcpus_used}核</td>
+                                            <td>${husage.local_gb}GB</td>
+                                            <td>${husage.local_gb_used}GB</td>
+                                            <td>${husage.free_disk_gb}GB</td>
+                                            <td>${husage.memory_mb}MB</td>
+                                            <td>${husage.memory_mb_used}MB</td>
+                                            <td>${husage.free_ram_mb}MB</td>
+                                            <td>
+                                                <p>厂商:${husage.cpu_infos.vendor}</p>
+                                                <p>model:${husage.cpu_infos.model}</p>
+                                                <p>架构:${husage.cpu_infos.arch}</p>
+                                                <p>特性:${husage.cpu_infos.features}</p>
+                                                <p>拓扑-cpu:${husage.cpu_infos.topology.cores}</p>
+                                                <p>拓扑-线程:${husage.cpu_infos.topology.threads}</p>
+                                                <p>拓扑-sockets:${husage.cpu_infos.topology.sockets}</p>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                               </tbody>
+                           </table>
+                        </div>
+                        </td>
+                    </tr>
 				</c:forEach>
 
             </tbody>
