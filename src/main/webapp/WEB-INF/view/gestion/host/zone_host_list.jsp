@@ -70,7 +70,7 @@
     }
  	//虚拟机列表
  	function showvmlist(hostname){
-   		window.location.href="/g/vmlist/"+hostname;
+   		window.location.href="/g/vmlist?hostname="+hostname;
    	}
  </script>
 </head>

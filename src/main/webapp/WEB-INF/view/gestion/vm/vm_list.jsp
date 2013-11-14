@@ -1,10 +1,28 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@include file="../inc/jsCssIncludeHeader.jspf"%>
 <head>
     <%@include file="../inc/meta.jspf"%>
     <title>VM - VM列表</title>
+    <style type="text/css">
+        #dialog_link{
+            padding: .3em 1em .3em 20px;
+            text-decoration: none;
+            position: relative;
+            margin: 5px;
+            float: right;
+        }
+        #dialog_link span.ui-icon {
+            margin: 0 5px 0 0;
+            position: absolute;
+            left: .2em;
+            top: 50%;
+            margin-top: -8px;
+            zoom: 1;
+        }
+    </style>
    	<script language="javascript">
    	var j = jQuery.noConflict(true);
   	function detail(id){
@@ -38,6 +56,18 @@
     function chart_status(id){
         window.location.href="/g/chart/status/"+id;
     }
+    function igore_toright(){
+        $("#igore_hosts").find("option:selected").appendTo($("#igore_hosts_sel"));
+    }
+    function igore_toleft(){
+        $("#igore_hosts_sel").find("option:selected").appendTo($("#igore_hosts"));
+    }
+    function vm_toright(){
+        $("#vms").find("option:selected").appendTo($("#vms_sel"));
+    }
+    function vm_toleft(){
+        $("#vms_sel").find("option:selected").appendTo($("#vms"));
+    }
     function vnc(instanceId){
         $("#vncDialog").dialog({
             autoOpen: false,
@@ -54,17 +84,129 @@
             }
         })
     }
+    function coldmove(){
+        $("#cold_move").dialog("open");
+    }
+    $(function(){
+        $("#dialog_link").hover(function(){
+            $(this).addClass("ui-state-hover");
+        },function(){
+            $(this).removeClass("ui-state-hover");
+        });
+        $("#cold_move").dialog({
+            autoOpen: false,
+            postion: "center",
+            height:"500",
+            width:"600",
+            modal: true,
+            buttons:{
+                "确认":function(){
+                    var igore_hosts_sel=$("#igore_hosts_sel").children();
+                    var igore_hosts=$("#igore_hosts").children();
+                    var vms=$("#vms_sel").children();
+                    var target = $("#target_host").val();
+                    var $vms="",$igores="";
+                    if(target!="0"){
+                        igore_hosts_sel==null;
+                    }else{
+                        if(igore_hosts.length==0||igore_hosts=="undefined"){
+                            alert("请至少保留一台主机为弹性选择!");
+                            return false;
+                        }
+                    }
+                    if(vms==null||vms=="undefined"){
+                        alert("请选择要迁移的虚机!");
+                        return false;
+                    }
+                    $.each(vms,function(index,data){
+                        $vms+=$(data).attr("value")+",";
+                    })
+                    $vms=$vms.substr(0,$vms.length-1);
+                    $.each(igore_hosts_sel,function(index,data){
+                        $igores+=$(data).attr("value")+",";
+                    })
+                    if($igores!=null&&$igores!="undefined"){
+                        $igores=$igores.substr(0,$igores.length-1);
+                    }else{
+                        $igores="";
+                    }
+                    $.ajax({
+                        url:'/g/coldmove',
+                        dataType:"text",
+                        data:{
+                            vms:$vms,
+                            igores:$igores,
+                            target:target
+                        },
+                        type:'post',
+                        success:function(data){
+                            alert(data+"--请尝试刷新页面来确定是否迁移!");
+                            location.reload();
+                        }
+                    })
+                }
+            }
+        });
+        $("#target_host").on("change",function(){
+            if($(this).val()!="0"){
+                $("#igore_hosts_div").hide();
+            }else{
+                $("#igore_hosts_div").show();
+            }
+        });
+    })
  </script>
 </head>
 <body class="main-body">
 <div class="path"><p>当前位置：机器管理<span>&gt;</span><a href="/g/zonelist">zone列表</a><span>&gt;</span><a href="javascript:history.go(-1)">host列表</a><span>&gt;</span>vm列表</p></div>
 <div id="vncDialog" title="vnc" style="display:none">
 </div>
+<div id="cold_move" title="冷迁移" style="display: none">
+    <div align="center">目标主机:<select id="target_host">
+        <option value="0">弹性(自动)</option>
+        <c:forEach var="host" items="${hosts}" varStatus="status">
+            <c:if test="${host.hypervisor_hostname!=hostname}">
+                <option value="${host.hypervisor_hostname}">${host.hypervisor_hostname}</option>
+            </c:if>
+        </c:forEach>
+    </select></div>
+    <div style="border: 1px solid black;margin: 5px;height: 43%;">
+        <p>虚机列表<span style="color: orangered">(注:非ebs创建主机不显示在此)</span>:</p>
+        <select id="vms" multiple="multiple" style="width: 43%;height: 88%;margin:0 5px;float: left;">
+            <c:forEach var="vm" items="${validList}" varStatus="status">
+                <option value="${vm.id}">${vm.name}</option>
+            </c:forEach>
+        </select>
+        <div style="height: 50%;width: 9%;float: left;margin-top:40px;">
+            <button id="vm_toright" style="float: left;" onclick="vm_toright()">>></button>
+            <button id="vm_toleft" style="float: left;" onclick="vm_toleft()"><<</button>
+        </div>
+        <select id="vms_sel" multiple="multiple" style="width: 43%;height: 88%;float: left;">
+        </select>
+    </div>
+    <div id="igore_hosts_div" style="border: 1px solid black;margin: 5px;height: 43%;">
+        <p>忽略主机:</p>
+        <select id="igore_hosts" multiple="multiple" style="width: 43%;height: 88%;float: left;margin:0 5px;">
+        <c:forEach var="host" items="${hosts}" varStatus="status">
+            <c:if test="${host.hypervisor_hostname!=hostname}">
+                <option value="${host.hypervisor_hostname}">${host.hypervisor_hostname}</option>
+            </c:if>
+        </c:forEach>
+        </select>
+        <div style="height: 50%;width: 9%;float: left;margin-top:40px;">
+            <button id="igore_toright" style="float: left;" onclick="igore_toright()">>></button>
+            <button id="igore_toleft" style="float: left;" onclick="igore_toleft()"><<</button>
+        </div>
+        <select id="igore_hosts_sel" multiple="multiple" style="width: 43%;height: 88%;float: left;">
+        </select>
+    </div>
+</div>
 <div class="main-cont">
     <h3 class="title">vm列表
     </h3>
         <div class="set-area">
-        	<p class="tips-desc">目前仅提供查看功能，其他功能请稍后。</p>
+            vm列表，vm数量：<c:out value="${fn:length(vmlist)}"></c:out>
+            <a href="#" id="dialog_link" onclick="coldmove();" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-transfer-e-w"></span>冷迁移</a>
 			<table class="table" cellpadding="0" cellspacing="0" width="100%" border="0">
             <colgroup>
             </colgroup>

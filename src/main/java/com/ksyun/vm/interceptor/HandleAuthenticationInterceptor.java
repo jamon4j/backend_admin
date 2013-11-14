@@ -1,5 +1,6 @@
 package com.ksyun.vm.interceptor;
 
+import com.ksyun.vm.utils.Constants;
 import com.ksyun.vm.utils.InitConst;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -22,7 +23,8 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
         String uri = request.getRequestURI();
         String host = request.getRemoteHost();
         Cookie cookie = getCookieByName(request, InitConst.BACKEND);
-        if(uri.indexOf("/login")>-1||uri.indexOf("/html")>-1||uri.indexOf("/js")>-1||uri.indexOf("/img")>-1||host.equals("127.0.0.1")){
+        String type=Constants.getPropertyValue("sys.type");
+        if(uri.indexOf("/login")>-1||uri.indexOf("/html")>-1||uri.indexOf("/js")>-1||uri.indexOf("/img")>-1||host.equals("127.0.0.1")||type.equals("test")){
             return true;
         }
         if(cookie!=null){

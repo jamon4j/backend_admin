@@ -39,6 +39,7 @@ public class InitConst {
     public static final String KVM_VM_STOP = "kvm.vm.stop";
     public static final String KVM_VM_RESTART = "kvm.vm.restart";
     public static final String KVM_VM_PWD = "kvm.vm.pwd";
+    public static final String KVM_VM_COLDMOVE="kvm.vm.coldmove";
 
     public static final String KVM_SECURITY_GROUP = "kvm.sg";
     public static final String KVM_SECURITY_GROUP_LIST = "kvm.sg.list";
