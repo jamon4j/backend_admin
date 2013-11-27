@@ -24,6 +24,7 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
         String host = request.getRemoteHost();
         Cookie cookie = getCookieByName(request, InitConst.BACKEND);
         String type=Constants.getPropertyValue("sys.type");
+        Integer timeout = Integer.valueOf(Constants.getPropertyValue("cookie.timeout"));
         if(uri.indexOf("/login")>-1||uri.indexOf("/html")>-1||uri.indexOf("/js")>-1||uri.indexOf("/img")>-1||host.equals("127.0.0.1")||type.equals("test")){
             return true;
         }
@@ -36,7 +37,7 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
                     response.sendRedirect("/login");
                     return false;
                 }
-                if(now.getTimeInMillis()-time.getTimeInMillis()>3600000*24) {
+                if(now.getTimeInMillis()-time.getTimeInMillis()>timeout) {
                     map.remove(backend);
                     response.sendRedirect("/login");
                     return false;
