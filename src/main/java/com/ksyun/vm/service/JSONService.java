@@ -1,5 +1,14 @@
 package com.ksyun.vm.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.httpclient.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ksyun.vm.exception.ErrorCodeException;
@@ -11,14 +20,6 @@ import com.ksyun.vm.utils.Constants;
 import com.ksyun.vm.utils.HttpUtils;
 import com.ksyun.vm.utils.InitConst;
 import com.ksyun.vm.utils.enumeration.HttpMethod;
-import org.apache.http.HttpStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * User: liuchuandong
