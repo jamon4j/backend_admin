@@ -11,4 +11,8 @@ public class Tools {
 		resultStr = resultStr.substring(0, resultStr.lastIndexOf(","));
 		return resultStr;
 	}
+	
+	public static String makeRowKey(String vmuuid, String logTime){
+		return vmuuid + "_"+ logTime;
+	}
 }

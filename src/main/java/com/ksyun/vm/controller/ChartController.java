@@ -40,7 +40,7 @@ public class ChartController {
     @RequestMapping(value = "/g/chart/{id}/initLoad")
     @ResponseBody
     public String initLoad(@PathVariable("id")String vmuuid){
-        List<MonitorVmLoadPo> poList = chartService.getLoadThreeDaysAgo(vmuuid);
+        List<MonitorVmLoadPo> poList = chartService.getLoadOneDaysAgo(vmuuid);
         String result = JSONArray.toJSONString(poList);
         return result;
     }
@@ -61,7 +61,7 @@ public class ChartController {
     @RequestMapping(value = "/g/chart/{id}/initDisk")
     @ResponseBody
     public String initDisk(@PathVariable("id")String vmuuid){
-        List<MonitorVmDiskPo> poList = chartService.getDiskThreeDaysAgo(vmuuid);
+        List<MonitorVmDiskPo> poList = chartService.getDiskOneDaysAgo(vmuuid);
         Map<String,List<MonitorVmDiskPo>> map = new HashMap<String,List<MonitorVmDiskPo>>();
         for(MonitorVmDiskPo po:poList){
             List<MonitorVmDiskPo> tmp = new ArrayList<MonitorVmDiskPo>();
@@ -91,7 +91,7 @@ public class ChartController {
     @RequestMapping(value = "/g/chart/{id}/initStatus")
     @ResponseBody
     public String initStatus(@PathVariable("id")String vmuuid){
-        List<MonitorVmStatusFlowPo> poList = chartService.getStatusFlowThreeDaysAgo(vmuuid);
+        List<MonitorVmStatusFlowPo> poList = chartService.getStatusOneDaysAgo(vmuuid);
         String result = JSONArray.toJSONString(poList);
         return result;
     }
@@ -112,7 +112,7 @@ public class ChartController {
     @RequestMapping(value = "/g/chart/{id}/initNetwork")
     @ResponseBody
     public String initNetwork(@PathVariable("id")String vmuuid){
-        List<MonitorVmNetworkPo> poList = chartService.getNetworkThreeDaysAgo(vmuuid);
+        List<MonitorVmNetworkPo> poList = chartService.getNetworkOneDaysAgo(vmuuid);
         Map<String,List<MonitorVmNetworkPo>> map = new HashMap<String,List<MonitorVmNetworkPo>>();
         for(MonitorVmNetworkPo po:poList){
             List<MonitorVmNetworkPo> tmp = new ArrayList<MonitorVmNetworkPo>();
