@@ -4,6 +4,8 @@ import com.ksyun.vm.pojo.chart.VmBasePo;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
 public class MonitorVmStatusFlowPo implements VmBasePo {
     private Integer id;
 
@@ -60,5 +62,9 @@ public class MonitorVmStatusFlowPo implements VmBasePo {
 	}
 	public String getTime() {
 		return getLogTime();
+	}
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this);	
 	}
 }

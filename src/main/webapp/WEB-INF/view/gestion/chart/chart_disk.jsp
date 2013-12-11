@@ -48,7 +48,7 @@
                                                     series3.addPoint([date, parseInt(disk.readBytes)], true, true);
                                                 }
                                             })
-                                        }, 5000);
+                                        }, 30000);
                                     }
                                 }
                             },

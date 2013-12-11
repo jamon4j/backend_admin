@@ -44,7 +44,7 @@
                                                     series.addPoint([date,parseInt(network.rxb)], true, true);
                                                 }
                                             })
-                                        }, 5000);
+                                        }, 30000);
                                     }
                                 }
                             },

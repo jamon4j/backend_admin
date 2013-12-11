@@ -38,7 +38,7 @@
                                             success:function(status){
                                                 var ss;
                                                 var date = parseInt(status.logTime)*1000;
-                                                if(status.status=="RUNNING"){
+                                                if(status.status=="running"){
                                                     ss=1;
                                                 }else if(status.status=="NEW"){
                                                     ss=0;
@@ -48,7 +48,7 @@
                                                 series.addPoint([date,parseInt(ss)], true, true);
                                             }
                                         })
-                                    }, 5000);
+                                    }, 30000);
                                 }
                             }
                         },
@@ -96,7 +96,7 @@
                                 $.each(statusdata,function(index,obj){
                                     var ss;
                                     var date = parseInt(obj.logTime)*1000;
-                                    if(obj.status=="RUNNING"){
+                                    if(obj.status=="running"){
                                         ss=1;
                                     }else if(obj.status=="NEW"){
                                         ss=0;

@@ -41,7 +41,7 @@
                                                 series.addPoint([date,parseFloat(cpu.cpuLoad)], true, true);
                                             }
                                         })
-                                    }, 5000);
+                                    }, 30000);
                                 }
                             }
                         },
