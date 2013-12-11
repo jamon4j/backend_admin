@@ -2,6 +2,8 @@ package com.ksyun.vm.hbase;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,6 +27,8 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.springframework.stereotype.Component;
 
 import com.ksyun.monitor.pojo.hbase.HBaseCell;
+import com.ksyun.vm.utils.InitConst;
+import com.ksyun.vm.utils.Tools;
 
 /**
  * User: liuchuandong Date: 13-11-6 Time: 上午11:01 Func:
@@ -206,10 +210,10 @@ public class HBaseDao {
 
 	
 	public static void main(String[] args) throws IOException {
-		HBaseDao baseDao = new HBaseDao();
-		baseDao.createTable("test", new String[] { "col1", "col2" }, true);
+		HBaseDao hbaseDao = new HBaseDao();
+	//	baseDao.createTable(InitConst.MONITOR_HBASE_TABLE_LOAD, new String[] { "col1", "col2" }, true);
 
-		List<HBaseCell> list = new ArrayList<HBaseCell>();
+	/*	List<HBaseCell> list = new ArrayList<HBaseCell>();
 		for(int i=0;i<5;i++){
 			HBaseCell row = new HBaseCell();
 			row.setRowkey("ddddd_20131212");
@@ -238,7 +242,7 @@ public class HBaseDao {
 		}
 
 		HBaseDao dao = new HBaseDao();
-		dao.writeMultCell("test", list);
+		dao.writeMultCell("test", list);*/
 
 		/*HTable table = new HTable(conf, "test");
 		Put put = new Put(row.getRowkey().getBytes());
@@ -249,10 +253,15 @@ public class HBaseDao {
 		puts.add(put);
 		puts.add(put1);
 		table.put(puts);*/
-
-		Map<String, List<HBaseCell>> hBaseRows = baseDao.scaner("test",null,null);
-		System.out.println(hBaseRows);
-		
-		
+		Calendar c = Calendar.getInstance();
+    	c.add(Calendar.SECOND,-30);
+        String startTime = String.valueOf(c.getTimeInMillis()/1000);
+        String endTime = String.valueOf(new Date().getTime()/1000);
+        System.out.println(startTime);
+		String vmuuid="06aeb0d3-cb87-4aed-880e-265809941c11";
+		System.out.println(Tools.makeRowKey(vmuuid, startTime));
+		System.out.println(Tools.makeRowKey(vmuuid, String.valueOf(new Date().getTime()/1000)));
+		Map<String, List<HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_STATUS, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
+		System.out.println(result);
 	}
 }

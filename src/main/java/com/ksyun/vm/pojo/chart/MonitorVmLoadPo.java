@@ -4,6 +4,8 @@ import com.ksyun.vm.pojo.chart.VmBasePo;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
 public class MonitorVmLoadPo implements VmBasePo {
     private Integer id;
 
@@ -68,6 +70,10 @@ public class MonitorVmLoadPo implements VmBasePo {
 	}
 	public void setLogTime(String logTime) {
 		this.logTime = logTime;
+	}
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this);	
 	}
 	public Serializable getUniqeId() {
 		return getVmUuid();
