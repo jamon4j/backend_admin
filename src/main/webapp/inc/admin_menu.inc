@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+
+<%
+String uri = request.getRequestURI();
+String uri_prefix = uri.substring(0, uri.lastIndexOf("/"));
+
+
+%>
+
+<div id="header">
+  <h1>金山云KPI系统</h1>
+</div>
+ 
+  <div class="menu-group">
+    <h2  class="first">KPI查询</h2>
+    <ul>
+    
+      <br/>
+      <li><a href="<%=uri_prefix%>/kpi_list.jsp?p=test" >test数据</a></li>
+      <br/>
+      <li><a href="<%=uri_prefix%>/kpi_list.jsp?p=public">public数据</a></li>
+    </ul>
+  </div>
+      
+             
+</div>
+
