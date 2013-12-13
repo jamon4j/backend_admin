@@ -65,8 +65,8 @@ void close(Connection con,PreparedStatement pstmt,ResultSet rs) {
 
 static String[] TEST_COLS = {"day","pv", "uv"};
 static String[] PUBLIC_COLS = {"day","uv", "newuv_percentage","pv","trial_num","trial_success_num","cash_pay_num","cash_vm_num","cash_amount","coupon_pay_num","coupon_vm_num","coupon_amount"};
-
-
+static String[] PUB_KVM_COLS = {"day","pv","uv","tenant","tenant_day","revenue","revenue_day","coupon_day","vm","vm_day","vm_revoke"};
+static String[] PUB_OP_COLS = {"day","charge_uv","charge_sum","vm_close","vm_reboot","hdd_new","snap_new","snap_del","fw_new","fw_del","fw_rule_new","fw_rule_del"};
 
 
 
@@ -74,6 +74,8 @@ String[] getColsByPName(String product){
     String[] p = null;
     if("test".equals(product)) p = TEST_COLS;
     else if("public".equals(product)) p = PUBLIC_COLS;
+    else if("pub_kvm".equals(product)) p = PUB_KVM_COLS;
+    else if("pub_op".equals(product)) p = PUB_OP_COLS;
     return p;
 }
 
@@ -105,6 +107,8 @@ String getSql(String product,Hashtable params) {
     }
     if("test".equals(product)) sql="SELECT " + (params==null?set2str(TEST_COLS):cols) + " FROM kpi_" + product;
     else if("public".equals(product)) sql="SELECT " + (params==null?set2str(PUBLIC_COLS):cols) + " FROM kpi_" + product;
+    else if("pub_kvm".equals(product)) sql="SELECT " + (params==null?set2str(PUB_KVM_COLS):cols) + " FROM kpi_" + product;
+    else if("pub_op".equals(product)) sql="SELECT " + (params==null?set2str(PUB_OP_COLS):cols) + " FROM kpi_" + product;
 
     String rollback = KPI.getDateString(93);  
     if(params==null)sql += " WHERE day>'" + rollback + "' ORDER BY day DESC";
@@ -152,11 +156,33 @@ String doDay(String[] one, int cols) {
 
 
 //---------------------------- for web -------------------------
-static Hashtable TITLE = new Hashtable(32);
+static Hashtable TITLE = new Hashtable(64);
 static {
     TITLE.put("day", "日期");    
     TITLE.put("uv", "uv");
     TITLE.put("pv", "pv");
+    
+    TITLE.put("tenant", "付费租户总数");
+    TITLE.put("tenant_day", "今日新增");
+    TITLE.put("revenue", "今年总收入");
+    TITLE.put("revenue_day", "今日收入");   
+    TITLE.put("coupon_day", "今日代金券消耗");
+    TITLE.put("vm", "虚拟机总数");
+    TITLE.put("vm_day", "今日新增虚拟机");
+    TITLE.put("vm_revoke", "今日回收虚拟机");   
+    
+    TITLE.put("charge_uv", "充值人UV");
+    TITLE.put("charge_sum", "充值钱数");
+    TITLE.put("vm_close", "虚拟机关闭次数");
+    TITLE.put("vm_reboot", "虚拟机重启次数");   
+    TITLE.put("hdd_new", "新建硬盘");
+    TITLE.put("snap_new", "新建快照");
+    TITLE.put("snap_del", "删除快照");
+    TITLE.put("fw_new", "新建防护墙");   
+    TITLE.put("fw_del", "删除防火墙");
+    TITLE.put("fw_rule_new", "新建防火墙规则");
+    TITLE.put("fw_rule_del", "删除防火墙规则");
+    
     
     TITLE.put("newuv_percentage", "% New Visits");
     TITLE.put("trial_num", "试用申请");    
@@ -167,6 +193,9 @@ static {
     TITLE.put("coupon_pay_num", "代金券购买用户数");
     TITLE.put("coupon_vm_num", "台数");    
     TITLE.put("coupon_amount", "金额");
+    
+    
+    
 }
 
 String strNN(String src) {
