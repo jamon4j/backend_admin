@@ -62,10 +62,9 @@
     <div class="menu-group">
         <h2 class="first">KPI统计</h2>
         <ul>
-            <li><a href="/kpi/home.jsp?t=1" router="home/2/0" target="mainframe">首页</a></li>
-            <li><a href="/kpi/kpi_list.jsp?p=pub_kvm" router="home/2/0" target="mainframe">KPI-公有云控制台总体情况</a></li>
-            <li><a href="/kpi/kpi_list.jsp?p=pub_op" router="home/2/0" target="mainframe">KPI-公有云操作情况</a></li>
-            <li>--------------</li>
+            <li><a href="/kpi/home.jsp?t=1" router="home/2/0" target="mainframe">KPI首页</a></li>
+            <li><a href="/kpi/kpi_list.jsp?p=pub_kvm" router="home/2/0" target="mainframe">公有云控制台总体情况</a></li>
+            <li><a href="/kpi/kpi_list.jsp?p=pub_op" router="home/2/0" target="mainframe">公有云操作情况</a></li>
         </ul>
     </div>
 
