@@ -1,4 +1,4 @@
-<%@ page import="com.ksyun.vm.kpi.common.*" %>>
+<%@ page import="com.ksyun.vm.kpi.common.*" %>
 <%
 String product	= ServletUtil.getString(request, "product");
 String field	= ServletUtil.getString(request, "field");
