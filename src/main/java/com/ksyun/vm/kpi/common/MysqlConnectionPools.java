@@ -19,7 +19,8 @@ public class MysqlConnectionPools {
 	  
 	  private static void init()
 	  {
-		  dataSource = (DataSource) DaoFactory.getBean("dataSource_kpi");  
+		  //dataSource = (DataSource) DaoFactory.getBean("dataSource_kpi");  
+		  dataSource = (DataSource) DaoFactory.getBean("dataSource");  
 	  }
 	
 	

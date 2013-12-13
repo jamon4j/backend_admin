@@ -217,7 +217,7 @@ public class KPI {
             System.out.println("\ttoday\t\t(get today's date string)");
             System.out.println("\tyesterday\t(get yesterday's date string)");
             System.out.println("\tsubmit {priduct_name} {field_name} {date string} {value} [src]\t(submit a value to table)");
-            System.out.println("\tsubmit2 {priduct_name} {field1} {val1} {field2} {val2} {field} {value} {src}\t(submit2 a value to table)");
+            //System.out.println("\tsubmit2 {priduct_name} {field1} {val1} {field2} {val2} {field} {value} {src}\t(submit2 a value to table)");
             System.out.println("\tselectCount {dbName} {sql} {src}\t(count a sql)");
             return;
         }
@@ -226,8 +226,8 @@ public class KPI {
         } else if ("yesterday".equals(args[0])) {
             System.out.println(yesterday());
         } else if ("submit".equals(args[0])) {
-            if (args.length >= 6)
-                submit(args[1], args[2], args[3], args[4], args[5]);
+            if (args.length >= 7)
+                submit(args[1], args[2], args[3], args[4], args[5],args[6]);
             else
                 submit(args[1], args[2], args[3], args[4]);
         } else if("submit2".equalsIgnoreCase(args[0])){

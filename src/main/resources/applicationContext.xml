@@ -85,7 +85,7 @@
     </bean>
     
     
-    <!-- kpi  datasource  -->
+    <!-- kpi  datasource  
     
     <tx:annotation-driven transaction-manager="txManager"/>
     <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -113,5 +113,7 @@
         <property name="removeAbandoned" value="true" />
         <property name="removeAbandonedTimeout" value="180" />
     </bean>
+    
+    -->
     
 </beans>
