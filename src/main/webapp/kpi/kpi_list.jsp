@@ -27,8 +27,6 @@ String uri_prefix = uri.substring(0, uri.lastIndexOf("/"));
 </p></div>
 
 <div class="main-cont">
-    <h3 class="title">KPI数据</h3>
-
     <form method="post" action="chart/chart.jsp?p=<%=product%>" onsubmit="return btn_chart_onclick();">
         <%=getChart_list(product)%>
         <select name="chart_type">
@@ -43,6 +41,9 @@ String uri_prefix = uri.substring(0, uri.lastIndexOf("/"));
         </select>
         <input type="submit" value="查看图表">
     </form>
+    
+    <br>
+    
     <div class="set-area">
         <table class="table" cellpadding="0" cellspacing="0" width="100%" border="0">
             <colgroup>
