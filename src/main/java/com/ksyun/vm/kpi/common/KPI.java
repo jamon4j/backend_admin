@@ -28,13 +28,21 @@ public class KPI {
      * @return 0 - SUCC!
      */
     public static int submit(String productName, String fieldName, String day, String value) {
-        return submit(productName, fieldName, day, String.valueOf(value), "----");
+        return submit(productName, fieldName, day, String.valueOf(value), "----","update");
+    }
+    
+    public static int submitInc(String productName, String fieldName, String day, String value) {
+        return submit(productName, fieldName, day, String.valueOf(value), "----","inc");
     }
 
-    public static int submit(String productName, String fieldName, String day, String value, String src) {
+    public static int submit(String productName, String fieldName, String day, String value, String src,String op) {
         String sqlQ = "SELECT count(*) FROM kpi_" + productName + " WHERE day='" + day + "'";
         String sqlI = "INSERT INTO kpi_" + productName + "(day) VALUES('" + day + "')";
         String sqlU = "UPDATE kpi_" + productName + " SET " + fieldName + "=" + value + " WHERE day='" + day + "'";
+        if (op.equals("inc"))
+        {
+        	sqlU = "UPDATE kpi_" + productName + " SET " + fieldName + "=" + fieldName + "+" + value + " WHERE day='" + day + "'";	
+        }
 
         Connection con = null;
         PreparedStatement psQ = null, psI = null, psU = null;
