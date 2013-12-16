@@ -3,6 +3,7 @@
 <%@ page import="com.ksyun.vm.kpi.common.*" 
          contentType="text/html" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <%@ include file="/inc/kpi.inc" %>
 <%@ include file="chart/chart.inc" %>
     
@@ -21,6 +22,10 @@ String uri_prefix = uri.substring(0, uri.lastIndexOf("/"));
 %>
 <head>
 	<title>KPI</title>
+	<link type="text/css" rel="stylesheet" href="/js/frame/admin.css" media="screen"/>
+<script type="text/javascript" src="/js/frame/jquery.min.js"></script>
+<script type="text/javascript" src="/js/frame/admin.js"></script>
+<script type="text/javascript" src="/js/frame/admin-all.js"></script>
 </head>
 <body class="main-body">
 <div class="path"><p>当前位置：<a href="<%=uri_prefix%>/index.jsp">KPI</a><span>&gt;</span><%=product%>

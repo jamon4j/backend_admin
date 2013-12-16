@@ -1,10 +1,13 @@
 <%@ page import="java.util.*" %>
 <%@page contentType="text/html;charset=utf-8" language="java" pageEncoding="UTF-8" %>
 <%@ include file="/inc/acl.inc" %>
-<%
-%>
+
 <html>
 <head>
+<link type="text/css" rel="stylesheet" href="/js/frame/admin.css" media="screen"/>
+<script type="text/javascript" src="/js/frame/jquery.min.js"></script>
+<script type="text/javascript" src="/js/frame/admin.js"></script>
+<script type="text/javascript" src="/js/frame/admin-all.js"></script>
 <%@include file="/inc/admin_meta.inc"%>
 </head>
 <% try { %>

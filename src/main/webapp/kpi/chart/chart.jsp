@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+
 <%@ include file="/inc/acl.inc" %>
 <%@ include file="/inc/kpi.inc" %>
+
 <%
 
     String product = ServletUtil.getStr(request, "p");
@@ -22,6 +24,10 @@
     <%@include file="/inc/admin_meta.inc" %>
     <script type="text/javascript" src="http://static.im20.com.cn/global/js/AnyChart.js"></script>
     <script type="text/javascript" src="http://static.im20.com.cn/global/js/AnyChartHTML5.js"></script>
+    <link type="text/css" rel="stylesheet" href="/js/frame/admin.css" media="screen"/>
+<script type="text/javascript" src="/js/frame/jquery.min.js"></script>
+<script type="text/javascript" src="/js/frame/admin.js"></script>
+<script type="text/javascript" src="/js/frame/admin-all.js"></script>
     <title>KPI</title>
 </head>
 <body class="main-body">
