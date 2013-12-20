@@ -15,4 +15,13 @@ public class Tools {
 	public static String makeRowKey(String vmuuid, String logTime){
 		return vmuuid + "_"+ logTime;
 	}
+	
+	public static String makeDiskRowKey(String vmuuid, String disk, String logTime){
+		return vmuuid + "_"+ disk+"_"+logTime;
+	}
+	
+	public static String makeNetworkRowKey(String vmuuid, String network, String logTime){
+		return vmuuid + "_"+ network+"_"+logTime;
+	}
+	
 }

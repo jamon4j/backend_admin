@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+
+<property>
+ <name>dfs.data.dir</name>
+ <value>/data1/data,/data2/data,/data3/data,/data4/data,/data5/data,/data6/data,/data7/data,/data8/data,/data9/data,/data10/data,/data11/data</value>
+</property>
+
+<property>
+<name>dfs.replication</name>
+<value>3</value>
+</property>
+
+<property>
+<name>dfs.name.dir</name>
+<value>/data/hadoop/hdfs/namenode</value>
+</property>
+<property>
+<name>dfs.namenode.hosts</name>
+<value>bjlg-b24-hbase41.ksc.com,bjlg-b24-hbase42.ksc.com,bjlg-b24-hbase43.ksc.com,bjlg-b24-hbase44.ksc.com</value>
+</property>
+</configuration>

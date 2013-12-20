@@ -11,6 +11,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ksyun.monitor.pojo.hbase.HBaseCell;
 import com.ksyun.vm.hbase.HBaseDao;
 import com.ksyun.vm.pojo.chart.MonitorVmDiskPo;
@@ -36,29 +37,11 @@ public class ChartService {
         c.add(Calendar.SECOND,-30);
         String startTime = String.valueOf(c.getTimeInMillis()/1000);
         String endTime = String.valueOf(new Date().getTime()/1000);
-        Map<String, List<HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_LOAD, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
+        List<Map<String, HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_LOAD, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
         MonitorVmLoadPo po = null;
-        Set<Map.Entry<String, List<HBaseCell>>> set = result.entrySet();
-        for (Iterator<Map.Entry<String, List<HBaseCell>>> it = set.iterator(); it.hasNext();) {
-            Map.Entry<String, List<HBaseCell>> entry = (Map.Entry<String, List<HBaseCell>>) it.next();
-            po = new MonitorVmLoadPo();
-            for(HBaseCell cell : entry.getValue()){
-            	if(cell.getQulifer().equals("cpupcload")){
-            		po.setCpuPCLoad(cell.getValue());
-            	}else if(cell.getQulifer().equals("cpuvmload")){
-            		po.setCpuVMLoad(cell.getValue());
-            	}else if(cell.getQulifer().equals("memorypcload")){
-            		po.setMemoryPCLoad(cell.getValue());
-            	}else if(cell.getQulifer().equals("memoryvmload")){
-            		po.setMemoryVMLoad(cell.getValue());
-            	}else if(cell.getQulifer().equals("vmname")){
-            		po.setVmName(cell.getValue());
-            	}else if(cell.getQulifer().equals("uuid")){
-            		po.setVmUuid(cell.getValue());
-            	}else if(cell.getQulifer().equals("time")){
-            		po.setLogTime(cell.getValue());
-            	}
-            }
+        for(Map<String, HBaseCell> row : result){
+        	HBaseCell cell = row.get("load");
+        	po = (MonitorVmLoadPo)JSONObject.parseObject(cell.getValue(),MonitorVmLoadPo.class);
         }
         return po;
     }
@@ -68,32 +51,15 @@ public class ChartService {
         c.add(Calendar.SECOND,-30);
         String startTime = String.valueOf(c.getTimeInMillis()/1000);
         String endTime = String.valueOf(new Date().getTime()/1000);
-        Map<String, List<HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_DISK, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
+        List<Map<String, HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_DISK, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
         List<MonitorVmDiskPo> list = new ArrayList<MonitorVmDiskPo>();
-        Set<Map.Entry<String, List<HBaseCell>>> set = result.entrySet();
-        for (Iterator<Map.Entry<String, List<HBaseCell>>> it = set.iterator(); it.hasNext();) {
-            Map.Entry<String, List<HBaseCell>> entry = (Map.Entry<String, List<HBaseCell>>) it.next();
-            MonitorVmDiskPo po = new MonitorVmDiskPo();
-            for(HBaseCell cell : entry.getValue()){
-            	if(cell.getQulifer().equals("rb")){
-            		po.setReadBytes(cell.getValue());
-            	}else if(cell.getQulifer().equals("wb")){
-            		po.setWriteBytes(cell.getValue());
-            	}else if(cell.getQulifer().equals("rt")){
-            		po.setReadTimes(cell.getValue());
-            	}else if(cell.getQulifer().equals("wt")){
-            		po.setWriteTimes(cell.getValue());
-            	}else if(cell.getQulifer().equals("vmname")){
-            		po.setVmName(cell.getValue());
-            	}else if(cell.getQulifer().equals("uuid")){
-            		po.setVmUuid(cell.getValue());
-            	}else if(cell.getQulifer().equals("time")){
-            		po.setLogTime(cell.getValue());
-            	}else if(cell.getQulifer().equals("disk")){
-            		po.setDisk(cell.getValue());
-            	}
+        for(Map<String, HBaseCell> row : result){
+        	Set<Map.Entry<String, HBaseCell>> set = row.entrySet();
+            for (Iterator<Map.Entry<String, HBaseCell>> it = set.iterator(); it.hasNext();) {
+                Map.Entry<String, HBaseCell> entry = (Map.Entry<String, HBaseCell>) it.next();
+                MonitorVmDiskPo po = (MonitorVmDiskPo)JSONObject.parseObject(entry.getValue().getValue(),MonitorVmDiskPo.class);
+                list.add(po);
             }
-            list.add(po);
         }
         System.out.println(list);
         MonitorVmDiskPo resultPo = new MonitorVmDiskPo();
@@ -110,32 +76,15 @@ public class ChartService {
         c.add(Calendar.SECOND,-30);
         String startTime = String.valueOf(c.getTimeInMillis()/1000);
         String endTime = String.valueOf(new Date().getTime()/1000);
-        Map<String, List<HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_NETWORK, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
+        List<Map<String, HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_NETWORK, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
         List<MonitorVmNetworkPo> list = new ArrayList<MonitorVmNetworkPo>();
-        Set<Map.Entry<String, List<HBaseCell>>> set = result.entrySet();
-        for (Iterator<Map.Entry<String, List<HBaseCell>>> it = set.iterator(); it.hasNext();) {
-            Map.Entry<String, List<HBaseCell>> entry = (Map.Entry<String, List<HBaseCell>>) it.next();
-            MonitorVmNetworkPo po = new MonitorVmNetworkPo();
-            for(HBaseCell cell : entry.getValue()){
-            	if(cell.getQulifer().equals("mac")){
-            		po.setMac(cell.getValue());
-            	}else if(cell.getQulifer().equals("rxb")){
-            		po.setRxb(cell.getValue());
-            	}else if(cell.getQulifer().equals("rxp")){
-            		po.setRxp(cell.getValue());
-            	}else if(cell.getQulifer().equals("txb")){
-            		po.setTxb(cell.getValue());
-            	}else if(cell.getQulifer().equals("txp")){
-            		po.setTxp(cell.getValue());
-            	}else if(cell.getQulifer().equals("vmname")){
-            		po.setVmName(cell.getValue());
-            	}else if(cell.getQulifer().equals("uuid")){
-            		po.setVmUuid(cell.getValue());
-            	}else if(cell.getQulifer().equals("time")){
-            		po.setLogTime(cell.getValue());
-            	}
+        for(Map<String, HBaseCell> row : result){
+        	Set<Map.Entry<String, HBaseCell>> set = row.entrySet();
+            for (Iterator<Map.Entry<String, HBaseCell>> it = set.iterator(); it.hasNext();) {
+                Map.Entry<String, HBaseCell> entry = (Map.Entry<String, HBaseCell>) it.next();
+                MonitorVmNetworkPo po = (MonitorVmNetworkPo)JSONObject.parseObject(entry.getValue().getValue(),MonitorVmNetworkPo.class);
+                list.add(po);
             }
-            list.add(po);
         }
         System.out.println(list);
         MonitorVmNetworkPo resultPo = new MonitorVmNetworkPo();
@@ -152,23 +101,11 @@ public class ChartService {
         c.add(Calendar.SECOND,-30);
         String startTime = String.valueOf(c.getTimeInMillis()/1000);
         String endTime = String.valueOf(new Date().getTime()/1000);
-        Map<String, List<HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_STATUS, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
+        List<Map<String, HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_STATUS, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
         MonitorVmStatusFlowPo po = null;
-        Set<Map.Entry<String, List<HBaseCell>>> set = result.entrySet();
-        for (Iterator<Map.Entry<String, List<HBaseCell>>> it = set.iterator(); it.hasNext();) {
-            Map.Entry<String, List<HBaseCell>> entry = (Map.Entry<String, List<HBaseCell>>) it.next();
-            po = new MonitorVmStatusFlowPo();
-            for(HBaseCell cell : entry.getValue()){
-            	if(cell.getQulifer().equals("status")){
-            		po.setStatus(cell.getValue());
-            	}else if(cell.getQulifer().equals("vmname")){
-            		po.setVmName(cell.getValue());
-            	}else if(cell.getQulifer().equals("uuid")){
-            		po.setVmUuid(cell.getValue());
-            	}else if(cell.getQulifer().equals("time")){
-            		po.setLogTime(cell.getValue());
-            	}
-            }
+        for(Map<String, HBaseCell> row : result){
+        	HBaseCell cell = row.get("load");
+        	po = (MonitorVmStatusFlowPo)JSONObject.parseObject(cell.getValue(),MonitorVmStatusFlowPo.class);
         }
         return po;
     }
@@ -178,29 +115,11 @@ public class ChartService {
         c.add(Calendar.DATE,-1);
         String startTime = String.valueOf(c.getTimeInMillis()/1000);
         String endTime = String.valueOf(new Date().getTime()/1000);
-        Map<String, List<HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_LOAD, Tools.makeRowKey(vmuuid, startTime), Tools.makeRowKey(vmuuid, endTime));
+        List<Map<String, HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_LOAD, Tools.makeRowKey(vmuuid, startTime), Tools.makeRowKey(vmuuid, endTime));
         List<MonitorVmLoadPo> poList = new ArrayList<MonitorVmLoadPo>();
-        Set<Map.Entry<String, List<HBaseCell>>> set = result.entrySet();
-        for (Iterator<Map.Entry<String, List<HBaseCell>>> it = set.iterator(); it.hasNext();) {
-            Map.Entry<String, List<HBaseCell>> entry = (Map.Entry<String, List<HBaseCell>>) it.next();
-            MonitorVmLoadPo po = new MonitorVmLoadPo();
-            for(HBaseCell cell : entry.getValue()){
-            	if(cell.getQulifer().equals("cpupcload")){
-            		po.setCpuPCLoad(cell.getValue());
-            	}else if(cell.getQulifer().equals("cpuvmload")){
-            		po.setCpuVMLoad(cell.getValue());
-            	}else if(cell.getQulifer().equals("memorypcload")){
-            		po.setMemoryPCLoad(cell.getValue());
-            	}else if(cell.getQulifer().equals("memoryvmload")){
-            		po.setMemoryVMLoad(cell.getValue());
-            	}else if(cell.getQulifer().equals("vmname")){
-            		po.setVmName(cell.getValue());
-            	}else if(cell.getQulifer().equals("uuid")){
-            		po.setVmUuid(cell.getValue());
-            	}else if(cell.getQulifer().equals("time")){
-            		po.setLogTime(cell.getValue());
-            	}
-            }
+        for(Map<String, HBaseCell> row : result){
+        	HBaseCell cell = row.get("load");
+        	MonitorVmLoadPo po = (MonitorVmLoadPo)JSONObject.parseObject(cell.getValue(),MonitorVmLoadPo.class);
             poList.add(po);
         }
         System.out.println(poList);
@@ -212,32 +131,15 @@ public class ChartService {
     	c.add(Calendar.DATE,-1);
     	String startTime = String.valueOf(c.getTimeInMillis()/1000);
         String endTime = String.valueOf(new Date().getTime()/1000);
-        Map<String, List<HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_NETWORK, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
+        List<Map<String, HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_NETWORK, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
         List<MonitorVmNetworkPo> poList = new ArrayList<MonitorVmNetworkPo>();
-        Set<Map.Entry<String, List<HBaseCell>>> set = result.entrySet();
-        for (Iterator<Map.Entry<String, List<HBaseCell>>> it = set.iterator(); it.hasNext();) {
-            Map.Entry<String, List<HBaseCell>> entry = (Map.Entry<String, List<HBaseCell>>) it.next();
-            MonitorVmNetworkPo po = new MonitorVmNetworkPo();
-            for(HBaseCell cell : entry.getValue()){
-            	if(cell.getQulifer().equals("mac")){
-            		po.setMac(cell.getValue());
-            	}else if(cell.getQulifer().equals("rxb")){
-            		po.setRxb(cell.getValue());
-            	}else if(cell.getQulifer().equals("rxp")){
-            		po.setRxp(cell.getValue());
-            	}else if(cell.getQulifer().equals("txb")){
-            		po.setTxb(cell.getValue());
-            	}else if(cell.getQulifer().equals("txp")){
-            		po.setTxp(cell.getValue());
-            	}else if(cell.getQulifer().equals("vmname")){
-            		po.setVmName(cell.getValue());
-            	}else if(cell.getQulifer().equals("uuid")){
-            		po.setVmUuid(cell.getValue());
-            	}else if(cell.getQulifer().equals("time")){
-            		po.setLogTime(cell.getValue());
-            	}
+        for(Map<String, HBaseCell> row : result){
+        	Set<Map.Entry<String, HBaseCell>> set = row.entrySet();
+            for (Iterator<Map.Entry<String, HBaseCell>> it = set.iterator(); it.hasNext();) {
+                Map.Entry<String, HBaseCell> entry = (Map.Entry<String, HBaseCell>) it.next();
+                MonitorVmNetworkPo po = (MonitorVmNetworkPo)JSONObject.parseObject(entry.getValue().getValue(),MonitorVmNetworkPo.class);
+                poList.add(po);
             }
-            poList.add(po);
         }
         System.out.println(poList);
         return poList;
@@ -248,32 +150,15 @@ public class ChartService {
     	c.add(Calendar.DATE,-1);
     	String startTime = String.valueOf(c.getTimeInMillis()/1000);
         String endTime = String.valueOf(new Date().getTime()/1000);
-        Map<String, List<HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_DISK, Tools.makeRowKey(vmuuid, startTime), Tools.makeRowKey(vmuuid,endTime));
+        List<Map<String, HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_DISK, Tools.makeRowKey(vmuuid, startTime), Tools.makeRowKey(vmuuid,endTime));
         List<MonitorVmDiskPo> poList = new ArrayList<MonitorVmDiskPo>();
-        Set<Map.Entry<String, List<HBaseCell>>> set = result.entrySet();
-        for (Iterator<Map.Entry<String, List<HBaseCell>>> it = set.iterator(); it.hasNext();) {
-            Map.Entry<String, List<HBaseCell>> entry = (Map.Entry<String, List<HBaseCell>>) it.next();
-            MonitorVmDiskPo po = new MonitorVmDiskPo();
-            for(HBaseCell cell : entry.getValue()){
-            	if(cell.getQulifer().equals("rb")){
-            		po.setReadBytes(cell.getValue());
-            	}else if(cell.getQulifer().equals("wb")){
-            		po.setWriteBytes(cell.getValue());
-            	}else if(cell.getQulifer().equals("rt")){
-            		po.setReadTimes(cell.getValue());
-            	}else if(cell.getQulifer().equals("wt")){
-            		po.setWriteTimes(cell.getValue());
-            	}else if(cell.getQulifer().equals("vmname")){
-            		po.setVmName(cell.getValue());
-            	}else if(cell.getQulifer().equals("uuid")){
-            		po.setVmUuid(cell.getValue());
-            	}else if(cell.getQulifer().equals("time")){
-            		po.setLogTime(cell.getValue());
-            	}else if(cell.getQulifer().equals("disk")){
-            		po.setDisk(cell.getValue());
-            	}
+        for(Map<String, HBaseCell> row : result){
+        	Set<Map.Entry<String, HBaseCell>> set = row.entrySet();
+            for (Iterator<Map.Entry<String, HBaseCell>> it = set.iterator(); it.hasNext();) {
+                Map.Entry<String, HBaseCell> entry = (Map.Entry<String, HBaseCell>) it.next();
+                MonitorVmDiskPo po = (MonitorVmDiskPo)JSONObject.parseObject(entry.getValue().getValue(),MonitorVmDiskPo.class);
+                poList.add(po);
             }
-            poList.add(po);
         }
         System.out.println(poList);
         return poList;
@@ -284,23 +169,11 @@ public class ChartService {
     	c.add(Calendar.DATE,-1);
     	String startTime = String.valueOf(c.getTimeInMillis()/1000);
         String endTime = String.valueOf(new Date().getTime()/1000);
-        Map<String, List<HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_STATUS, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
+        List<Map<String, HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_STATUS, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
         List<MonitorVmStatusFlowPo> poList = new ArrayList<MonitorVmStatusFlowPo>();
-        Set<Map.Entry<String, List<HBaseCell>>> set = result.entrySet();
-        for (Iterator<Map.Entry<String, List<HBaseCell>>> it = set.iterator(); it.hasNext();) {
-            Map.Entry<String, List<HBaseCell>> entry = (Map.Entry<String, List<HBaseCell>>) it.next();
-            MonitorVmStatusFlowPo po = new MonitorVmStatusFlowPo();
-            for(HBaseCell cell : entry.getValue()){
-            	if(cell.getQulifer().equals("status")){
-            		po.setStatus(cell.getValue());
-            	}else if(cell.getQulifer().equals("vmname")){
-            		po.setVmName(cell.getValue());
-            	}else if(cell.getQulifer().equals("uuid")){
-            		po.setVmUuid(cell.getValue());
-            	}else if(cell.getQulifer().equals("time")){
-            		po.setLogTime(cell.getValue());
-            	}
-            }
+        for(Map<String, HBaseCell> row : result){
+        	HBaseCell cell = row.get("status");
+        	MonitorVmStatusFlowPo po = (MonitorVmStatusFlowPo)JSONObject.parseObject(cell.getValue(),MonitorVmStatusFlowPo.class);
             poList.add(po);
         }
         System.out.println(poList);

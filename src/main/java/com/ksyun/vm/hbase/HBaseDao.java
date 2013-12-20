@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -176,13 +176,14 @@ public class HBaseDao {
 	 * 
 	 * @param tablename
 	 */
-	public Map<String, List<HBaseCell>> scaner(String tablename, String startRowKey, String stopRowKey) {
-		List<HBaseCell> list = null;
-		CollatorComparator comparator = new CollatorComparator();
-		Map<String, List<HBaseCell>> resultMap = new TreeMap<String, List<HBaseCell>>(comparator);
+	public List<Map<String, HBaseCell>> scaner(String tablename, String startRowKey, String stopRowKey) {
+/*		List<HBaseCell> list = null;
+	//	CollatorComparator comparator = new CollatorComparator();
+		List<List<HBaseCell>> resultList = new ArrayList<List<HBaseCell>>();
 		try {
 			HTable table = new HTable(conf, tablename);
 			Scan s = new Scan();
+		//	s.setMaxVersions();
 			if(startRowKey != null && stopRowKey != null){
 				s.setStartRow(startRowKey.getBytes());
 				s.setStopRow(stopRowKey.getBytes());
@@ -200,17 +201,53 @@ public class HBaseDao {
 					cell.setTimestamp(kv.getTimestamp() + "");
 					list.add(cell);
 				}
-				resultMap.put(list.get(0).getRowkey(), list);
+				resultList.add(list);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return resultMap;
+		return resultList;*/
+		
+		
+		Map<String, HBaseCell> rowMap = null;
+		//	CollatorComparator comparator = new CollatorComparator();
+			List<Map<String, HBaseCell>> resultList = new ArrayList<Map<String, HBaseCell>>();
+			try {
+				HTable table = new HTable(conf, tablename);
+				Scan s = new Scan();
+			//	s.setMaxVersions();
+				if(startRowKey != null && stopRowKey != null){
+					s.setStartRow(startRowKey.getBytes());
+					s.setStopRow(stopRowKey.getBytes());
+				}
+				ResultScanner rs = table.getScanner(s);
+				for (Result r : rs) {
+					rowMap = new HashMap<>();
+					KeyValue[] kvs = r.raw();
+					for (KeyValue kv : kvs) {
+						HBaseCell cell = new HBaseCell();
+						cell.setRowkey(new String(kv.getRow()));
+						cell.setFamily(new String(kv.getFamily()));
+						cell.setQulifer(new String(kv.getQualifier()));
+						cell.setValue(new String(kv.getValue()));
+						cell.setTimestamp(kv.getTimestamp() + "");
+						rowMap.put(cell.getQulifer(), cell);
+					}
+					resultList.add(rowMap);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return resultList;
 	}
 
 	
 	public static void main(String[] args) throws IOException {
 		HBaseDao hbaseDao = new HBaseDao();
+	//	hbaseDao.deleteTable("vm_table_status");
+	//	hbaseDao.deleteTable("vm_table_network");
+		hbaseDao.deleteTable("vm_table_load");
+	//	hbaseDao.deleteTable("vm_table_disk");
 	//	baseDao.createTable(InitConst.MONITOR_HBASE_TABLE_LOAD, new String[] { "col1", "col2" }, true);
 
 	/*	List<HBaseCell> list = new ArrayList<HBaseCell>();
@@ -253,15 +290,107 @@ public class HBaseDao {
 		puts.add(put);
 		puts.add(put1);
 		table.put(puts);*/
+		
+		
+		
+//		MonitorVmDiskPo po1 = new MonitorVmDiskPo();
+//		po1.setDisk("vda");
+//		po1.setLogTime("1387517225");
+//		po1.setReadBytes("123");
+//		po1.setReadTimes("123");
+//		po1.setVmName("test");
+//		po1.setVmUuid("111111");
+//		po1.setWriteBytes("123");
+//		po1.setWriteTimes("123");
+//		
+//		MonitorVmDiskPo po2 = new MonitorVmDiskPo();
+//		po2.setDisk("vdb");
+//		po2.setLogTime("1387517225");
+//		po2.setReadBytes("123");
+//		po2.setReadTimes("123");
+//		po2.setVmName("test");
+//		po2.setVmUuid("111111");
+//		po2.setWriteBytes("123");
+//		po2.setWriteTimes("123");
+//		
+//		
+//		MonitorVmDiskPo po3 = new MonitorVmDiskPo();
+//		po3.setDisk("vda");
+//		po3.setLogTime("1387517236");
+//		po3.setReadBytes("123");
+//		po3.setReadTimes("123");
+//		po3.setVmName("test");
+//		po3.setVmUuid("111111");
+//		po3.setWriteBytes("123");
+//		po3.setWriteTimes("123");
+//		
+//		MonitorVmDiskPo po4 = new MonitorVmDiskPo();
+//		po4.setDisk("vda");
+//		po4.setLogTime("1387517236");
+//		po4.setReadBytes("123");
+//		po4.setReadTimes("123");
+//		po4.setVmName("test");
+//		po4.setVmUuid("111111");
+//		po4.setWriteBytes("123");
+//		po4.setWriteTimes("123");
+//		
+//		
+//		HBaseCell cell1 = new HBaseCell();
+//		cell1.setRowkey(po1.getVmUuid()+"_"+po1.getLogTime());
+//		cell1.setFamily("body");
+//		cell1.setTimestamp(po1.getLogTime());
+//		cell1.setValue(JSON.toJSONString(po1));
+//		cell1.setQulifer(po1.getDisk());
+//		
+//		
+//		HBaseCell cell2 = new HBaseCell();
+//		cell2.setRowkey(po2.getVmUuid()+"_"+po2.getLogTime());
+//		cell2.setFamily("body");
+//		cell2.setTimestamp(po2.getLogTime());
+//		cell2.setValue(JSON.toJSONString(po2));
+//		cell2.setQulifer(po2.getDisk());
+//		
+//		HBaseCell cell3 = new HBaseCell();
+//		cell3.setRowkey(po3.getVmUuid()+"_"+po3.getLogTime());
+//		cell3.setFamily("body");
+//		cell3.setTimestamp(po3.getLogTime());
+//		cell3.setValue(JSON.toJSONString(po1));
+//		cell3.setQulifer(po3.getDisk());
+//		
+//		
+//		HBaseCell cell4 = new HBaseCell();
+//		cell4.setRowkey(po4.getVmUuid()+"_"+po4.getLogTime());
+//		cell4.setFamily("body");
+//		cell4.setTimestamp(po4.getLogTime());
+//		cell4.setValue(JSON.toJSONString(po1));
+//		cell4.setQulifer(po4.getDisk());
+//		
+//		
+//		List<HBaseCell> list = new ArrayList<HBaseCell>();
+//		list.add(cell1);
+//		list.add(cell2);
+//		list.add(cell3);
+//		list.add(cell4);
+//		hbaseDao.createTable("vm_table_disk", new String[] { "body"}, false);
+//		hbaseDao.writeMultCell("vm_table_disk", list);
+//		
+//		
+//		Calendar c = Calendar.getInstance();
+//        c.add(Calendar.DATE,-1);
+//        String startTime = String.valueOf(c.getTimeInMillis()/1000);
+//        String endTime = String.valueOf(new Date().getTime()/1000);
+//        System.out.println(startTime + " " + endTime);
+//		System.out.println(hbaseDao.scaner("vm_table_disk","111111_"+startTime,"111111_"+endTime));
+		
 		Calendar c = Calendar.getInstance();
-    	c.add(Calendar.SECOND,-30);
+    	c.add(Calendar.HOUR,-6);
         String startTime = String.valueOf(c.getTimeInMillis()/1000);
         String endTime = String.valueOf(new Date().getTime()/1000);
         System.out.println(startTime);
-		String vmuuid="06aeb0d3-cb87-4aed-880e-265809941c11";
+		String vmuuid="ee28f20a-d2d1-4a82-9aff-6d55a39aeaae";
 		System.out.println(Tools.makeRowKey(vmuuid, startTime));
 		System.out.println(Tools.makeRowKey(vmuuid, String.valueOf(new Date().getTime()/1000)));
-		Map<String, List<HBaseCell>> result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_STATUS, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
+		List<Map<String, HBaseCell>>  result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_DISK, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
 		System.out.println(result);
 	}
 }
