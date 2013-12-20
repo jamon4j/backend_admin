@@ -31,14 +31,18 @@
                                 load : function() {
                                     var series = this.series[0];
                                     var series1 = this.series[1];
+                                    var series2 = this.series[2];
+                                    var series3 = this.series[3];
                                     setInterval(function() {
                                         $.ajax({
                                             url:"/g/chart/${vmuuid}/getLoad",
                                             dataType:"json",
                                             success:function(cpu){
                                                 var date = parseInt(cpu.logTime)*1000;
-                                                series1.addPoint([date, parseFloat(cpu.memoryLoad)], true, true);
-                                                series.addPoint([date,parseFloat(cpu.cpuLoad)], true, true);
+                                                series3.addPoint([date, parseFloat(cpu.memoryPCLoad)], true, true);
+                                                series2.addPoint([date,parseFloat(cpu.cpuPCLoad)], true, true);
+                                                series1.addPoint([date, parseFloat(cpu.memoryVMLoad)], true, true);
+                                                series.addPoint([date,parseFloat(cpu.cpuVMLoad)], true, true);
                                             }
                                         })
                                     }, 30000);
@@ -72,14 +76,14 @@
                         },
 
                         series : [{
-                            name : 'CPU',
+                            name : 'PC-CPU',
                             data : (function() {
                                 var data = []
                                 $.each(cpudata,function(index,obj){
                                     var date = parseInt(obj.logTime)*1000;
                                     data.push([
                                         date,
-                                        parseFloat(obj.cpuLoad)
+                                        parseFloat(obj.cpuPCLoad)
                                     ]);
                                 });
                                 return data;
@@ -94,14 +98,58 @@
                                 valueSuffix:'%'
                             }
                         },{
-                            name : 'MEMORY',
+                            name : 'PC-MEMORY',
                             data : (function() {
                                 var data = []
                                 $.each(cpudata,function(index,obj){
                                     var date = parseInt(obj.logTime)*1000;
                                     data.push([
                                         date,
-                                        parseFloat(obj.memoryLoad)
+                                        parseFloat(obj.memoryPCLoad)
+                                    ]);
+                                });
+                                return data;
+                            })(),
+                            shadow:true,
+                            marker : {
+                                enabled : true,
+                                radius : 3
+                            },
+                            tooltip:{
+                                valueDecimals:1,
+                                valueSuffix:'%'
+                            }
+                        },{
+                            name : 'VM-CPU',
+                            data : (function() {
+                                var data = []
+                                $.each(cpudata,function(index,obj){
+                                    var date = parseInt(obj.logTime)*1000;
+                                    data.push([
+                                        date,
+                                        parseFloat(obj.cpuVMLoad)
+                                    ]);
+                                });
+                                return data;
+                            })(),
+                            shadow:true,
+                            marker : {
+                                enabled : true,
+                                radius : 3
+                            },
+                            tooltip:{
+                                valueDecimals:1,
+                                valueSuffix:'%'
+                            }
+                        },{
+                            name : 'VM-MEMORY',
+                            data : (function() {
+                                var data = []
+                                $.each(cpudata,function(index,obj){
+                                    var date = parseInt(obj.logTime)*1000;
+                                    data.push([
+                                        date,
+                                        parseFloat(obj.memoryVMLoad)
                                     ]);
                                 });
                                 return data;
