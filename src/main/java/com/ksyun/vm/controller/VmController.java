@@ -106,5 +106,18 @@ public class VmController {
         }
         return "true";
     }
+
+    // 创建vm(ajax请求)
+    @RequestMapping(value = "/g/user/vm/reset/{tenant_id}/{user_id}")
+    @ResponseBody
+    public String createVm(@PathVariable("tenant_id")String tenantId,@PathVariable("user_id")String userId,@RequestParam("vm_id")String vm_id,@RequestParam("password")String password,@RequestParam("image_id")String image_id){
+        try {
+            vmService.reset(tenantId,userId,vm_id,password,image_id);
+        } catch (ErrorCodeException | NoTokenException e) {
+            e.printStackTrace();
+            return "false";
+        }
+        return "true";
+    }
 }
 

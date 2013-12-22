@@ -29,6 +29,9 @@
     function show(id){
         $( "#contain-"+id ).toggle('500')
     }
+    function showIp(id){
+        $( "#ip-"+id ).toggle('500')
+    }
    	function showhostlist(zoneid){
    		window.location.href="/g/hostlistbyzone/"+zoneid;
    	}
@@ -51,7 +54,7 @@
                 <th width="20%">
                     <div class="th-gap">zone_id</div>
                 </th>
-                <th width="40%">
+                <th width="20%">
                     <div class="th-gap">zone名称</div>
                 </th>
                 <th width="10%">
@@ -66,6 +69,9 @@
                 <th>
                     <div class="th-gap">查看容量</div>
                 </th>
+                <th>
+                    <div class="th-gap">查看IP</div>
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -78,6 +84,7 @@
 						<td><button onclick="detail(${dto.id})">详情</button></td>
 						<td><button onclick="showhostlist(${dto.id})">查看物理机</button></td>
                         <td><button onclick="show(${dto.id})">容量查看</button></td>
+                        <td><button onclick="showIp(${dto.id})">IP查看</button> </td>
 						<div id="zone_dialog_${dto.id}" title="zone${dto.id}详情" style="display:none">
 							<p>id:${dto.id}</p>
 							<p>name:${dto.name}</p>
@@ -89,7 +96,7 @@
 						</div>
 					</tr>
                     <tr id="contain-${dto.id}" style="display: none;">
-                        <td colspan="6">
+                        <td colspan="7">
                         <div>
                            <table class="table">
                                <thead class="tb-tit-bg">
@@ -134,6 +141,34 @@
                                </tbody>
                            </table>
                         </div>
+                        </td>
+                    </tr>
+                    <tr id="ip-${dto.id}" style="display: none;">
+                        <td colspan="7">
+                        <div>
+                        <table class="table">
+                        <thead class="tb-tit-bg">
+                        <th>网络</th>
+                        <th>总数</th>
+                        <th>可用</th>
+                        <th>已用</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>${dto.ipStat.wan.name}</td>
+                                <td>${dto.ipStat.wan.ipnum}</td>
+                                <td>${dto.ipStat.wan.availability_ipnum}</td>
+                                <td>${dto.ipStat.wan.used_ipnum}</td>
+                            </tr>
+                            <tr>
+                                <td>${dto.ipStat.lan.name}</td>
+                                <td>${dto.ipStat.lan.ipnum}</td>
+                                <td>${dto.ipStat.lan.availability_ipnum}</td>
+                                <td>${dto.ipStat.lan.used_ipnum}</td>
+                            </tr>
+                        </tbody>
+                            </table>
+                            </div>
                         </td>
                     </tr>
 				</c:forEach>

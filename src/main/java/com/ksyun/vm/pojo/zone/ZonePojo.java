@@ -1,6 +1,7 @@
 package com.ksyun.vm.pojo.zone;
 
 import com.ksyun.vm.pojo.BasePo;
+import com.ksyun.vm.pojo.stat.IpStat;
 import com.ksyun.vm.pojo.stat.StatZone;
 
 import java.util.List;
@@ -23,6 +24,15 @@ public class ZonePojo extends BasePo {
     private String id;
     private Metadata metadata;
     private StatZone statZone;
+    private IpStat ipStat;
+
+    public IpStat getIpStat() {
+        return ipStat;
+    }
+
+    public void setIpStat(IpStat ipStat) {
+        this.ipStat = ipStat;
+    }
 
     public StatZone getStatZone() {
         return statZone;

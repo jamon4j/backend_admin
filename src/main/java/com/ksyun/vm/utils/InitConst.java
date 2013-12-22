@@ -15,6 +15,7 @@ public class InitConst {
     public static final String KVM_ZONE_HOST = "kvm.zone.host";
     public static final String KVM_ZONE_HOST_LIST = "kvm.zone.host.list";
 
+
     public static final String KVM_HOST_VM_LIST = "kvm.host.vm.list";
 
     public static final String KVM_IMAGE_LIST = "kvm.image.list";
@@ -40,6 +41,7 @@ public class InitConst {
     public static final String KVM_VM_RESTART = "kvm.vm.restart";
     public static final String KVM_VM_PWD = "kvm.vm.pwd";
     public static final String KVM_VM_COLDMOVE="kvm.vm.coldmove";
+    public static final String KVM_VM_RESET = "kvm.vm.reset";
 
     public static final String KVM_SECURITY_GROUP = "kvm.sg";
     public static final String KVM_SECURITY_GROUP_LIST = "kvm.sg.list";
@@ -59,12 +61,12 @@ public class InitConst {
 
     public static final String KVM_STAT_ZONE="kvm.stat.zone";
     public static final String KVM_STAT_HOST="kvm.stat.host";
-
+    public static final String KVM_STAT_IP = "kvm.stat.ip";
 
     public static final String KVM_VNC = "kvm.vnc";
     
-    public static final String MONITOR_HBASE_TABLE_STATUS="vm_table_status";
-    public static final String MONITOR_HBASE_TABLE_NETWORK="vm_table_network";
-    public static final String MONITOR_HBASE_TABLE_LOAD="vm_table_load";
-    public static final String MONITOR_HBASE_TABLE_DISK="vm_table_disk";
+    public static final String MONITOR_HBASE_TABLE_STATUS="vm_table_status_test";
+    public static final String MONITOR_HBASE_TABLE_NETWORK="vm_table_network_test";
+    public static final String MONITOR_HBASE_TABLE_LOAD="vm_table_load_test";
+    public static final String MONITOR_HBASE_TABLE_DISK="vm_table_disk_test";
 }

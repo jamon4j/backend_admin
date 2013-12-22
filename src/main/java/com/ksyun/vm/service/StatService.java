@@ -3,6 +3,7 @@ package com.ksyun.vm.service;
 import com.ksyun.vm.exception.ErrorCodeException;
 import com.ksyun.vm.exception.NoTokenException;
 import com.ksyun.vm.pojo.UserPo;
+import com.ksyun.vm.pojo.stat.IpStat;
 import com.ksyun.vm.pojo.stat.StatHost;
 import com.ksyun.vm.pojo.stat.StatZone;
 import com.ksyun.vm.pojo.user.UserPojo;
@@ -43,5 +44,9 @@ public class StatService {
             }
         }
         return list;
+    }
+
+    public List<IpStat> getIpStat() throws ErrorCodeException, NoTokenException {
+        return jsonService.getPoList(InitConst.KVM_STAT_IP, InitConst.ADMIN, InitConst.PASSWORD, IpStat.class);
     }
 }

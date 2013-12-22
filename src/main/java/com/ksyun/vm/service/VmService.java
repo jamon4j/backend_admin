@@ -99,4 +99,15 @@ public class VmService {
         String requestBody = JSONObject.toJSONString(map);
         jsonService.poPost(InitConst.KVM_VM_CREATE, null, null, null, requestBody);
     }
+
+    public void reset(String tenantId,String userId,String vm_id,String password,String image_id) throws ErrorCodeException, NoTokenException {
+        jsonService.setId(userId);
+        jsonService.setTenantId(tenantId);
+        Map<String,String> map = new HashMap<>();
+        map.put("vm_id", vm_id);
+        map.put("password", password);
+        map.put("image_id",image_id);
+        String requestBody = JSONObject.toJSONString(map);
+        jsonService.poPost(InitConst.KVM_VM_RESET,null,null,null,requestBody);
+    }
 }

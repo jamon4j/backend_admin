@@ -11,6 +11,7 @@ import com.ksyun.vm.exception.ErrorCodeException;
 import com.ksyun.vm.exception.NoTokenException;
 import com.ksyun.vm.pojo.stat.CpuInfos;
 import com.ksyun.vm.pojo.stat.HostUsage;
+import com.ksyun.vm.pojo.stat.IpStat;
 import com.ksyun.vm.pojo.stat.StatZone;
 import com.ksyun.vm.pojo.zone.ZonePojo;
 import com.ksyun.vm.service.StatService;
@@ -37,9 +38,11 @@ public class ZoneController {
 	public ModelAndView returnZoneList(HttpServletRequest request, ModelAndView mav) {
         List<ZonePojo> list = null;
         List<StatZone> stat_zone = null;
+        List<IpStat> ip_stat = null;
         try {
             list = zoneService.getZoneList();
             stat_zone = statService.getStatZone();
+            ip_stat = statService.getIpStat();
             for(ZonePojo pojo:list){
                 for(StatZone zone:stat_zone){
                     if(pojo.getName().equals(zone.getZone_name())){
@@ -48,6 +51,11 @@ public class ZoneController {
                             usage.setCpu_infos(JSONObject.parseObject(usage.getCpu_info(),CpuInfos.class));
                         }
                         break;
+                    }
+                }
+                for(IpStat ipStat:ip_stat){
+                    if(pojo.getName().equals(ipStat.getZone_name())){
+                        pojo.setIpStat(ipStat);
                     }
                 }
             }
