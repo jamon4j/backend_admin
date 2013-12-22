@@ -47,6 +47,7 @@
         <property name="removeAbandoned" value="true" />
         <property name="removeAbandonedTimeout" value="180" />
     </bean>
+    
     <bean id="transactionManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
           p:dataSource-ref="dataSource">
@@ -82,4 +83,37 @@
     <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
         <constructor-arg index="0" ref="sqlSessionFactory" />
     </bean>
+    
+    
+    <!-- kpi  datasource  
+    
+    <tx:annotation-driven transaction-manager="txManager"/>
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource_kpi"/>
+    </bean>
+    
+    <bean id="dataSource_kpi" destroy-method="close"
+          class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${jdbc_kpi.driverClassName}" />
+        <property name="url" value="${jdbc_kpi.url}" />
+        <property name="username" value="${jdb_kpi.username}" />
+        <property name="password" value="${jdbc_kpi.password}" />
+        <property name="initialSize" value="10" />
+        <property name="maxActive" value="100" />
+        <property name="maxIdle" value="2" />
+        <property name="minIdle" value="1" />
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
+        <property name="validationQuery" value="select now()" />
+        <property name="validationQueryTimeout" value="1" />
+        <property name="timeBetweenEvictionRunsMillis" value="30000" />
+        <property name="numTestsPerEvictionRun" value="16" />
+        <property name="minEvictableIdleTimeMillis" value="18000000" />
+        <property name="removeAbandoned" value="true" />
+        <property name="removeAbandonedTimeout" value="180" />
+    </bean>
+    
+    -->
+    
 </beans>

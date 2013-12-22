@@ -12,7 +12,8 @@
     <ul>
         <li><a href="<%=webRootPath%>/zonelist">机器管理</a></li>
         <%-- <li><a href="<%=webRootPath%>/sglist">安全组管理</a></li> --%>
-        <li><a href="<%=webRootPath%>/userlist">用户管理</a></li><!--
+        <li><a href="<%=webRootPath%>/userlist">用户管理</a></li>
+        <li><a href="<%=webRootPath%>/kpi/home.jsp">KPI统计</a></li><!--
         <li><a href="#">用户管理</a></li>
         <li><a href="#">虚拟机管理</a></li>
         <li><a href="#">EBS管理</a></li>
@@ -55,6 +56,16 @@
             <li><a href="/g/home?" router="home/1/2" target="mainframe">重置任务</a></li>
             <li><a href="/g/home?" router="home/1/3" target="mainframe">在线用户管理</a></li>
         --></ul>
+    </div>
+
+
+    <div class="menu-group">
+        <h2 class="first">KPI统计</h2>
+        <ul>
+            <li><a href="/kpi/home.jsp?t=1" router="home/2/0" target="mainframe">KPI首页</a></li>
+            <li><a href="/kpi/kpi_list.jsp?p=pub_kvm" router="home/2/0" target="mainframe">公有云控制台总体情况</a></li>
+            <li><a href="/kpi/kpi_list.jsp?p=pub_op" router="home/2/0" target="mainframe">公有云操作情况</a></li>
+        </ul>
     </div>
 
 
