@@ -39,7 +39,7 @@ public class VmController {
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
         }
-        return "false"; 
+        return "false";
     }
     // 按某用户查找虚拟机列表
     @RequestMapping(value = "/g/user/vmlist/{tenant_id}/{user_id}")

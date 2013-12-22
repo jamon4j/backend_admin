@@ -40,6 +40,7 @@ public class InitConst {
     public static final String KVM_VM_RESTART = "kvm.vm.restart";
     public static final String KVM_VM_PWD = "kvm.vm.pwd";
     public static final String KVM_VM_COLDMOVE="kvm.vm.coldmove";
+    public static final String KVM_VM_RESET = "kvm.vm.reset";
 
     public static final String KVM_SECURITY_GROUP = "kvm.sg";
     public static final String KVM_SECURITY_GROUP_LIST = "kvm.sg.list";
@@ -59,7 +60,7 @@ public class InitConst {
 
     public static final String KVM_STAT_ZONE="kvm.stat.zone";
     public static final String KVM_STAT_HOST="kvm.stat.host";
-
+    public static final String KVM_STAT_IP = "kvm.stat.ip";
 
     public static final String KVM_VNC = "kvm.vnc";
     

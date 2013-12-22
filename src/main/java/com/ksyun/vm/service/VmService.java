@@ -104,9 +104,11 @@ public class VmService {
         jsonService.setId(userId);
         jsonService.setTenantId(tenantId);
         Map<String,String> map = new HashMap<>();
+        if(image_id!=null&&!image_id.equals("")){
+            map.put("image_id",image_id);
+        }
         map.put("vm_id", vm_id);
         map.put("password", password);
-        map.put("image_id",image_id);
         String requestBody = JSONObject.toJSONString(map);
         jsonService.poPost(InitConst.KVM_VM_RESET,null,null,null,requestBody);
     }

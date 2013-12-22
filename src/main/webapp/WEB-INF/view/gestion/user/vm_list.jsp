@@ -180,6 +180,59 @@
 			});
 			$( "#vm_dialog_"+id ).dialog("open");
 	   	}
+
+        function reset_system(vm_id){
+            $.ajax({
+                url : "/g/user/image_public_id_list/<%=tenantId %>/<%=userId %>",
+                dataType : 'text',
+                success : function(data) {
+                    var imageJson = eval('('+data+')');
+                    for(i=0;i<imageJson.length;i++){
+                        $("#reset_image").append("<option value='"+imageJson[i].id+"'>"+imageJson[i].name+"</option>");
+                    }
+                }
+            });
+            $( "#reset_system").dialog({
+                autoOpen: false,
+                postion: "center",
+                modal: true,
+                height:"300",
+                width:"350",
+                show: {
+                    effect: "blind",
+                    duration: 200
+
+                },
+                hide: {
+                    effect: "explode",
+                    duration: 1000
+                },
+                buttons:{
+                    "重装":function (){
+                        var pass = $("#reset_password").val();
+                        var image_id=$("#reset_image").val();
+                        if(pass==''){
+                            alert("请输入重装后的登陆密码!");
+                            return;
+                        }
+                        $.ajax({
+                           url:'/g/user/vm/reset/<%=tenantId %>/<%=userId %>',
+                           data:{
+                               vm_id:vm_id,
+                               password:pass,
+                               image_id:image_id
+                           },
+                           dataType:'text',
+                           success:function(data){
+                                alert(data);
+                               $( "#reset_system").dialog("close");
+                           }
+                        });
+                    }
+                }
+            });
+            $( "#reset_system").dialog("open");
+        }
    		///////////   vm详情结束  ///////////
    		///////////   创建vm开始  ///////////
 	   	function addvm(tenantid,userid){
@@ -462,13 +515,13 @@
                 <th width="12%">
                     <div class="th-gap">虚拟机id</div>
                 </th>
-                <th width="10%">
+                <th width="8%">
                     <div class="th-gap">虚拟机状态</div>
                 </th>
-                <th width="15%">
+                <th width="12%">
                     <div class="th-gap">name</div>
                 </th>
-                <th width="15%">
+                <th width="12%">
                     <div class="th-gap">所属物理机</div>
                 </th>
                  <th width="8%">
@@ -482,6 +535,9 @@
                 </th>
                 <th width="5%">
                     <div class="th-gap">迁移</div>
+                </th>
+                <th width="5%">
+                    <div class="th-gap">重装系统</div>
                 </th>
                 <th width="12%">
                     <div class="th-gap">状态查看</div>
@@ -500,6 +556,7 @@
 						<td><button onclick="createsnapshot('<%=tenantId %>','<%=userId %>','${vm.id}')">创建</button></td>
 						<td><button onclick="ebslist('${vm.tenant_id}','${vm.id}')">查看ebs列表</button><button onclick="setEBS('${vm.tenant_id}','${vm.id}')">关联ebs</button></td>
 						<td><button onclick="detail('${vm.id}')">迁移</button></td>
+                        <td><button onclick="reset_system('${vm.id}')">重装</button></td>
 						<td><button onclick="chart_load('${vm.id}')">查看cpu及内存</button>
                             <button onclick="chart_network('${vm.id}')">查看网络</button>
                             <button onclick="chart_status('${vm.id}')">查看状态</button>
@@ -567,6 +624,18 @@
 			<input type="text" name="name" id="snapshot_name" value="" class="text ui-widget-content ui-corner-all" />
 		</fieldset>
 	</form>
+</div>
+<div id="reset_system" title="重置系统" style="display: none">
+    <form>
+        <fieldset>
+            <label for="reset_image">镜像(不选择为重装当前系统)</label>
+            <select name="imageRef" id="reset_image" class="text ui-widget-content ui-corner-all" >
+                <option value="">请选择镜像</option>
+            </select>
+            <label for="reset_password">密码:</label>
+            <input type="text" name="password" id="reset_password" class="text ui-widget-content ui-corner-all" ></input>
+        </fieldset>
+    </form>
 </div>
 <div id="addvm_form" title="创建虚拟机" style="display: none">
 	<p class="validateTips"><b style="color:red">下列所有值均必填</b></p>
