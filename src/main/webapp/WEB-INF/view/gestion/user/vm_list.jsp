@@ -534,9 +534,6 @@
                     <div class="th-gap">操作ebs</div>
                 </th>
                 <th width="5%">
-                    <div class="th-gap">迁移</div>
-                </th>
-                <th width="5%">
                     <div class="th-gap">重装系统</div>
                 </th>
                 <th width="12%">
@@ -555,7 +552,6 @@
 						<td><button onclick="detail('${vm.id}')">详情</button></td>
 						<td><button onclick="createsnapshot('<%=tenantId %>','<%=userId %>','${vm.id}')">创建</button></td>
 						<td><button onclick="ebslist('${vm.tenant_id}','${vm.id}')">查看ebs列表</button><button onclick="setEBS('${vm.tenant_id}','${vm.id}')">关联ebs</button></td>
-						<td><button onclick="detail('${vm.id}')">迁移</button></td>
                         <td><button onclick="reset_system('${vm.id}')">重装</button></td>
 						<td><button onclick="chart_load('${vm.id}')">查看cpu及内存</button>
                             <button onclick="chart_network('${vm.id}')">查看网络</button>
