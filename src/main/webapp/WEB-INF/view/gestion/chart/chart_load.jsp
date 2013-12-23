@@ -39,10 +39,10 @@
                                             dataType:"json",
                                             success:function(cpu){
                                                 var date = parseInt(cpu.logTime)*1000;
-                                                series3.addPoint([date, parseFloat(cpu.memoryPCLoad)], true, true);
-                                                series2.addPoint([date,parseFloat(cpu.cpuPCLoad)], true, true);
-                                                series1.addPoint([date, parseFloat(cpu.memoryVMLoad)], true, true);
-                                                series.addPoint([date,parseFloat(cpu.cpuVMLoad)], true, true);
+                                                series3.addPoint([date, parseFloat(cpu.memoryVMLoad)], true, true);
+                                                series2.addPoint([date,parseFloat(cpu.cpuVMLoad)], true, true);
+                                                series1.addPoint([date, parseFloat(cpu.memoryPCLoad)], true, true);
+                                                series.addPoint([date,parseFloat(cpu.cpuPCLoad)], true, true);
                                             }
                                         })
                                     }, 30000);
