@@ -154,18 +154,22 @@
                         <th>已用</th>
                         </thead>
                         <tbody>
+                            <c:forEach items="${dto.ipStat.wan}" var="wan" varStatus="status">
                             <tr>
-                                <td>${dto.ipStat.wan.name}</td>
-                                <td>${dto.ipStat.wan.ipnum}</td>
-                                <td>${dto.ipStat.wan.availability_ipnum}</td>
-                                <td>${dto.ipStat.wan.used_ipnum}</td>
+                                <td>${wan.name}</td>
+                                <td>${wan.ipnum}</td>
+                                <td>${wan.availability_ipnum}</td>
+                                <td>${wan.used_ipnum}</td>
                             </tr>
+                            </c:forEach>
+                            <c:forEach items="${dto.ipStat.lan}" var="lan" varStatus="status">
                             <tr>
-                                <td>${dto.ipStat.lan.name}</td>
-                                <td>${dto.ipStat.lan.ipnum}</td>
-                                <td>${dto.ipStat.lan.availability_ipnum}</td>
-                                <td>${dto.ipStat.lan.used_ipnum}</td>
+                                <td>${lan.name}</td>
+                                <td>${lan.ipnum}</td>
+                                <td>${lan.availability_ipnum}</td>
+                                <td>${lan.used_ipnum}</td>
                             </tr>
+                            </c:forEach>
                         </tbody>
                             </table>
                             </div>

@@ -2,6 +2,8 @@ package com.ksyun.vm.pojo.stat;
 
 import com.ksyun.vm.pojo.BasePo;
 
+import java.util.List;
+
 /**
  * User: liuchuandong
  * Date: 13-12-22
@@ -11,8 +13,8 @@ import com.ksyun.vm.pojo.BasePo;
 public class IpStat extends BasePo {
 
     private String zone_name;
-    private WLan lan;
-    private WLan wan;
+    private List<WLan> lan;
+    private List<WLan> wan;
 
     public String getZone_name() {
         return zone_name;
@@ -22,19 +24,19 @@ public class IpStat extends BasePo {
         this.zone_name = zone_name;
     }
 
-    public WLan getLan() {
+    public List<WLan> getLan() {
         return lan;
     }
 
-    public void setLan(WLan lan) {
+    public void setLan(List<WLan> lan) {
         this.lan = lan;
     }
 
-    public WLan getWan() {
+    public List<WLan> getWan() {
         return wan;
     }
 
-    public void setWan(WLan wan) {
+    public void setWan(List<WLan> wan) {
         this.wan = wan;
     }
 }
