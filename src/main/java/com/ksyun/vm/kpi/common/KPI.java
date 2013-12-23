@@ -89,6 +89,63 @@ public class KPI {
         }
         return 0;
     }
+    
+
+    /*
+     * 求某个字段的一年总和
+     */
+    public static int sumbyYear(String productName, String fieldName, String fieldTarget , String year, String day) 
+    {
+    	String yearB = "\"" + year+"-00-00\"";
+    	String yearE = "\"" + year+"-12-31\"";
+    	day = "\"" + day + "\"";
+    	
+    	String sqlGetSum = "SELECT sum(" + fieldName + ") FROM kpi_" + productName + " WHERE day between " + yearB + " and " + yearE;
+    	String sqlUpdate = "UPDATE kpi_" + productName + " SET " + fieldTarget + "=%s  WHERE day=" + day;
+    	
+    	Connection con = null;
+    	PreparedStatement psG=null, psU = null; 
+        ResultSet rsQ = null;
+    	try{
+            con = MysqlConnectionPools.getConnection("KPI");    		
+            con.setAutoCommit(false);
+            
+            System.out.println("sqlGetSum="+sqlGetSum);
+            
+            psG = con.prepareStatement(sqlGetSum);
+            rsQ = psG.executeQuery();
+            if (rsQ.next()) {
+                double sum = rsQ.getDouble(1);
+                System.out.println("get sum=" + sum);
+                
+                sqlUpdate = String.format(sqlUpdate, sum);
+                System.out.println("sqlUpdate="+sqlUpdate);
+                
+                psU = con.prepareStatement(sqlUpdate);
+                int res = psU.executeUpdate();
+                System.out.println("sqlUpdate result="+res);
+                
+                con.commit();
+                
+                return res;
+            }
+            
+            
+    	}catch (Exception e) {
+            e.printStackTrace();
+            try {
+                con.rollback();
+            } catch (Exception er) {
+                er.printStackTrace();
+            }
+            return -1;
+        } finally {
+            close(con, psG, rsQ);
+        }
+    	
+    	return 0;
+    }
+    
 
     /** 对于联合主键，需要设置多个primaryKey */
     public static int submit2(String productName,
@@ -191,6 +248,12 @@ public class KPI {
     public static String yesterday() {
         return getDateString(1);
     }
+    
+    public static String getYear()
+    {
+    	java.util.Date d = new java.util.Date();
+    	return new SimpleDateFormat("yyyy").format(d);
+    }
 
     /**
      * 获取回滚N天的日期字符串
@@ -212,30 +275,33 @@ public class KPI {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args == null || args.length < 1) {
-            System.out.println("Usage: java com.ipower.tools.KPI {cmd} {args...}");
-            System.out.println("\ttoday\t\t(get today's date string)");
-            System.out.println("\tyesterday\t(get yesterday's date string)");
-            System.out.println("\tsubmit {priduct_name} {field_name} {date string} {value} [src]\t(submit a value to table)");
-            //System.out.println("\tsubmit2 {priduct_name} {field1} {val1} {field2} {val2} {field} {value} {src}\t(submit2 a value to table)");
-            System.out.println("\tselectCount {dbName} {sql} {src}\t(count a sql)");
-            return;
-        }
-        if ("today".equals(args[0])) {
-            System.out.println(today());
-        } else if ("yesterday".equals(args[0])) {
-            System.out.println(yesterday());
-        } else if ("submit".equals(args[0])) {
-            if (args.length >= 7)
-                submit(args[1], args[2], args[3], args[4], args[5],args[6]);
-            else
-                submit(args[1], args[2], args[3], args[4]);
-        } else if("submit2".equalsIgnoreCase(args[0])){
-            submit2(args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
-        } else if("selectCount".equals(args[0])) {
-            int c = selectCount(args[1], args[2], args[3]);
-            System.out.println("selectCount " + c);
-        }
+    	//sumbyYear("pub_kvm", "revenue_day", "revenue" , "2012","2012-12-13");
+    	System.out.println(getYear());
     }
+//        if (args == null || args.length < 1) {
+//            System.out.println("Usage: java com.ipower.tools.KPI {cmd} {args...}");
+//            System.out.println("\ttoday\t\t(get today's date string)");
+//            System.out.println("\tyesterday\t(get yesterday's date string)");
+//            System.out.println("\tsubmit {priduct_name} {field_name} {date string} {value} [src]\t(submit a value to table)");
+//            //System.out.println("\tsubmit2 {priduct_name} {field1} {val1} {field2} {val2} {field} {value} {src}\t(submit2 a value to table)");
+//            System.out.println("\tselectCount {dbName} {sql} {src}\t(count a sql)");
+//            return;
+//        }
+//        if ("today".equals(args[0])) {
+//            System.out.println(today());
+//        } else if ("yesterday".equals(args[0])) {
+//            System.out.println(yesterday());
+//        } else if ("submit".equals(args[0])) {
+//            if (args.length >= 7)
+//                submit(args[1], args[2], args[3], args[4], args[5],args[6]);
+//            else
+//                submit(args[1], args[2], args[3], args[4]);
+//        } else if("submit2".equalsIgnoreCase(args[0])){
+//            submit2(args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
+//        } else if("selectCount".equals(args[0])) {
+//            int c = selectCount(args[1], args[2], args[3]);
+//            System.out.println("selectCount " + c);
+//        }
+//    }
 }
 
