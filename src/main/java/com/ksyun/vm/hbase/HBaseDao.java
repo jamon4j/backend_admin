@@ -27,6 +27,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.springframework.stereotype.Component;
 
 import com.ksyun.monitor.pojo.hbase.HBaseCell;
+import com.ksyun.vm.utils.Constants;
 import com.ksyun.vm.utils.InitConst;
 import com.ksyun.vm.utils.Tools;
 
@@ -245,8 +246,8 @@ public class HBaseDao {
 	public static void main(String[] args) throws IOException {
 		HBaseDao hbaseDao = new HBaseDao();
 	//	hbaseDao.deleteTable("vm_table_status");
-	//	hbaseDao.deleteTable("vm_table_network");
-		hbaseDao.deleteTable("vm_table_load");
+	//	hbaseDao.deleteTable(InitConst.MONITOR_HBASE_TABLE_NETWORK+"_private");
+	//	hbaseDao.deleteTable("vm_table_load");
 	//	hbaseDao.deleteTable("vm_table_disk");
 	//	baseDao.createTable(InitConst.MONITOR_HBASE_TABLE_LOAD, new String[] { "col1", "col2" }, true);
 
@@ -387,10 +388,10 @@ public class HBaseDao {
         String startTime = String.valueOf(c.getTimeInMillis()/1000);
         String endTime = String.valueOf(new Date().getTime()/1000);
         System.out.println(startTime);
-		String vmuuid="ee28f20a-d2d1-4a82-9aff-6d55a39aeaae";
+		String vmuuid="39c76762-6a88-4e52-a23e-59accff9ede2";
 		System.out.println(Tools.makeRowKey(vmuuid, startTime));
 		System.out.println(Tools.makeRowKey(vmuuid, String.valueOf(new Date().getTime()/1000)));
-		List<Map<String, HBaseCell>>  result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_DISK, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
+		List<Map<String, HBaseCell>>  result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_NETWORK+"_private", Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
 		System.out.println(result);
 	}
 }

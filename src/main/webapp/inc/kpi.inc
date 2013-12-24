@@ -180,7 +180,7 @@ static {
     TITLE.put("hdd_new", "新建硬盘");
     TITLE.put("snap_new", "新建快照");
     TITLE.put("snap_del", "删除快照");
-    TITLE.put("fw_new", "新建防护墙");   
+    TITLE.put("fw_new", "新建防火墙");   
     TITLE.put("fw_del", "删除防火墙");
     TITLE.put("fw_rule_new", "新建防火墙规则");
     TITLE.put("fw_rule_del", "删除防火墙规则");
