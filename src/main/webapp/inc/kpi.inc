@@ -65,10 +65,10 @@ void close(Connection con,PreparedStatement pstmt,ResultSet rs) {
 
 static String[] TEST_COLS = {"day","pv", "uv"};
 static String[] PUBLIC_COLS = {"day","uv", "newuv_percentage","pv","trial_num","trial_success_num","cash_pay_num","cash_vm_num","cash_amount","coupon_pay_num","coupon_vm_num","coupon_amount"};
-static String[] PUB_KVM_COLS = {"day","pv","uv","tenant","tenant_day","revenue","revenue_day","coupon_day","refund","refund_day","vm","vm_day","vm_revoke"};
+static String[] PUB_KVM_COLS = {"day","pv","uv","tenant","tenant_day","cast(revenue as signed) as revenue","cast(revenue_day as signed) as revenue_day","coupon_day","refund","refund_day","vm","vm_day","vm_revoke"};
 static String[] PUB_OP_COLS = {"day","charge_uv","charge_sum","vm_close","vm_reboot","hdd_new","snap_new","snap_del","fw_new","fw_del","fw_rule_new","fw_rule_del"};
 static String[] PUB_USER_COLS = {"day","uv","uv_oauth","new_register","user_sum"};
-static String[] KS3_COLS = {"day","tenant","tenant_day","revenue","revenue_day","coupon_day","refund","refund_day"};
+static String[] KS3_COLS = {"day","tenant","tenant_day","revenue as receivable","revenue_day as receivable","coupon_day","refund","refund_day"};
 
 
 String[] getColsByPName(String product){
@@ -211,6 +211,11 @@ static {
     TITLE.put("refund_day", "今日退款");   
     
     
+    TITLE.put("cast(revenue as signed) as revenue", "今年总收入"); 
+    TITLE.put("cast(revenue_day as signed) as revenue_day", "今日收入"); 
+    
+    TITLE.put("revenue as receivable", "今年应收款"); 
+    TITLE.put("revenue_day as receivable", "今日应收款");     
 }
 
 String strNN(String src) {
