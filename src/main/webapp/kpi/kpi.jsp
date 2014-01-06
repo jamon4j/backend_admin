@@ -45,6 +45,20 @@ if (op != null){
 		else ret = KPI.sumbyYear(product, field, fieldTarget, year, day,"inc");
 	}
 	
+	else if (op.equals("list"))
+	{
+		String userId = ServletUtil.getString(request, "userId"); 
+		int retTmp = 0;
+		String[] fields = field.split(",");
+		String[] values = value.split(",");
+		int length = fields.length;
+		for (int i=0; i<length;i++){
+			System.out.println("field="+fields[i] + ",value="+values[i]);	
+			retTmp = KPI.submit2(product, "day",day,"userId",userId,field,value,"");
+			if (retTmp!=0) { ret = ret +1;}
+		}
+	}
+	
 	else ret = KPI.submit(product, field, day, value);
 }
 else{
