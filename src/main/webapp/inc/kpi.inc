@@ -70,6 +70,8 @@ static String[] PUB_OP_COLS = {"day","charge_uv","charge_sum","vm_close","vm_reb
 static String[] PUB_USER_COLS = {"day","uv","uv_oauth","new_register","user_sum"};
 static String[] KS3_COLS = {"day","tenant","tenant_day","revenue as receivable","revenue_day as receivable","coupon_day","refund","refund_day"};
 
+static String[] PUB_MONEY_COLS = {"day","renew_user","renew_day","renew_vm"};
+
 
 String[] getColsByPName(String product){
     String[] p = null;
@@ -79,6 +81,7 @@ String[] getColsByPName(String product){
     else if("pub_op".equals(product)) p = PUB_OP_COLS;
     else if("user".equals(product)) p = PUB_USER_COLS;
     else if("ks3".equals(product)) p = KS3_COLS;
+    else if("pub_money".equals(product)) p = PUB_MONEY_COLS;
     return p;
 }
 
@@ -114,6 +117,7 @@ String getSql(String product,Hashtable params) {
     else if("pub_op".equals(product)) sql="SELECT " + (params==null?set2str(PUB_OP_COLS):cols) + " FROM kpi_" + product;
     else if("user".equals(product)) sql="SELECT " + (params==null?set2str(PUB_USER_COLS):cols) + " FROM kpi_" + product;
     else if("ks3".equals(product)) sql="SELECT " + (params==null?set2str(KS3_COLS):cols) + " FROM kpi_" + product;
+    else if("pub_money".equals(product)) sql="SELECT " + (params==null?set2str(PUB_MONEY_COLS):cols) + " FROM kpi_" + product;
 
     String rollback = KPI.getDateString(93);  
     if(params==null)sql += " WHERE day>'" + rollback + "' ORDER BY day DESC";
@@ -215,7 +219,13 @@ static {
     TITLE.put("cast(revenue_day as signed) as revenue_day", "今日收入"); 
     
     TITLE.put("revenue as receivable", "今年应收款"); 
-    TITLE.put("revenue_day as receivable", "今日应收款");     
+    TITLE.put("revenue_day as receivable", "今日应收款");    
+    
+ 
+    TITLE.put("renew_user", "今日续费用户");
+    TITLE.put("renew_day", "今日续费金额");    
+    TITLE.put("renew_vm", "今日续费虚拟机");      
+     
 }
 
 String strNN(String src) {
