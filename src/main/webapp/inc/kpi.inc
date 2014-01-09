@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*, java.util.*,com.ksyun.vm.kpi.common.*" contentType="text/html"%>
 <%!
@@ -68,7 +68,7 @@ static String[] PUBLIC_COLS = {"day","uv", "newuv_percentage","pv","trial_num","
 static String[] PUB_KVM_COLS = {"day","pv","uv","tenant","tenant_day","cast(revenue as signed) as revenue","cast(revenue_day as signed) as revenue_day","coupon_day","refund","refund_day","vm","vm_day","vm_revoke"};
 static String[] PUB_OP_COLS = {"day","charge_uv","charge_sum","vm_close","vm_reboot","hdd_new","snap_new","snap_del","fw_new","fw_del","fw_rule_new","fw_rule_del"};
 static String[] PUB_USER_COLS = {"day","uv","uv_oauth","new_register","user_sum"};
-static String[] KS3_COLS = {"day","tenant","tenant_day","revenue as receivable","revenue_day as receivable","coupon_day","refund","refund_day"};
+static String[] KS3_COLS = {"day","tenant","revenue as receivable","revenue_day as receivable","coupon_day","refund","refund_day"};
 
 static String[] PUB_MONEY_COLS = {"day","renew_user","renew_day","renew_vm"};
 
