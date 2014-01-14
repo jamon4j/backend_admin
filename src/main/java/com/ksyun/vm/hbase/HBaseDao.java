@@ -384,14 +384,14 @@ public class HBaseDao {
 //		System.out.println(hbaseDao.scaner("vm_table_disk","111111_"+startTime,"111111_"+endTime));
 		
 		Calendar c = Calendar.getInstance();
-    	c.add(Calendar.HOUR,-6);
+    	c.add(Calendar.SECOND,-30);
         String startTime = String.valueOf(c.getTimeInMillis()/1000);
         String endTime = String.valueOf(new Date().getTime()/1000);
         System.out.println(startTime);
-		String vmuuid="39c76762-6a88-4e52-a23e-59accff9ede2";
+		String vmuuid="2bb345a2-4dae-4dce-8be4-17760e98cd6f";
 		System.out.println(Tools.makeRowKey(vmuuid, startTime));
 		System.out.println(Tools.makeRowKey(vmuuid, String.valueOf(new Date().getTime()/1000)));
-		List<Map<String, HBaseCell>>  result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_NETWORK+"_private", Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
+		List<Map<String, HBaseCell>>  result = hbaseDao.scaner(InitConst.MONITOR_HBASE_TABLE_LOAD+"_private", Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
 		System.out.println(result);
 	}
 }

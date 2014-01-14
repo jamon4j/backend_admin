@@ -46,6 +46,7 @@ public class ChartService {
         String startTime = String.valueOf(c.getTimeInMillis()/1000);
         String endTime = String.valueOf(new Date().getTime()/1000);
         List<Map<String, HBaseCell>> result = hbaseDao.scaner(load_table_name, Tools.makeRowKey(vmuuid, startTime),Tools.makeRowKey(vmuuid, endTime));
+        System.out.println("hbase_load: " + load_table_name+" "+result);
         MonitorVmLoadPo po = null;
         if(result != null){
             for(Map<String, HBaseCell> row : result){
@@ -121,7 +122,7 @@ public class ChartService {
         MonitorVmStatusFlowPo po = null;
         if(result != null){
             for(Map<String, HBaseCell> row : result){
-                HBaseCell cell = row.get("load");
+                HBaseCell cell = row.get("status");
                 po = (MonitorVmStatusFlowPo)JSONObject.parseObject(cell.getValue(),MonitorVmStatusFlowPo.class);
             }
         }
