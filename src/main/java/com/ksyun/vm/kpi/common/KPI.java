@@ -8,6 +8,8 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
+
 public class KPI {
 	
 	public static final Logger logger = Logger.getLogger(KPI.class);
@@ -94,17 +96,28 @@ public class KPI {
     /*
      * 求某个字段的一年总和
      */
-    public static int sumbyYear(String productName, String fieldName, String fieldTarget , String year, String day) 
+    public static int sumbyYear(String productName, String fieldName, String fieldTarget , String year, String day,String op) 
     {
     	String yearB = "\"" + year+"-00-00\"";
     	String yearE = "\"" + year+"-12-31\"";
     	day = "\"" + day + "\"";
     	
     	String sqlGetSum = "SELECT sum(" + fieldName + ") FROM kpi_" + productName + " WHERE day between " + yearB + " and " + yearE;
+    	String sqlGetYesterday = null;
     	String sqlUpdate = "UPDATE kpi_" + productName + " SET " + fieldTarget + "=%s  WHERE day=" + day;
     	
+    	
+    	if (op.equals("inc")) 
+    	{
+    		String today = "\"" + yesterday() + "\"";
+    		String yesterday = "\"" + yesterdayBefore() +"\"";
+    		
+    		sqlGetSum = "SELECT "+ fieldName  +" FROM kpi_" + productName + " WHERE day=" + today;     		
+    		sqlGetYesterday = "SELECT "+ fieldTarget  +" FROM kpi_" + productName + " WHERE day=" + yesterday;
+    	}
+    	
     	Connection con = null;
-    	PreparedStatement psG=null, psU = null; 
+    	PreparedStatement psG=null, psU = null, psGY = null; 
         ResultSet rsQ = null;
     	try{
             con = MysqlConnectionPools.getConnection("KPI");    		
@@ -118,6 +131,19 @@ public class KPI {
                 double sum = rsQ.getDouble(1);
                 System.out.println("get sum=" + sum);
                 
+                if (op.equals("inc"))
+                {
+                	System.out.println("sqlGetYesterday = " + sqlGetYesterday);
+                	psGY = con.prepareStatement(sqlGetYesterday);
+                	rsQ = psGY.executeQuery();
+                    if (rsQ.next()) {
+                    	 double yValue = rsQ.getDouble(1);	                   	 
+                    	 System.out.println("yValue = "+yValue);                   	 
+                    	 sum = sum + yValue;
+                    }
+                    
+                }
+                
                 sqlUpdate = String.format(sqlUpdate, sum);
                 System.out.println("sqlUpdate="+sqlUpdate);
                 
@@ -125,8 +151,8 @@ public class KPI {
                 int res = psU.executeUpdate();
                 System.out.println("sqlUpdate result="+res);
                 
-                con.commit();
-                
+                con.commit();                
+                if(res>=0) return 0;                	               
                 return res;
             }
             
@@ -249,11 +275,17 @@ public class KPI {
         return getDateString(1);
     }
     
+    
+    public static String yesterdayBefore() {
+        return getDateString(2);
+    }
+    
     public static String getYear()
     {
     	java.util.Date d = new java.util.Date();
     	return new SimpleDateFormat("yyyy").format(d);
     }
+    
 
     /**
      * 获取回滚N天的日期字符串
@@ -275,8 +307,8 @@ public class KPI {
     }
 
     public static void main(String[] args) throws Exception {
-    	//sumbyYear("pub_kvm", "revenue_day", "revenue" , "2012","2012-12-13");
-    	System.out.println(getYear());
+    	//sumbyYear("pub_kvm", "revenue_day", "revenue" , "2013","2013-12-23","inc");
+    	System.out.println(yesterdayBefore());
     }
 //        if (args == null || args.length < 1) {
 //            System.out.println("Usage: java com.ipower.tools.KPI {cmd} {args...}");

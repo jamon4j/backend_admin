@@ -21,6 +21,9 @@ String uri_prefix = uri.substring(0, uri.lastIndexOf("/"));
       <li><a href="<%=uri_prefix%>/kpi_list.jsp?p=pub_op">公有云操作情况</a></li>
       <br/>
       <li><a href="<%=uri_prefix%>/kpi_list.jsp?p=user">用户统计</a></li>
+      
+      <br/>
+      <li><a href="<%=uri_prefix%>/kpi_list.jsp?p=ks3">ks3付费统计</a></li>
     </ul>
   </div>
       

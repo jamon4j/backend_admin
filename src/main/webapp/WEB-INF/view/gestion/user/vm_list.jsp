@@ -182,16 +182,6 @@
 	   	}
 
         function reset_system(vm_id){
-            $.ajax({
-                url : "/g/user/image_public_id_list/<%=tenantId %>/<%=userId %>",
-                dataType : 'text',
-                success : function(data) {
-                    var imageJson = eval('('+data+')');
-                    for(i=0;i<imageJson.length;i++){
-                        $("#reset_image").append("<option value='"+imageJson[i].id+"'>"+imageJson[i].name+"</option>");
-                    }
-                }
-            });
             $( "#reset_system").dialog({
                 autoOpen: false,
                 postion: "center",
@@ -440,6 +430,27 @@
                 }
             });
             $( "#create_root_disk" ).val($( "#slider-range-min" ).slider( "value" ));
+            $.ajax({
+                url : "/g/user/image_public_id_list/<%=tenantId %>/<%=userId %>",
+                dataType : 'text',
+                success : function(data) {
+                    var imageJson = eval('('+data+')');
+                    for(i=0;i<imageJson.length;i++){
+                        $("#reset_image").append("<option value='"+imageJson[i].id+"'>"+imageJson[i].name+"</option>");
+                    }
+                }
+            });
+            //获得用户系统盘镜像列表
+            $.ajax({
+                url : "/g/user/sys_image_id_list/<%=tenantId %>/<%=userId %>",
+                dataType : 'text',
+                success : function(data) {
+                    var imageJson = eval('('+data+')');
+                    for(i=0;i<imageJson.length;i++){
+                        $("#reset_image").append("<option value='"+imageJson[i].id+"'>(快照)"+imageJson[i].name+"</option>");
+                    }
+                }
+            });
 	   	});
 	   	function ebslist(tenantid,vmid){
 	   		window.location.href="/g/vm_ebs/"+tenantid+"/${userid}/"+vmid;

@@ -14,10 +14,14 @@ if(product == null || field == null || day == null || value == null) {
 	return;
 }
 
+System.out.println(fieldTarget);
+
 int ret = 0;
 
 if("today".equals(day)) day = KPI.today();
 if("yesterday".equals(day)) day = KPI.yesterday();
+
+System.out.println(fieldTarget);
 
 
 if (op != null){
@@ -29,8 +33,18 @@ if (op != null){
 		if (fieldTarget == null) {
 			ret = -1;
 		}
-		else ret = KPI.sumbyYear(product, field, fieldTarget, year, day);
+		else ret = KPI.sumbyYear(product, field, fieldTarget, year, day,"update");
 	}
+	
+	else if (op.equals("suminc"))
+	{
+		if (year == null) year = KPI.getYear();		
+		if (fieldTarget == null) {
+			ret = -1;
+		}
+		else ret = KPI.sumbyYear(product, field, fieldTarget, year, day,"inc");
+	}
+	
 	else ret = KPI.submit(product, field, day, value);
 }
 else{
