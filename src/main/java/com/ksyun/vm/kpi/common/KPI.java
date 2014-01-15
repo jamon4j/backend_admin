@@ -107,10 +107,20 @@ public class KPI {
     	String sqlUpdate = "UPDATE kpi_" + productName + " SET " + fieldTarget + "=%s  WHERE day=" + day;
     	
     	
+//    	if (op.equals("inc")) 
+//    	{
+//    		String today = "\"" + yesterday() + "\"";
+//    		String yesterday = "\"" + yesterdayBefore() +"\"";
+//    		
+//    		sqlGetSum = "SELECT "+ fieldName  +" FROM kpi_" + productName + " WHERE day=" + today;     		
+//    		sqlGetYesterday = "SELECT "+ fieldTarget  +" FROM kpi_" + productName + " WHERE day=" + yesterday;
+//    	}
+    	
+    	
     	if (op.equals("inc")) 
     	{
-    		String today = "\"" + yesterday() + "\"";
-    		String yesterday = "\"" + yesterdayBefore() +"\"";
+    		String today = day;
+    		String yesterday = "\"" + yesterday() +"\"";
     		
     		sqlGetSum = "SELECT "+ fieldName  +" FROM kpi_" + productName + " WHERE day=" + today;     		
     		sqlGetYesterday = "SELECT "+ fieldTarget  +" FROM kpi_" + productName + " WHERE day=" + yesterday;
@@ -123,33 +133,33 @@ public class KPI {
             con = MysqlConnectionPools.getConnection("KPI");    		
             con.setAutoCommit(false);
             
-            System.out.println("sqlGetSum="+sqlGetSum);
+            //System.out.println("sqlGetSum="+sqlGetSum);
             
             psG = con.prepareStatement(sqlGetSum);
             rsQ = psG.executeQuery();
             if (rsQ.next()) {
                 double sum = rsQ.getDouble(1);
-                System.out.println("get sum=" + sum);
+                //System.out.println("get sum=" + sum);
                 
                 if (op.equals("inc"))
                 {
-                	System.out.println("sqlGetYesterday = " + sqlGetYesterday);
+                	//System.out.println("sqlGetYesterday = " + sqlGetYesterday);
                 	psGY = con.prepareStatement(sqlGetYesterday);
                 	rsQ = psGY.executeQuery();
                     if (rsQ.next()) {
                     	 double yValue = rsQ.getDouble(1);	                   	 
-                    	 System.out.println("yValue = "+yValue);                   	 
+                    	 //System.out.println("yValue = "+yValue);                   	 
                     	 sum = sum + yValue;
                     }
                     
                 }
                 
                 sqlUpdate = String.format(sqlUpdate, sum);
-                System.out.println("sqlUpdate="+sqlUpdate);
+                //System.out.println("sqlUpdate="+sqlUpdate);
                 
                 psU = con.prepareStatement(sqlUpdate);
                 int res = psU.executeUpdate();
-                System.out.println("sqlUpdate result="+res);
+                //System.out.println("sqlUpdate result="+res);
                 
                 con.commit();                
                 if(res>=0) return 0;                	               
