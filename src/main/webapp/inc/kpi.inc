@@ -71,7 +71,7 @@ static String[] PUB_USER_COLS = {"day","uv","uv_oauth","new_register","user_sum"
 static String[] KS3_COLS = {"day","tenant","revenue as receivable","revenue_day as receivable","coupon_day","refund","refund_day"};
 
 
-static String[] PUB_CASH_COLS = {"day","tenant","tenant_day","cast(revenue as signed) as revenue","cast(revenue_day as signed) as revenue_day","coupon_day","refund","refund_day","renew_user","renew_day","renew_vm"};   
+static String[] PUB_CASH_COLS = {"day","tenant","tenant_day","cast(revenue as signed) as revenue","cast(revenue_day as signed) as revenue_day","coupon_day","refund","refund_day","renew_user","renew_vm"};   
 
 
 String[] getColsByPName(String product){
