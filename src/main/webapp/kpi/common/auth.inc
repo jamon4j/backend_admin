@@ -7,17 +7,26 @@ if(cookie!=null){
     String backend = cookie.getValue();
     if(backend!=null){
         Calendar now = Calendar.getInstance();
-        Calendar time = HandleAuthenticationInterceptor.map.get(backend);
+        Calendar time = HandleAuthenticationInterceptor.map.get(backend);  
+        
         if(time==null){
+            System.out.println("check if have time");
             response.sendRedirect("/login");
         }
-        if(now.getTimeInMillis()-time.getTimeInMillis()>timeout) {
+     
+        if(time==null){
+            System.out.println("check if have time");
+            response.sendRedirect("/login");
+        }
+        else if(now.getTimeInMillis()-time.getTimeInMillis()>timeout) {
+        	System.out.println("check if time out");
             response.sendRedirect("/login");
         }
     }else{
         response.sendRedirect("/login");
     }
 }else{
+    System.out.println("no cookie");
     response.sendRedirect("/login");
 }
 %>
