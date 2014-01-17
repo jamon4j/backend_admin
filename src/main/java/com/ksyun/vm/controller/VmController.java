@@ -119,5 +119,15 @@ public class VmController {
         }
         return "true";
     }
+    
+    
+    @RequestMapping(value = "/g/user/vm/getvmsum")
+    @ResponseBody
+    public int getvmsum() throws ErrorCodeException, NoTokenException
+    {
+    	List<VmPojo> vmList = vmService.getVmsAll();
+    	return vmList.size();
+    }
+    
 }
 

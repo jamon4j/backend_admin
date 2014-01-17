@@ -36,10 +36,10 @@ public class VmService {
         return list;
     }
 
-    public List<VmPojo> getVmsAll(String userId,String tenantId) throws ErrorCodeException, NoTokenException {
-        jsonService.setId(userId);
-        jsonService.setTenantId(tenantId);
-        List<VmPojo> list = jsonService.getPoList(InitConst.KVM_VM_LIST_ALL, null, null, VmPojo.class);
+    public List<VmPojo> getVmsAll() throws ErrorCodeException, NoTokenException {
+        //jsonService.setId(userId);
+        //jsonService.setTenantId(tenantId);
+        List<VmPojo> list = jsonService.getPoList(InitConst.KVM_VM_LIST_ALL, InitConst.ADMIN, InitConst.PASSWORD, VmPojo.class);
         return list;
     }
 
