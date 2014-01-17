@@ -104,7 +104,7 @@ $(function() {
 							$("#login").attr("disabled", false);
 							$("#password").val("");
 						} else {
-                            setCookie("backend", data.cookie, 24*3600000,"/",".ksyun.com");
+                            setCookie("backend", data.cookie, 24*3600000,"/","");
 							top.location.replace(data.url);
 						}
 					},
