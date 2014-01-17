@@ -126,7 +126,8 @@ public class VmController {
     public int getvmsum() throws ErrorCodeException, NoTokenException
     {
     	List<VmPojo> vmList = vmService.getVmsAll();
-    	return vmList.size();
+    	if (vmList == null)  return 0;
+    	else return vmList.size();
     }
     
 }
