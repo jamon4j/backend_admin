@@ -22,6 +22,7 @@ public class InitConst {
     public static final String KVM_USER_TOKEN = "kvm.user.auth";
     public static final String KVM_USER_REGISTER = "kvm.user.register";
     public static final String KVM_USER_LIST = "kvm.user.list";
+    public static final String KVM_USER = "kvm.user";
 
     public static final String KVM_EBS = "kvm.ebs";
     public static final String KVM_EBS_CREATE = "kvm.ebs.create";

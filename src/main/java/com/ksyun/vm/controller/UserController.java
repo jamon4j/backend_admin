@@ -5,8 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.httpclient.HttpException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.ksyun.vm.exception.ErrorCodeException;
@@ -20,17 +27,6 @@ import com.ksyun.vm.service.EBSService;
 import com.ksyun.vm.service.SnapshotService;
 import com.ksyun.vm.service.VmService;
 import com.ksyun.vm.utils.UserService;
-import org.apache.commons.httpclient.HttpException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.ksyun.vm.utils.PageWithoutSize;
 
 @Controller
 public class UserController {
@@ -46,22 +42,28 @@ public class UserController {
 	// 用户列表
 	@RequestMapping(value = "/g/user/list/{pagenum}")
 	public ModelAndView userList(@PathVariable("pagenum") String pageNum, ModelAndView mav) {
-        List<UserPojo> list = null;
-        try {
-            list = userService.getUsers();
-        } catch (ErrorCodeException | NoTokenException e) {
-            e.printStackTrace();
-        }
-        PageWithoutSize page = new PageWithoutSize(Integer.valueOf(pageNum));
-		if (list == null) {
-			page.setData(null);
-		}
-		
-		page.setData(list);
-		mav.addObject("page", page);
 		mav.setViewName("/gestion/user/user_list");
 		return mav;
 	}
+    
+    //搜索用户
+    @RequestMapping(value = "/g/user/search")
+	public ModelAndView userList(@RequestParam("name") String name, @RequestParam("email") String email, ModelAndView mav) {
+    	
+    	UserPojo po = null;
+		try {
+			po = userService.searchUser(name, email);
+		} catch (ErrorCodeException e) {
+			e.printStackTrace();
+		} catch (NoTokenException e) {
+			e.printStackTrace();
+		}
+		
+		mav.addObject("dto", po);
+		mav.setViewName("/gestion/user/user_list");
+		return mav;
+	}
+    
     // 创建用户(ajax请求)
     @RequestMapping(value = "/g/user/createuser",method = RequestMethod.POST)
     @ResponseBody
