@@ -2,7 +2,11 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ page import="com.ksyun.vm.kpi.common.*" 
          contentType="text/html" %>
+         
+
 <html xmlns="http://www.w3.org/1999/xhtml">
+
+<%@include file="common/auth.inc"%>
 
 <%@ include file="/inc/kpi.inc" %>
 <%@ include file="chart/chart.inc" %>

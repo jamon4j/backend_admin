@@ -36,6 +36,13 @@ public class VmService {
         return list;
     }
 
+    public List<VmPojo> getVmsAll() throws ErrorCodeException, NoTokenException {
+        //jsonService.setId(userId);
+        //jsonService.setTenantId(tenantId);
+        List<VmPojo> list = jsonService.getPoList(InitConst.KVM_VM_LIST_ALL, InitConst.ADMIN, InitConst.PASSWORD, VmPojo.class);
+        return list;
+    }
+
     public VNC getVNC(String vmId) throws ErrorCodeException, NoTokenException {
         Map<String, String> map = new HashMap<>();
         map.put("vm_id",vmId);

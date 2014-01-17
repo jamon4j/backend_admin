@@ -25,7 +25,7 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
         Cookie cookie = getCookieByName(request, InitConst.BACKEND);
         String type=Constants.getPropertyValue("sys.type");
         Integer timeout = Integer.valueOf(Constants.getPropertyValue("cookie.timeout"));
-        if(uri.indexOf("/login")>-1||uri.indexOf("/html")>-1||uri.indexOf("/js")>-1||uri.indexOf("/img")>-1||host.equals("127.0.0.1")||type.equals("test")){
+        if(uri.indexOf("/login")>-1||uri.indexOf("/html")>-1||uri.indexOf("/js")>-1||uri.indexOf("/img")>-1|| uri.indexOf("/getvmsum")>-1 || host.equals("127.0.0.1")||type.equals("test")){
             return true;
         }
         if(cookie!=null){

@@ -34,6 +34,7 @@ public class InitConst {
 
     public static final String KVM_VM = "kvm.vm";
     public static final String KVM_VM_LIST = "kvm.vm.list";
+    public static final String KVM_VM_LIST_ALL = "kvm.vm.list.all";
     public static final String KVM_VM_START = "kvm.vm.start";
     public static final String KVM_VM_CREATE = "kvm.vm.create";
     public static final String KVM_VM_DELETE = "kvm.vm.delete";

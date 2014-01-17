@@ -119,5 +119,22 @@ public class VmController {
         }
         return "true";
     }
+    
+    
+    @RequestMapping(value = "/g/user/vm/getvmsum")
+    @ResponseBody
+    public int getvmsum()
+    {
+    	List<VmPojo> vmList = null;
+    	try {
+        	vmList = vmService.getVmsAll();
+        	if (vmList == null)  return 0;
+        } catch (ErrorCodeException | NoTokenException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return vmList.size();
+    }
+    
 }
 
