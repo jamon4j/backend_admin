@@ -22,8 +22,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <%@include file="/inc/admin_meta.inc" %>
-    <script type="text/javascript" src="http://static.im20.com.cn/global/js/AnyChart.js"></script>
-    <script type="text/javascript" src="http://static.im20.com.cn/global/js/AnyChartHTML5.js"></script>
+    <script type="text/javascript" src="/js/anychart/AnyChart.js"></script>
+    <script type="text/javascript" src="/js/anychart/AnyChartHTML5.js"></script>
     <link type="text/css" rel="stylesheet" href="/js/frame/admin.css" media="screen"/>
 <script type="text/javascript" src="/js/frame/jquery.min.js"></script>
 <script type="text/javascript" src="/js/frame/admin.js"></script>
