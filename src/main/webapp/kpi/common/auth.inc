@@ -3,30 +3,29 @@
 Cookie cookie = ServletUtil.getCookie(request, InitConst.BACKEND);
 Integer timeout = Integer.valueOf(Constants.getPropertyValue("cookie.timeout"));
 
+System.out.println(cookie);
+
 if(cookie!=null){
     String backend = cookie.getValue();
+    System.out.println(backend);
     if(backend!=null){
         Calendar now = Calendar.getInstance();
         Calendar time = HandleAuthenticationInterceptor.map.get(backend);  
         
         if(time==null){
-            System.out.println("check if have time");
             response.sendRedirect("/login");
-        }
-     
-        if(time==null){
-            System.out.println("check if have time");
-            response.sendRedirect("/login");
+            return;
         }
         else if(now.getTimeInMillis()-time.getTimeInMillis()>timeout) {
-        	System.out.println("check if time out");
             response.sendRedirect("/login");
+            return;
         }
     }else{
         response.sendRedirect("/login");
+        return;
     }
 }else{
-    System.out.println("no cookie");
     response.sendRedirect("/login");
+    return;
 }
 %>
