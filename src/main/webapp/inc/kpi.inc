@@ -65,7 +65,7 @@ void close(Connection con,PreparedStatement pstmt,ResultSet rs) {
 
 static String[] TEST_COLS = {"day","pv", "uv"};
 static String[] PUBLIC_COLS = {"day","uv", "newuv_percentage","pv","trial_num","trial_success_num","cash_pay_num","cash_vm_num","cash_amount","coupon_pay_num","coupon_vm_num","coupon_amount"};
-static String[] PUB_KVM_COLS = {"day","uv","vm","vm_day","vm_revoke"};
+static String[] PUB_KVM_COLS = {"day","uv","vm_real","vm_order","vm_order_trial","vm_day","vm_revoke"};
 static String[] PUB_OP_COLS = {"day","charge_uv","charge_sum","vm_close","vm_reboot","hdd_new","snap_new","snap_del","fw_new","fw_del","fw_rule_new","fw_rule_del"};
 static String[] PUB_USER_COLS = {"day","uv","uv_oauth","new_register","user_sum"};
 static String[] KS3_COLS = {"day","tenant","revenue as receivable","revenue_day as receivable","coupon_day","refund","refund_day"};
@@ -225,7 +225,12 @@ static {
  
     TITLE.put("renew_user", "今日续费用户");
     TITLE.put("renew_day", "今日续费金额");    
-    TITLE.put("renew_vm", "今日续费虚拟机");      
+    TITLE.put("renew_vm", "今日续费虚拟机");   
+    
+     TITLE.put("vm_real", "虚拟机总数(openstack)");      
+     
+     TITLE.put("vm_order", "虚拟机总数(订单)");   
+     TITLE.put("vm_order_trial", "虚拟机总数(试用订单)");   
      
 }
 
