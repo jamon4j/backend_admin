@@ -1,11 +1,13 @@
 package com.ksyun.vm.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,18 +41,25 @@ public class UserController {
     @Autowired
     private VmService vmService;
 
-	// 用户列表
-	@RequestMapping(value = "/g/user/list/{pagenum}")
-	public ModelAndView userList(@PathVariable("pagenum") String pageNum, ModelAndView mav) {
-		mav.setViewName("/gestion/user/user_list");
-		return mav;
-	}
-    
+    // 用户列表
+    @RequestMapping(value = "/g/user/list/{pagenum}")
+    public ModelAndView findAll(@PathVariable("pagenum") String pageNum, ModelAndView mav) throws NoTokenException, ErrorCodeException {
+        List<UserPojo> userlist = userService.getUsers();
+        mav.addObject("list",userlist);
+        mav.setViewName("/gestion/user/user_list");
+        return mav;
+    }
+
     //搜索用户
     @RequestMapping(value = "/g/user/search")
 	public ModelAndView userList(@RequestParam("name") String name, @RequestParam("email") String email, ModelAndView mav) {
     	
     	UserPojo po = null;
+        if((name==null&&email==null)||(StringUtils.equals(name,"")&&StringUtils.equals(email,""))){
+            mav.addObject("list", new ArrayList());
+            mav.setViewName("/gestion/user/user_list");
+            return mav;
+        }
 		try {
 			po = userService.searchUser(name, email);
 		} catch (ErrorCodeException e) {
@@ -58,12 +67,13 @@ public class UserController {
 		} catch (NoTokenException e) {
 			e.printStackTrace();
 		}
-		
-		mav.addObject("dto", po);
+        List<UserPojo> list = new ArrayList<>();
+        list.add(po);
+		mav.addObject("list", list);
 		mav.setViewName("/gestion/user/user_list");
 		return mav;
 	}
-    
+
     // 创建用户(ajax请求)
     @RequestMapping(value = "/g/user/createuser",method = RequestMethod.POST)
     @ResponseBody

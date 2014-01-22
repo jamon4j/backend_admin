@@ -118,11 +118,14 @@
 <div class="main-cont">
     <h3 class="title">用户信息
     </h3>
-		<form action="/g/user/search"  method="post" id="data_Form">
+		<form action="/g/user/search"  method="post" id="data_Form" style="display:inline-block;">
     		email：<input type="text" name="email" value=""/>
     		name：<input type="text" name="name" value=""/>
     		<input type="submit" name="submit" value="查  找"  />
     	</form>
+        <form action="/g/user/list/1" style="margin-left: 5px;display: inline-block;">
+            <input type="submit" name="submit" value="查看所有" />
+        </form>
     <div class="set-area">
 
         <table class="table" cellpadding="0" cellspacing="0" width="100%" border="0">
@@ -157,7 +160,7 @@
             </tr>
             </thead>
             <tbody>
-            	<%-- <c:forEach var="dto" items="${page.data}" varStatus="status"> --%>
+            	<c:forEach var="dto" items="${list}" varStatus="status">
 					<tr>
 						<td>${dto.user_id} </td>
 						<td>${dto.user_name} </td>
@@ -168,7 +171,7 @@
 						<td><button onclick="ebs_snapshot_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
 						<td><button onclick="vm_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
 					</tr>
-				<%-- </c:forEach> --%>
+				</c:forEach>
             </tbody>
         </table>
         <br/>
