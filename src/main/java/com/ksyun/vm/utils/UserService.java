@@ -42,7 +42,7 @@ public class UserService {
         jsonService.poWithNoAuth(InitConst.KVM_USER_REGISTER, null,requestBody);
     }
 
-	public UserPojo searchUser(String name, String email) throws ErrorCodeException, NoTokenException {
+	public UserPojo searchUser(String name, String email,String user_id) throws ErrorCodeException, NoTokenException {
 		UserPo userPo = null;
 		String userId = null;
 		if(!StringUtils.isEmpty(name) && name.equals(InitConst.ADMIN)){
@@ -63,7 +63,9 @@ public class UserService {
 		    userPo = jsonService.getToken(map.get("userId"), map.get("userId"));
 		    userId = userPo.getUser_id();
 		}
-		
+        if(!StringUtils.isEmpty(user_id)){
+            userId = user_id;
+        }
 		UserPojo userPojo = jsonService.poGet(InitConst.KVM_USER, InitConst.ADMIN, InitConst.PASSWORD, UserPojo.class, userId);
 		return userPojo;
 	}

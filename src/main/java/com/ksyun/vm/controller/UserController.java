@@ -52,16 +52,15 @@ public class UserController {
 
     //搜索用户
     @RequestMapping(value = "/g/user/search")
-	public ModelAndView userList(@RequestParam("name") String name, @RequestParam("email") String email, ModelAndView mav) {
-    	
+	public ModelAndView userList(@RequestParam("name") String name, @RequestParam("email") String email,@RequestParam("userid") String user_id, ModelAndView mav) {
     	UserPojo po = null;
-        if((name==null&&email==null)||(StringUtils.equals(name,"")&&StringUtils.equals(email,""))){
+        if((name==null&&email==null&&user_id==null)||(StringUtils.equals(name,"")&&StringUtils.equals(email,"")&&StringUtils.equals(user_id,""))){
             mav.addObject("list", new ArrayList());
             mav.setViewName("/gestion/user/user_list");
             return mav;
         }
 		try {
-			po = userService.searchUser(name, email);
+			po = userService.searchUser(name, email,user_id);
 		} catch (ErrorCodeException e) {
 			e.printStackTrace();
 		} catch (NoTokenException e) {

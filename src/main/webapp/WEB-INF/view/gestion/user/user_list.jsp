@@ -119,8 +119,9 @@
     <h3 class="title">用户信息
     </h3>
 		<form action="/g/user/search"  method="post" id="data_Form" style="display:inline-block;">
-    		email：<input type="text" name="email" value=""/>
-    		name：<input type="text" name="name" value=""/>
+            id：<input type="text" name="userid" value=""/>
+            email：<input type="text" name="email" value=""/>
+            name：<input type="text" name="name" value=""/>
     		<input type="submit" name="submit" value="查  找"  />
     	</form>
         <form action="/g/user/list/1" style="margin-left: 5px;display: inline-block;">

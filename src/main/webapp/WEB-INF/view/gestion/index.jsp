@@ -51,7 +51,7 @@
     <div class="menu-group">
         <h2 class="first">用户管理</h2>
         <ul>
-            <li><a href="/g/user/search?name=&email=" router="home/1/0" target="mainframe">用户信息</a></li><!--
+            <li><a href="/g/user/search?name=&email=&userid=" router="home/1/0" target="mainframe">用户信息</a></li><!--
             <li><a href="/g/home?" router="home/1/1" target="mainframe">批量用户操作</a></li>
             <li><a href="/g/home?" router="home/1/2" target="mainframe">重置任务</a></li>
             <li><a href="/g/home?" router="home/1/3" target="mainframe">在线用户管理</a></li>
