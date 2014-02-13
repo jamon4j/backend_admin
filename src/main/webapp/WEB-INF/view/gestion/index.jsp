@@ -68,6 +68,7 @@
             <li><a href="/kpi/kpi_list.jsp?p=pub_cash" router="home/2/0" target="mainframe">公有云付费统计</a></li>
             <li><a href="/kpi/kpi_list.jsp?p=user" router="home/2/0" target="mainframe">用户活跃数据</a></li>
             <li><a href="/kpi/kpi_list.jsp?p=ks3" router="home/2/0" target="mainframe">KS3付费统计</a></li>
+            <li><a href="/kpi/kpi_list.jsp?p=pub_cash_rsc" router="home/2/0" target="mainframe">公有云付费(关系客户)</a></li>
         </ul>
     </div>
 

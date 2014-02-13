@@ -72,7 +72,7 @@ static String[] KS3_COLS = {"day","tenant","revenue as receivable","revenue_day 
 
 
 static String[] PUB_CASH_COLS = {"day","tenant","tenant_day","cast(revenue as signed) as revenue","cast(revenue_day as signed) as revenue_day","coupon_day","refund","refund_day","renew_user","renew_vm"};   
-
+static String[] PUB_CASH_COLS_RSC = {"day","tenant","tenant_day","cast(revenue as signed) as revenue","cast(revenue_day as signed) as revenue_day","coupon_day","refund","refund_day","renew_user","renew_vm"};
 
 String[] getColsByPName(String product){
     String[] p = null;
@@ -83,6 +83,7 @@ String[] getColsByPName(String product){
     else if("user".equals(product)) p = PUB_USER_COLS;
     else if("ks3".equals(product)) p = KS3_COLS;
     else if("pub_cash".equals(product)) p = PUB_CASH_COLS;
+    else if("pub_cash_rsc".equals(product)) p = PUB_CASH_COLS_RSC;
     return p;
 }
 
@@ -119,6 +120,7 @@ String getSql(String product,Hashtable params) {
     else if("user".equals(product)) sql="SELECT " + (params==null?set2str(PUB_USER_COLS):cols) + " FROM kpi_" + product;
     else if("ks3".equals(product)) sql="SELECT " + (params==null?set2str(KS3_COLS):cols) + " FROM kpi_" + product;
     else if("pub_cash".equals(product)) sql="SELECT " + (params==null?set2str(PUB_CASH_COLS):cols) + " FROM kpi_" + product;
+    else if("pub_cash_rsc".equals(product)) sql="SELECT " + (params==null?set2str(PUB_CASH_COLS_RSC):cols) + " FROM kpi_" + product;
 
     String rollback = KPI.getDateString(93);  
     if(params==null)sql += " WHERE day>'" + rollback + "' ORDER BY day DESC";
