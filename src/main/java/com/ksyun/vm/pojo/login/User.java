@@ -10,6 +10,8 @@ import com.ksyun.vm.pojo.BasePo;
  */
 public class User extends BasePo{
     private Integer id;
+    
+    private String roles;
 
     public Integer getId() {
         return id;
@@ -37,4 +39,19 @@ public class User extends BasePo{
     public void setPassword(String password) {
         this.password = password;
     }
+
+	public String getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", roles=" + roles + ", username=" + username
+				+ ", password=" + password + "]";
+	}
+    
 }

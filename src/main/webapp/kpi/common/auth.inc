@@ -1,9 +1,9 @@
-<%@ page import="com.ksyun.vm.kpi.common.*, com.ksyun.vm.utils.*,javax.servlet.http.Cookie,java.util.Calendar,com.ksyun.vm.interceptor.HandleAuthenticationInterceptor" %>  
+<%@ page import="com.ksyun.vm.kpi.common.*, com.ksyun.vm.utils.*,javax.servlet.http.Cookie,java.util.Calendar,com.ksyun.vm.interceptor.HandleAuthenticationInterceptor,
+	com.ksyun.vm.service.RoleService,com.ksyun.vm.pojo.acl.RolePo" %>  
+
 <%
 Cookie cookie = ServletUtil.getCookie(request, InitConst.BACKEND);
 Integer timeout = Integer.valueOf(Constants.getPropertyValue("cookie.timeout"));
-
-System.out.println(cookie);
 
 if(cookie!=null){
     String backend = cookie.getValue();
@@ -20,6 +20,40 @@ if(cookie!=null){
             response.sendRedirect("/login");
             return;
         }
+        
+        //这里权限判断根据params
+    
+        String roles = HandleAuthenticationInterceptor.mapUserRoles.get(backend);
+        String product = request.getParameter("p");
+        
+        int flag = 0;
+        
+        if (roles != null) {
+        	RoleService roleService = (RoleService)DaoFactory.getBean("roleService");
+        	String[] role_list = roles.split(",");
+    		int length = role_list.length;
+    		for(int i=0; i< length; i++){
+	    		int roleId = Integer.parseInt(role_list[i]);
+	    		if (roleId == 1) {
+	    			flag = 1;
+	    			break;
+	    		}
+	    		
+	    		//普通员工--根据role_power判断权限。
+	    		RolePo role = roleService.getRole(roleId);
+	    		if (role != null){
+	    			if (role.getRolePower().indexOf("kpi_"+product)>=0) {
+	    				flag = 1;
+	    				break;
+	    		}
+	    		}
+    		}
+    		if (flag == 0){
+    		    response.sendRedirect("/test.jsp");
+            	return;
+    		}
+        }
+        
     }else{
         response.sendRedirect("/login");
         return;

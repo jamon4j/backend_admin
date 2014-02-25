@@ -318,32 +318,12 @@ public class KPI {
 
     public static void main(String[] args) throws Exception {
     	//sumbyYear("pub_kvm", "revenue_day", "revenue" , "2013","2013-12-23","inc");
-    	System.out.println(yesterdayBefore());
-    }
-//        if (args == null || args.length < 1) {
-//            System.out.println("Usage: java com.ipower.tools.KPI {cmd} {args...}");
-//            System.out.println("\ttoday\t\t(get today's date string)");
-//            System.out.println("\tyesterday\t(get yesterday's date string)");
-//            System.out.println("\tsubmit {priduct_name} {field_name} {date string} {value} [src]\t(submit a value to table)");
-//            //System.out.println("\tsubmit2 {priduct_name} {field1} {val1} {field2} {val2} {field} {value} {src}\t(submit2 a value to table)");
-//            System.out.println("\tselectCount {dbName} {sql} {src}\t(count a sql)");
-//            return;
-//        }
-//        if ("today".equals(args[0])) {
-//            System.out.println(today());
-//        } else if ("yesterday".equals(args[0])) {
-//            System.out.println(yesterday());
-//        } else if ("submit".equals(args[0])) {
-//            if (args.length >= 7)
-//                submit(args[1], args[2], args[3], args[4], args[5],args[6]);
-//            else
-//                submit(args[1], args[2], args[3], args[4]);
-//        } else if("submit2".equalsIgnoreCase(args[0])){
-//            submit2(args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
-//        } else if("selectCount".equals(args[0])) {
-//            int c = selectCount(args[1], args[2], args[3]);
-//            System.out.println("selectCount " + c);
-//        }
-//    }
+    	//System.out.println(yesterdayBefore());
+    	String t = "/g/zonelist/222";
+    	String[] t1 = t.split("/");
+    	System.out.println(t1[0]);
+    	System.out.println(t1[1]);
+     }
+
 }
 

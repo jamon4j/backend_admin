@@ -8,7 +8,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    username,password
+    id,username,password,roles
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -19,8 +19,8 @@
   </select>
 
   <insert id="insert" parameterType="com.ksyun.vm.pojo.login.User"  useGeneratedKeys="true" keyProperty="id">
-    insert into user (id, username,password)
-    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR})
+    insert into user (id, username,password,roles)
+    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},#{roles,jdbcType=VARCHAR})
   </insert>
 
   <update id="updateIfNecessary" parameterType="com.ksyun.vm.pojo.login.User" >
@@ -31,6 +31,9 @@
       </if>
       <if test="password != null">
           password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="roles != null">
+          roles = #{roles,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -44,4 +47,13 @@
   <select id="findUser" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from user where username=#{username,jdbcType=VARCHAR} and password=#{password,jdbcType=VARCHAR};
   </select>
+    <select id="findAll" resultMap="BaseResultMap" parameterType="com.ksyun.vm.pojo.login.User" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+  </select>
+    <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
 </mapper>

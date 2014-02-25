@@ -13,7 +13,8 @@
         <li><a href="<%=webRootPath%>/zonelist">机器管理</a></li>
         <%-- <li><a href="<%=webRootPath%>/sglist">安全组管理</a></li> --%>
         <li><a href="<%=webRootPath%>/userlist">用户管理</a></li>
-        <li><a href="<%=webRootPath%>/kpi/home.jsp">KPI统计</a></li><!--
+        <li><a href="<%=webRootPath%>/kpi/home.jsp">KPI统计</a></li>
+        <li><a href="<%=webRootPath%>/acl/role_list.jsp">ACL管理</a></li><!--
         <li><a href="#">用户管理</a></li>
         <li><a href="#">虚拟机管理</a></li>
         <li><a href="#">EBS管理</a></li>
@@ -69,6 +70,14 @@
             <li><a href="/kpi/kpi_list.jsp?p=user" router="home/2/0" target="mainframe">用户活跃数据</a></li>
             <li><a href="/kpi/kpi_list.jsp?p=ks3" router="home/2/0" target="mainframe">KS3付费统计</a></li>
             <li><a href="/kpi/kpi_list.jsp?p=pub_cash_rsc" router="home/2/0" target="mainframe">公有云付费(关系客户)</a></li>
+        </ul>
+    </div>
+    
+    <div class="menu-group">
+        <h2 class="first">ACL管理</h2>
+        <ul>
+            <li><a href="/g/acl/user_list?" router="home/3/0" target="mainframe">用户管理</a></li>
+            <li><a href="/g/acl/role_list?" router="home/3/1" target="mainframe">角色管理</a></li>
         </ul>
     </div>
 
