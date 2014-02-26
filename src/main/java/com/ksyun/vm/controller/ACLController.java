@@ -145,4 +145,12 @@ public class ACLController {
 		mav.setViewName("/gestion/acl/ret");
 		return mav;
 	}
+	
+	
+	@RequestMapping(value="/g/acl/role_uri")
+	public ModelAndView role_uri(ModelAndView mav)
+	{
+		mav.setViewName("/gestion/acl/role_uri");
+		return mav;
+	}
 }

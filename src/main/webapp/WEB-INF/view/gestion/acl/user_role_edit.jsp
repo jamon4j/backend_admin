@@ -11,12 +11,11 @@
  <form action="/g/acl/edit_user_role" method="post">
      <table width="100%" border="0" cellspacing="0" cellpadding="0">       
        <tr>
-         <td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">用户Id：</td>
          <td  bgcolor="#f2f2f2"><input type="hidden" name="userId" value=${userId} /></td>
        </tr>
       
        <tr>
-         <td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">角色：</td>
+         <td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">角色Ids：</td>
          <td  bgcolor="#f2f2f2"><input type="text" name="roles" /></td>
        </tr>
    
@@ -33,6 +32,10 @@
      </tr>
 </table>
 
+<h5>
+说明：
+1、角色Ids可以可以写多个，中间用","号隔开
+</h5>
 </body>
 </html>
 　<script LANGUAGE="javascript">

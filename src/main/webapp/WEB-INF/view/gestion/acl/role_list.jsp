@@ -75,7 +75,7 @@
     </div>
 </div>
 <div id="adduser_form" title="请输入角色名称">
-	<p class="validateTips">所有字段均必填</p>
+	<p class="validateTips">添加角色</p>
 	<form action="/g/acl/add_role"  method="post" id="data_Form_add_role">
 		<fieldset>
             <label for="name"> 名称:   </label>
@@ -87,7 +87,7 @@
             <label for="roleType">角色类型</label>
             <input type="text" name="roleType" id="roleType"/>
             </br>
-            <input type="submit" value="提交"/>
+            <input type="submit" value="添加"/>
 		</fieldset>
 	</form>
 </div>

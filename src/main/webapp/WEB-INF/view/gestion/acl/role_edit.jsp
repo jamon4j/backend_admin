@@ -11,8 +11,7 @@
  <form action="/g/acl/edit_role" method="post">
      <table width="100%" border="0" cellspacing="0" cellpadding="0">       
        <tr>
-         <td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">角色Id：</td>
-         <td  bgcolor="#f2f2f2"><input type="text" name="roleId" value=${roleId} /></td>
+         <td  bgcolor="#f2f2f2"><input type="hidden" name="roleId" value=${roleId} /></td>
        </tr>
       
        <tr>
@@ -27,7 +26,7 @@
       
        <tr>
          <td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">角色权限：</td>
-         <td  bgcolor="#f2f2f2"><input type="text" name="rolePower" value=${rolePower} /></td>
+         <td  bgcolor="#f2f2f2"><input type="text" name="rolePower" value=${rolePower} size="55"/></td>
        </tr>
    
        <tr>
@@ -42,6 +41,11 @@
       
      </tr>
 </table>
+
+<h5>
+1、角色类型:0--超级管理员，拥有所有权限。  1--一级菜单权限      2---二级权限权限    3---KPI列表权限 </br>
+2、角色权限:根据uri进行授权控制，多个权限以","号分割
+</h5>
 
 </body>
 </html>

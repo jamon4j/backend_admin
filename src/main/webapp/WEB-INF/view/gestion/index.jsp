@@ -78,6 +78,7 @@
         <ul>
             <li><a href="/g/acl/user_list?" router="home/3/0" target="mainframe">用户管理</a></li>
             <li><a href="/g/acl/role_list?" router="home/3/1" target="mainframe">角色管理</a></li>
+            <li><a href="/g/acl/role_uri?" router="home/3/2" target="mainframe">权限uri对应表</a></li>            
         </ul>
     </div>
 

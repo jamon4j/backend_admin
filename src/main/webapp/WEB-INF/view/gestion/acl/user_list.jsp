@@ -6,7 +6,7 @@
 
 <head>
    	<%@include file="../inc/meta.jspf"%>
-    <title>权限 - 角色列表</title>
+    <title>权限 - 用户列表</title>
    	<script>
    	var j = jQuery.noConflict(true);
     $(function(){
@@ -35,10 +35,10 @@
  </script>
 </head>
 <body class="main-body">
-<div class="path"><p>权限控制：角色管理<span>&gt;</span>角色列表</p></div>
+<div class="path"><p>权限控制：用户管理<span>&gt;</span>用户列表</p></div>
 
 <div class="main-cont">
-    <h3 class="title">角色列表
+    <h3 class="title">用户列表
     </h3>
     <div class="set-area">
 
@@ -76,7 +76,7 @@
     </div>
 </div>
 <div id="adduser_form" title="请输入用户名称">
-	<p class="validateTips">所有字段均必填</p>
+	<p class="validateTips">添加用户</p>
 	<form action="/g/acl/add_user"  method="post" id="data_Form_add_user">
 		<fieldset>
             <label for="email"> 邮箱:   </label>
@@ -85,12 +85,19 @@
             <label for="password"> 密码:   </label>
             <input type="text" name="password" id="password"/>
             </br>
-            <label for="roles">角色id</label>
+            <label for="roles">角色ids</label>
             <input type="text" name="roles" id="roles"/>
             </br>
-            <input type="submit" value="提交"/>
+            <input type="submit" value="添加"/>
+            </br></br>
+            <h5>
+			1、角色ids可以写多个，中间用","号隔开
+		    </h5>
 		</fieldset>
+
 	</form>
 </div>
+
+
 </body>
 </html>
