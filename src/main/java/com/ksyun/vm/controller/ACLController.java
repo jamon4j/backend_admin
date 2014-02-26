@@ -56,7 +56,10 @@ public class ACLController {
 				int role_length = roles_list.length;
 				for (int j=0; j<role_length; j++){
 					int roleId = Integer.parseInt(roles_list[j]);
-					roles_name += roleService.getRole(roleId).getRoleName() + " , ";
+					RolePo role = roleService.getRole(roleId);
+					if (role != null){
+						roles_name += roleService.getRole(roleId).getRoleName() + " , ";
+					}				
 				}
 			}
 			user.setRoles(roles_name);
@@ -114,7 +117,7 @@ public class ACLController {
 	@RequestMapping(value="/g/acl/edit_role")
 	public ModelAndView editRole(@RequestParam("roleId") int roleId, @RequestParam("roleType") Byte roleType,@RequestParam("roleName") String roleName,
 			@RequestParam("rolePower") String rolePower, ModelAndView mav)
-	{
+	{		
 		RolePo dto = new RolePo();
 		dto.setId(roleId);
 		dto.setRoleName(roleName);

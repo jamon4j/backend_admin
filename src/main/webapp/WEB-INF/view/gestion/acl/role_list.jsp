@@ -22,7 +22,7 @@
 	}
    	
    	function editRole(roleId,roleType,roleName,rolePower){
-   		openwin("/g/acl/edit_role_input?roleId="+roleId + "&roleType="+roleType+ "&roleName="+roleName+ "&rolePower="+rolePower);
+   		openwin("/g/acl/edit_role_input?roleId="+roleId + "&roleType="+roleType+ "&roleName="+encodeURIComponent(roleName)+ "&rolePower="+rolePower);
    	}
    	
    	function deleteRole(roleId){

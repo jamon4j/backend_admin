@@ -4,6 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@include file="../inc/jsCssIncludeHeader.jspf"%>
 <head>
+   	<%@include file="../inc/meta.jspf"%>
 </head>
 
 <body>
@@ -26,7 +27,7 @@
       
        <tr>
          <td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">角色权限：</td>
-         <td  bgcolor="#f2f2f2"><input type="text" name="rolePower" value=${rolePower} size="55"/></td>
+         <td  bgcolor="#f2f2f2"><input type="text"  size="55" name="rolePower" value=${rolePower}  /></td>
        </tr>
    
        <tr>
