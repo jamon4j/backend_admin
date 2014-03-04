@@ -237,8 +237,8 @@ static {
      TITLE.put("vm_order_pay", "虚拟机总数(付费)");   
      TITLE.put("vm_order_unback", "待回收虚拟机");    
      
-     TITLE.put("mem_unit", "ksu(付费)");   
-     TITLE.put("mem_unit_trial", "ksu(试用)");
+     TITLE.put("mem_unit", "KSU(付费)");   
+     TITLE.put("mem_unit_trial", "KSU(试用)");
      
 }
 
