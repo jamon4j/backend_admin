@@ -73,9 +73,25 @@ public class ACLController {
 	@RequestMapping(value="/g/acl/add_user")
 	public  String addUser(@RequestParam("email") String email,@RequestParam("password") String password ,@RequestParam("roles") String roles)
 	{
+		String[] role_list = roles.split(",");
+		int length = role_list.length;
+		for (int i=0; i<length; i++){
+			String roleId = role_list[i];
+			if (!isNumberic(roleId)) return "redirect:/g/acl/error";
+			RolePo role = roleService.getRole(new Integer(roleId));
+			if (role == null) return "redirect:/g/acl/error";
+		}
 		loginService.addUser(email, password, roles);
 		return "redirect:/g/acl/user_list";
 	}
+	
+	@RequestMapping(value="/g/acl/error")
+	public ModelAndView error(ModelAndView mav)
+	{
+		mav.setViewName("/gestion/acl/error");
+		return mav;
+	}
+	
 	
 	@RequestMapping(value="/g/acl/add_role")
 	public  String addRole(@RequestParam("name") String name,@RequestParam("roles") String roles, @RequestParam("roleType") Byte roleType)
@@ -156,4 +172,15 @@ public class ACLController {
 		mav.setViewName("/gestion/acl/role_uri");
 		return mav;
 	}
+	
+	
+	private boolean isNumberic(String str)
+	{
+		for(int i=str.length(); --i>=0;){
+			if (!Character.isDigit(str.charAt(i)))
+					return false;
+		}
+		return true;
+	}
+	
 }
