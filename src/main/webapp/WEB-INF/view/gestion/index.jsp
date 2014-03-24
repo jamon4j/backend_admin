@@ -92,12 +92,32 @@
 		<div class="menu-group">
 			<h2 class="first">iConsole</h2>
 			<ul>
-				<li><a href="/kpi/home.jsp?t=1" router="home/3/0"
-					target="mainframe">订单账户</a></li>
-				<li><a href="/kpi/kpi_list.jsp?p=pub_kvm" router="home/3/1"
-					target="mainframe">库存配置</a></li>
-				<li><a href="/kpi/kpi_list.jsp?p=pub_op" router="home/3/2"
+				<li><a href="/kpi/home.jsp?t=1" router="home/3/0" id="order_li"
+					target="mainframe">订单账单</a></li>
+				<li id="order_div">
+					<ul>
+						<li><a>&nbsp;&nbsp;|-订单列表</a></li>
+						<li><a>&nbsp;&nbsp;|-账单列表</a></li>
+						<li><a>&nbsp;&nbsp;|-代金券列表</a></li>
+						<li><a>&nbsp;&nbsp;|-现金账户明细</a></li>
+					</ul>
+				</li>
+				<li><a href="/kpi/home.jsp?t=1" id="config_li"
+					router="home/3/1" target="mainframe">库存配置</a></li>
+				<li id="config_div">
+					<ul>
+						<li><a>&nbsp;&nbsp;|-库存列表</a></li>
+						<li><a>&nbsp;&nbsp;|-配置列表</a></li>
+					</ul>
+				</li>
+				<li><a href="/kpi/home.jsp?t=1" router="home/3/2" id="user_li"
 					target="mainframe">用户与KVM</a></li>
+				<li id="user_div">
+					<ul>
+						<li><a>&nbsp;&nbsp;|-用户列表</a></li>
+						<li><a>&nbsp;&nbsp;|-超管切换</a></li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 
@@ -138,6 +158,54 @@
 			frameborder="0" title="main frame content"></iframe>
 	</div>
 	<script type='text/javascript'>
+		$("#order_div").hide();
+		$("#config_div").hide();
+		$("#user_div").hide();
+		//订单账单div
+		var order_click_flag = 0;
+		$("#order_li").click(function() {
+			if (order_click_flag == 0) {
+				$("#order_div").slideDown(800);
+				$("#user_div").slideUp(800);
+				$("#config_div").slideUp(800);
+				order_click_flag = 1;
+				config_click_flag = 0;
+				user_click_flag = 0;
+			} else {
+				$("#order_div").slideUp(800);
+				order_click_flag = 0;
+			}
+		});
+		//库存配置DIV
+		var config_click_flag = 0;
+		$("#config_li").click(function() {
+			if (config_click_flag == 0) {
+				$("#config_div").slideDown(800);
+				$("#user_div").slideUp(800);
+				$("#order_div").slideUp(800);
+				config_click_flag = 1;
+				order_click_flag = 0;
+				user_click_flag = 0;
+			} else {
+				$("#config_div").slideUp(800);
+				config_click_flag = 0;
+			}
+		});
+		//用户与KVM DIV
+		var user_click_flag = 0;
+		$("#user_li").click(function() {
+			if (user_click_flag == 0) {
+				$("#user_div").slideDown(800);
+				$("#order_div").slideUp(800);
+				$("#config_div").slideUp(800);
+				user_click_flag = 1;
+				order_click_flag = 0
+				config_click_flag = 0;
+			} else {
+				$("#user_div").slideUp(800);
+				user_click_flag = 0;
+			}
+		});
 		if (!window.Xwb)
 			Xwb = {};
 		Xwb.cfg = {
