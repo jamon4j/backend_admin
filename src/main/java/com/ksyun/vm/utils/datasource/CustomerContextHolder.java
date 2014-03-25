@@ -1,4 +1,4 @@
-package com.ksyun.vm.utils;
+package com.ksyun.vm.utils.datasource;
 
 /**
  * 多数据源-利用ThreadLocal解决线程安全问题
@@ -7,8 +7,8 @@ package com.ksyun.vm.utils;
  * 
  */
 public class CustomerContextHolder {
-	public static final String DATA_SOURCE_A = "dataSource";
-	public static final String DATA_SOURCE_B = "payDS";
+	public static final String DATA_SOURCE_A = "VMDataSource";
+	public static final String DATA_SOURCE_B = "payDataSource";
 	private static final ThreadLocal<String> contextHolder = new ThreadLocal<String>();
 
 	public static void setCustomerType(String customerType) {

@@ -1,4 +1,4 @@
-package com.ksyun.vm.utils;
+package com.ksyun.vm.utils.datasource;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 

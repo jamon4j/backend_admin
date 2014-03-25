@@ -12,7 +12,7 @@ import com.github.miemiedev.mybatis.paginator.domain.Order;
 import com.github.miemiedev.mybatis.paginator.domain.PageBounds;
 import com.ksyun.payment.common.SysContext;
 import com.ksyun.payment.dao.IBaseDao;
-import com.ksyun.vm.utils.CustomerContextHolder;
+import com.ksyun.vm.utils.datasource.CustomerContextHolder;
 /**
  * 基础DAO类 ，（提供基本的方法，由于mybatis需要有配置文件mapper ID对应，所以在mapper文件中还是要有相应的insert deleteById findById, findALL配置）
  * @author ZhangYanchun
@@ -29,7 +29,6 @@ public abstract class BaseDao<T, PK> implements IBaseDao<T, PK>{
 	
     
     {
-    	CustomerContextHolder.setCustomerType(CustomerContextHolder.DATA_SOURCE_B);
         //由于泛型擦除规则，暂时只能以此方式获取，由于不能类型转换为Class<T>,只能取得simpleName。留待以后更好的解决办法（2013-08-15 ）
     	String t_name = ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0].toString();   
         nameSpace = String.format("com.ksyun.payment.dto.%s", t_name);

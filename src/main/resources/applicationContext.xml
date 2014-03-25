@@ -62,11 +62,11 @@
 	</bean>
 
 	<!-- 多数据源配置 -->
-	<bean id="dynamicDataSource" class="com.ksyun.vm.utils.DynamicDataSource">
+	<bean id="dynamicDataSource" class="com.ksyun.vm.utils.datasource.DynamicDataSource">
 		<property name="targetDataSources">
 			<map key-type="java.lang.String">
-				<entry value-ref="dataSource" key="dataSource"></entry>
-				<entry value-ref="payDS" key="payDS"></entry>
+				<entry value-ref="dataSource" key="VMDataSource"></entry>
+				<entry value-ref="payDS" key="payDataSource"></entry>
 			</map>
 		</property>
 		<property name="defaultTargetDataSource" ref="dataSource">
@@ -97,15 +97,21 @@
 		</tx:attributes>
 	</tx:advice>
 	<!-- 配置那些类的那些方法参与事务 -->
+	<!-- 配置一个拦截器对象，处理具体的切换数据源的业务 -->
+	<bean id="dataSourceMethodInterceptor"
+		class="com.ksyun.vm.utils.datasource.DataSourceMethodInterceptor" />
 	<aop:config>
 		<!-- <aop:pointcut>标签指的是一个范围 -->
 		<aop:pointcut id="allMagangerMethod" expression="execution(* com..service..*(..))" />
+		<aop:pointcut id="PayDSInterpointCut"
+			expression="execution(* com.ksyun.payment.dao.impl.*Dao.*(..))" />
 		<!-- <aop:advisor>标签相当于Aspect -->
 		<aop:advisor pointcut-ref="allMagangerMethod" advice-ref="txAdvice" />
+		<aop:advisor pointcut-ref="PayDSInterpointCut" advice-ref="dataSourceMethodInterceptor" />
 	</aop:config>
 	<!-- session config -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
+		<property name="dataSource" ref="dynamicDataSource" />
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 		<property name="mapperLocations" value="classpath:mappers/**/*.xml" />
 	</bean>
@@ -124,7 +130,6 @@
 		<property name="cacheSize" value="10" />
 		<property name="dataSource" ref="payDS" />
 	</bean>
-
 
 	<!-- kpi datasource <tx:annotation-driven transaction-manager="txManager"/> 
 		<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
