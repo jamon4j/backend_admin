@@ -105,9 +105,12 @@
 		<aop:pointcut id="allMagangerMethod" expression="execution(* com..service..*(..))" />
 		<aop:pointcut id="PayDSInterpointCut"
 			expression="execution(* com.ksyun.payment.dao.impl.*Dao.*(..))" />
+		<aop:pointcut id="VMDSInterpointCut"
+			expression="execution(* com.ksyun.vm.dao.*Dao.*(..))" />
 		<!-- <aop:advisor>标签相当于Aspect -->
 		<aop:advisor pointcut-ref="allMagangerMethod" advice-ref="txAdvice" />
 		<aop:advisor pointcut-ref="PayDSInterpointCut" advice-ref="dataSourceMethodInterceptor" />
+		<aop:advisor pointcut-ref="VMDSInterpointCut" advice-ref="dataSourceMethodInterceptor" />
 	</aop:config>
 	<!-- session config -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
