@@ -4,6 +4,13 @@
 	
 	<typeAliases>
       <package name="com.ksyun.vm.pojo"/>
+      <package name="com.ksyun.payment.dto"/>
     </typeAliases>
+	<!-- 分页模块plugin -->
+	<plugins>
+        <plugin interceptor="com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor">
+            <property name="dialectClass" value="com.github.miemiedev.mybatis.paginator.dialect.MySQLDialect"/>
+        </plugin>
+    </plugins>
 
 </configuration>

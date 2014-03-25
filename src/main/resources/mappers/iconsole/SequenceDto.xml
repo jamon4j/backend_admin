@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ksyun.payment.dto.SequenceDto" >
+  <resultMap id="sequenceDtoMap" type="com.ksyun.payment.dto.SequenceDto" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+  </resultMap>
+  <insert id="insert" parameterType="sequenceDto" useGeneratedKeys="true" keyProperty="id"> 
+      insert into order_sequence values (null) 
+  </insert>
+  <delete id="deleteById" parameterType="long">
+       delete from order_sequence where id = #{id}
+  </delete>
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ksyun.payment.dto.UserDto">
+	<resultMap type="com.ksyun.payment.dto.UserDto" id="userDtoMap">
+		<id property="userId" column="user_id"/>
+		<result property="balance" column="balance"/>
+		<result property="isSuspended" column="is_suspended"/>
+		<result property="alarmBalance" column="alarm_balance"/>
+		<result property="isAlarm" column="is_alarm"/>
+		<result property="arrearageDay" column="arrearage_day"/>
+	</resultMap>
+	<sql id="all_columns" >
+	    user_id,balance,is_suspended,alarm_balance,is_alarm,arrearage_day
+    </sql>
+	<!-- 根据用户ID 查询用户状态 -->
+    <select id="findById" parameterType="long" resultMap="userDtoMap">
+		select <include refid="all_columns"/> from user_account where user_id = #{userId}
+    </select>
+    <update id="updateBalance" parameterType="userDto">
+	    <![CDATA[
+			update user_account set balance = #{balance}, arrearage_day = #{arrearageDay} where user_id = #{userId}
+		]]> 
+     </update>
+      <update id="updateAlarmBalance" parameterType="userDto">
+	    <![CDATA[
+			update user_account set alarm_balance = #{alarmBalance}, is_alarm=#{isAlarm} where user_id = #{userId}
+		]]> 
+     </update>
+     
+</mapper>

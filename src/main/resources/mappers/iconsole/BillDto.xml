@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ksyun.payment.dto.BillDto" >
+  <resultMap id="billIdMap" type="com.ksyun.payment.dto.BillDto" >
+    <id column="bill_id" property="billId" jdbcType="BIGINT" />
+    <result column="product_id" property="productId" jdbcType="BIGINT" />
+    <result column="product_type" property="productType" jdbcType="VARCHAR" />
+    <result column="charge_begin_time" property="chargeBeginTime" jdbcType="TIMESTAMP" />
+    <result column="charge_end_time" property="chargeEndTime" jdbcType="TIMESTAMP" />
+    <result column="total_cost" property="totalCost" jdbcType="DECIMAL" />
+    <result column="real_cost" property="realCost" jdbcType="DECIMAL" />
+    <result column="pay_type" property="payType" jdbcType="SMALLINT" />
+    <result column="pay_status" property="payStatus" jdbcType="SMALLINT" />
+    <result column="promotion_id" property="promotionId" jdbcType="VARCHAR" />
+    <result column="pay_tmie" property="payTmie" jdbcType="TIMESTAMP" />
+    <result column="user_order_id" property="userOrderId" jdbcType="VARCHAR" />
+    <result column="user_ali_pay_id" property="userAliPayId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="all_columns">
+    bill_id, product_id, product_type, charge_begin_time, charge_end_time, total_cost, real_cost,pay_type, pay_status, promotion_id, pay_tmie, user_order_id, user_ali_pay_id, user_id
+  </sql>
+  
+  <select id="findById" parameterType="billDto" resultMap="billIdMap">
+  	select <include refid="all_columns"/> from bill_base where bill_id = #{billId}
+  </select>
+  
+ 
+  <insert id="insert" parameterType="billDto" useGeneratedKeys="true" keyProperty="billId">
+    insert into bill_base (product_id, product_type, 
+      charge_begin_time, charge_end_time, total_cost, 
+      real_cost, pay_type, pay_status, 
+      promotion_id, pay_tmie, user_order_id, 
+      user_ali_pay_id, user_id)
+    values (#{productId,jdbcType=BIGINT}, #{productType,jdbcType=SMALLINT}, 
+      #{chargeBeginTime,jdbcType=TIMESTAMP}, #{chargeEndTime,jdbcType=TIMESTAMP}, #{totalCost,jdbcType=DECIMAL}, 
+      #{realCost,jdbcType=DECIMAL}, #{payType,jdbcType=SMALLINT}, #{payStatus,jdbcType=SMALLINT}, 
+      #{promotionId,jdbcType=VARCHAR}, #{payTmie,jdbcType=TIMESTAMP}, #{userOrderId,jdbcType=BIGINT}, 
+      #{userAliPayId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT})
+  </insert>
+  <!-- 更新代金券余额   --> 
+   <update id="updateStatus" parameterType="map">
+       update bill_base set pay_status = #{payStatus}, pay_type = #{payType} where bill_id = #{baseBillId}
+   </update>
+   <!-- 查询最近提交的账单，用于判断接口提交是否已经支付 -->
+   <select id="selectLatelyBill" parameterType="long" resultType="billDto">
+   	   select bill_id as "billId", charge_end_time as "chargeEndTime", pay_status as "payStatus" from bill_base where user_id = #{userId} order by charge_end_time desc limit 1;
+   </select>
+   <!-- 查询账单操作（分页） -->
+    <select id="findAllByUser" parameterType="map" resultType="map">
+		select <include refid="all_columns"/> from bill_base  
+		<where>
+		    <if test="userId != null">
+			    user_id = #{userId}
+			</if>
+			<if test="payStatus != null">
+			    and pay_status >= #{payStatus}
+			</if>
+		</where>
+		 order by charge_end_time desc;
+    </select>
+    
+    <!-- 查询账单操作（分页）后台 -->
+    <select id="findAllKvmAndEbsBills" parameterType="map" resultMap="billIdMap">
+		select <include refid="all_columns"/> from bill_base  
+		<where>
+		    product_type != 3  
+		    <if test="userId != null">
+			    and user_id = #{userId}
+			</if>
+			<if test="payType != null">
+			    and pay_type = #{payType}
+			</if>
+			<if test="stime != null">
+			    and (pay_tmie between #{startTime} and #{endTime})
+			</if>
+			<if test="orderId != null">
+			    and user_order_id like #{orderId}
+			</if>
+		</where>
+		 order by pay_tmie desc;
+    </select>
+</mapper>

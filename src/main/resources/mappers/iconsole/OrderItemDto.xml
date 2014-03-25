@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ksyun.payment.dto.OrderItemDto">
+  <resultMap id="BaseResultMap" type="com.ksyun.payment.dto.OrderItemDto">
+    <id column="item_no" jdbcType="VARCHAR" property="itemNo" />
+    <id column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="item_name" jdbcType="VARCHAR" property="itemName" />
+    <result column="unit_count" jdbcType="INTEGER" property="unitCount" />
+     <result column="amount" jdbcType="DECIMAL" property="amount" />
+  </resultMap>
+  
+  <sql id="all_columns">
+      item_no as "itemNo", order_id as "orderId", unit as "unit", item_name as "itemName", unit_count as "unitCount", amount as "amount"
+  </sql>
+  <select id="findAll" resultType="orderItemDto" parameterType="map">
+      select <include refid="all_columns"/> from order_item where order_id = #{orderId} order by item_no asc
+  </select>
+  
+  <insert id="insert" parameterType="orderItemDto">
+     insert into order_item (item_no, order_id, unit, item_name, unit_count, amount) values (#{itemNo}, #{orderId}, #{unit}, #{itemName}, #{unitCount}, #{amount})
+  </insert>
+</mapper>

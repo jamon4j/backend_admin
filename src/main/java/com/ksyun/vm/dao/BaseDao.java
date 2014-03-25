@@ -1,10 +1,13 @@
 package com.ksyun.vm.dao;
 
-import org.apache.ibatis.session.SqlSession;
-
-import javax.annotation.Resource;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.ksyun.vm.utils.CustomerContextHolder;
 
 /**
  * 基础DAO类 ，（提供基本的方法，由于mybatis需要有配置文件mapper ID对应，所以在mapper文件中还是要有相应的insert deleteById findById, findALL配置）
@@ -29,6 +32,7 @@ public abstract class BaseDao<T, PK>{
     }
 
     {
+    	CustomerContextHolder.setCustomerType(CustomerContextHolder.DATA_SOURCE_A);
         //由于泛型擦除规则，暂时只能以此方式获取，由于不能类型转换为Class<T>,只能取得simpleName。留待以后更好的解决办法（2013-08-15 ）
     	String t_name = ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0].toString();
         nameSpace = String.format("com.ksyun.vm.pojo.chart.%s", t_name);

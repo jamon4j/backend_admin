@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ksyun.payment.dto.KvmApplicationDto" >
+  <resultMap id="kvmApplicationDtoMap" type="com.ksyun.payment.dto.KvmApplicationDto" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="uname" property="uname" jdbcType="VARCHAR" />
+    <result column="utype" property="utype" jdbcType="SMALLINT" />
+    <result column="cname" property="cname" jdbcType="VARCHAR" />
+    <result column="uposition" property="uposition" jdbcType="VARCHAR" />
+    <result column="im" property="im" jdbcType="VARCHAR" />
+    <result column="caddress" property="caddress" jdbcType="VARCHAR" />
+    <result column="bussiness_type" property="bussinessType" jdbcType="VARCHAR" />
+    <result column="cpu" property="cpu" jdbcType="INTEGER" />
+    <result column="mem" property="mem" jdbcType="DOUBLE" />
+    <result column="ebs" property="ebs" jdbcType="INTEGER" />
+    <result column="net" property="net" jdbcType="INTEGER" />
+    <result column="ops" property="ops" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="SMALLINT" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    
+    <result column="referee" property="referee" jdbcType="VARCHAR" />
+    <result column="application_time" jdbcType="TIMESTAMP" property="applicationTime" />
+    <result column="website" property="website" jdbcType="VARCHAR" />
+  </resultMap>
+  
+ 
+  <sql id="all_columns" >
+    id, user_id, phone, uname, utype, cname, uposition, im, caddress, bussiness_type, 
+    cpu, mem, ebs, net, ops, status, email, application_time, website, referee
+  </sql>
+  <select id="findById" parameterType="long" resultMap="kvmApplicationDtoMap">
+    select <include refid="all_columns"/> from kvm_application where id = #{id}
+  </select>
+  <select id="findApplicationByUserId" parameterType="long" resultMap="kvmApplicationDtoMap">
+		select <include refid="all_columns"/> from kvm_application where user_id = #{userId} limit 1
+ </select>
+  <!-- 写入操作 -->
+  <insert id="insert" parameterType="couponDto">
+    insert into kvm_application (user_id, phone, 
+      uname, utype, cname, 
+      uposition, im, caddress, 
+      bussiness_type, cpu, mem, 
+      ebs, net, ops)
+    values (#{userId,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR}, 
+      #{uname,jdbcType=VARCHAR}, #{utype,jdbcType=SMALLINT}, #{cname,jdbcType=VARCHAR}, 
+      #{uposition,jdbcType=VARCHAR}, #{im,jdbcType=VARCHAR}, #{caddress,jdbcType=VARCHAR}, 
+      #{bussinessType,jdbcType=VARCHAR}, #{cpu,jdbcType=INTEGER}, #{mem,jdbcType=DOUBLE}, 
+      #{ebs,jdbcType=INTEGER}, #{net,jdbcType=INTEGER}, #{ops,jdbcType=VARCHAR}), #{email,jdbcType=VARCHAR})
+  </insert>
+  <!-- 获取所有试用申请信息，分页显示 -->
+  <select id="getAllApplications" parameterType="map" resultMap="kvmApplicationDtoMap">
+		select <include refid="all_columns"/> from kvm_application   
+		<where>
+		    <if test="phone != null">
+			    phone = #{phone}
+			</if>
+		</where>
+		 order by id desc;
+    </select>
+  <update id="updateStatus" parameterType="long">
+      update kvm_application set status = 1 where id = #{id}
+  </update>
+  <update id="updateKvmOps" parameterType="map">
+        update kvm_application set ops = #{ops} where id = #{id}
+  </update>
+  
+  
+</mapper>

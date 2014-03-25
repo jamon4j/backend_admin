@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ksyun.payment.dto.UserAccountDetailDto" >
+  <resultMap id="userAccountDetailDtoMap" type="com.ksyun.payment.dto.UserAccountDetailDto" >
+    <id column="ca_serial" property="caSerial" jdbcType="VARCHAR" />
+    <result column="deal_type" property="dealType" jdbcType="SMALLINT" />
+    <result column="deal_time" property="dealTime" jdbcType="TIMESTAMP" />
+    <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+    <result column="pay_id" property="payId" jdbcType="VARCHAR"/>
+    <result column="income_money" property="incomeMoney" jdbcType="DECIMAL" />
+    <result column="pay_money" property="payMoney" jdbcType="DECIMAL" />
+    <result column="base_bill_id" property="baseBillId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="balance" property="balance" jdbcType="DECIMAL" />
+    <result column="memo" property="memo" jdbcType="LONGVARCHAR" />
+    <result column="status" property="status" jdbcType="SMALLINT" />
+  </resultMap>
+
+  <sql id="all_columns">
+     ca_serial, deal_type, deal_time, pay_id, income_money, pay_money, base_bill_id, user_id, balance, status, ctime, memo
+  </sql>
+  <update id="updateIncomeSerial" parameterType="userAccountDetailDto">
+      update user_cash_account_detail set deal_time = #{dealTime}, income_money = #{incomeMoney}, pay_money = #{payMoney}, status = #{status}, balance = #{balance}, pay_id = #{payId} where ca_serial = #{caSerial}
+  </update>
+  <select id="findById" parameterType="string" resultMap="userAccountDetailDtoMap">
+      select <include refid="all_columns"/> from user_cash_account_detail where ca_serial = #{caSerial}
+  </select>
+   <select id="findByBillId" parameterType="map" resultMap="userAccountDetailDtoMap">
+      select <include refid="all_columns"/> from user_cash_account_detail where user_id = #{userId} and base_bill_id = #{billId} and deal_type = 3  and status = 1 limit 1;
+  </select>
+  <!-- 写入现金账户明细 -->
+  <insert id="insert" parameterType="userAccountDetailDto">  
+     insert into user_cash_account_detail(ca_serial, deal_type, deal_time, pay_id, income_money, pay_money, base_bill_id, user_id, balance, status, ctime, memo) values(#{caSerial}, #{dealType}, #{dealTime}, #{payId}, #{incomeMoney}, #{payMoney}, #{baseBillId}, #{userId}, #{balance}, #{status}, #{ctime}, #{memo})  
+  </insert>
+  <!-- 根据userId查询代金券信息 -->
+   <select id="findAllByUser" parameterType="long" resultMap="userAccountDetailDtoMap">
+	   select <include refid="all_columns"/> from user_cash_account_detail 
+         <where>
+             user_id = #{userId} 
+            <if test="status != null">
+			   and status = #{status}
+			</if>
+			<if test="dealType != null">
+			   and deal_type = #{dealType} 
+			</if>
+         </where>
+            order by ca_serial desc
+   </select>
+   
+   <!-- select count(*) from user_cash_account_detail as detail left join user_info as info on (detail.user_id = info.user_id) where detail.status = 1 线上没有必要使用左外连接  -->
+   <select id="findAllDetails" parameterType="map" resultType="map">
+	   select detail.*, info.name, info.email, info.mobile  from user_cash_account_detail  as detail, user_info as info  
+         <where>
+             detail.user_id = info.user_id and detail.status = 1 
+            <if test="userId != null">
+			   and detail.user_id = #{userId}
+			</if>
+			 <if test="email != null">
+			   and info.email = #{email}
+			</if>
+			<if test="dealType != null">
+			   and deal_type = #{dealType} 
+			</if>
+			<if test="stime != null">
+			    and (detail.deal_time between #{startTime} and #{endTime})
+			</if>
+         </where>
+            order by deal_time desc
+   </select>
+   
+</mapper>

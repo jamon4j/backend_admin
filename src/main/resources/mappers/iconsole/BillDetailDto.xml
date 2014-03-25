@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ksyun.payment.dto.BillDetailDto" >
+  <resultMap id="billDetailDtoMap" type="com.ksyun.payment.dto.BillDetailDto" >
+    <id column="bill_detail_id" property="billDetailId" jdbcType="BIGINT" />
+    <result column="item_no" property="itemNo" jdbcType="VARCHAR" />
+    <result column="item_name" property="itemName" jdbcType="VARCHAR" />
+    <result column="app_amount" property="appAmount" jdbcType="DECIMAL" />
+    <result column="total_cost" property="totalCost" jdbcType="DECIMAL" />
+    <result column="base_bill_id" property="baseBillId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="all_columns" >
+    bill_detail_id, item_no, item_name, app_amount, total_cost, base_bill_id
+  </sql>
+   <insert id="insert" parameterType="billDetailDto" >
+    insert into bill_detail (item_no, item_name, app_amount, total_cost, base_bill_id)
+       values (#{itemNo,jdbcType=VARCHAR}, #{itemName,jdbcType=VARCHAR}, #{appAmount,jdbcType=DECIMAL}, #{totalCost,jdbcType=DECIMAL}, #{baseBillId,jdbcType=BIGINT})
+  </insert>
+  <select id="findAllByBillId" parameterType="long" resultMap="billDetailDtoMap">
+		select <include refid="all_columns"/> from bill_detail where base_bill_id = #{baseBillId} order by bill_detail_id desc 
+   </select>
+</mapper>

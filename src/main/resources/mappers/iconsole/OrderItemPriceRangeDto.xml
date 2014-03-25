@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ksyun.payment.dto.OrderItemPriceRangeDto">
+  <resultMap id="orderItemPriceRangeDtoMap" type="com.ksyun.payment.dto.OrderItemPriceRangeDto">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="range_begin" jdbcType="INTEGER" property="rangeBegin" />
+    <result column="range_end" jdbcType="INTEGER" property="rangeEnd" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="offset_cost" jdbcType="DECIMAL" property="offsetCost" />
+    <result column="item_no" jdbcType="VARCHAR" property="itemNo" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+  </resultMap>
+  
+  <sql id="all_columns">
+    id, range_begin, range_end, price, item_no, order_id, offset_cost
+  </sql>
+  <select id="findAll" parameterType="map" resultMap="orderItemPriceRangeDtoMap" >
+     select <include refid="all_columns"/> from order_item_price_range where order_id = #{orderId} order by item_no asc, range_begin desc
+  </select>
+</mapper>

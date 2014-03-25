@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ksyun.payment.dto.MsgTemplateDto">
+	<resultMap type="com.ksyun.payment.dto.MsgTemplateDto" id="msgTemplateDtoMap">
+		<id property="bizType" column="biz_type"/>
+		<id property="msgType" column="msg_type"/>
+		<result property="comment" column="comment"/>
+		<result property="template" column="template"/>
+		<result property="lastModified" column="last_modified"/>
+	</resultMap>
+	<sql id="all_columns" >
+	    biz_type, msg_type, comment, template, last_modified 
+    </sql>
+    
+    <insert id="insert" parameterType="msgTemplateDto">
+        insert into msg_template (<include refid="all_columns"/>) values (#{bizType}, #{msgType}, #{comment}, #{template}, now());
+    </insert>
+	<!-- 根据用户ID 查询用户状态 -->
+    <select id="findById" parameterType="map" resultMap="msgTemplateDtoMap">
+		select <include refid="all_columns"/> from msg_template where biz_type = #{bizType} and msg_type = #{msgType}
+    </select>
+    
+    <select id="findAll" parameterType="map" resultMap="msgTemplateDtoMap">
+		select <include refid="all_columns"/> from msg_template order by last_modified desc
+    </select>
+    
+    <update id="update" parameterType="map">
+       update msg_template set biz_type = #{bizType}, msg_type = #{msgType}, comment = #{comment}, template = #{template}, last_modified = now() where biz_type = #{obizType} and msg_type = #{omsgType}
+    </update>
+    
+    
+</mapper>

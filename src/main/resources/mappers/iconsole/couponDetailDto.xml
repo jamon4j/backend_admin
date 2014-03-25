@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ksyun.payment.dto.CouponDetailDto">
+	<resultMap type="com.ksyun.payment.dto.CouponDetailDto" id="couponDetailDtoMap">
+		<id column="cd_id" property="cdId" jdbcType="BIGINT" />
+	    <result column="user_id" property="userId" jdbcType="BIGINT" />
+	    <result column="deal_type" property="dealType" jdbcType="SMALLINT" />
+	    <result column="income_money" property="incomeMoney" jdbcType="DECIMAL" />
+	    <result column="pay_money" property="payMoney" jdbcType="DECIMAL" />
+	    <result column="deal_time" property="dealTime" jdbcType="TIMESTAMP" />
+	    <result column="deal_status" property="dealStatus" jdbcType="SMALLINT" />
+	    <result column="base_bill_id" property="baseBillId" jdbcType="BIGINT" />
+	    <result column="coupon_id" property="couponId" jdbcType="BIGINT" />
+	</resultMap>
+	 <sql id="all_columns" >
+	    cd_id, user_id, deal_type, income_money, pay_money, deal_time, deal_status, base_bill_id, coupon_id 
+	 </sql>
+	<!-- 写入用户代金券明细 -->
+	 <insert id="insert" parameterType="couponDetailDto">  
+        insert into user_coupon_detail(coupon_id,user_id,base_bill_id,deal_type,income_money,pay_money,deal_time,deal_status,memo) values(#{couponId},#{userId},#{baseBillId},#{dealType},#{incomeMoney},#{payMoney},#{dealTime},#{dealStatus},#{memo})  
+    </insert>
+    <!-- 查询用户所有代金券信息 -->
+    <select id="findByCoupon" parameterType="long" resultMap="couponDetailDtoMap">
+		select <include refid="all_columns"/> from user_coupon_detail where coupon_id = #{couponId} order by cd_id desc
+     </select> 
+</mapper>

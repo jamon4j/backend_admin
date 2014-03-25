@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ksyun.payment.dto.CouponDto">
+	<resultMap type="com.ksyun.payment.dto.CouponDto" id="couponDtoMap">
+		<id column="coupon_id" property="couponId" jdbcType="BIGINT" />
+	    <result column="sum_money" property="sumMoney" jdbcType="DECIMAL" />
+	    <result column="balance_money" property="balanceMoney" jdbcType="DECIMAL" />
+	    <result column="is_active" property="isActive" jdbcType="SMALLINT" />
+	    <result column="active_time" property="activeTime" jdbcType="TIMESTAMP" />
+	    <result column="expire_time" property="expireTime" jdbcType="TIMESTAMP" />
+	    <result column="user_id" property="userId" jdbcType="BIGINT" />
+	    <result column="product_type" property="productType" jdbcType="SMALLINT" />
+	    <result column="batch_no" property="batchNo" jdbcType="VARCHAR" />
+	    <result column="active_expire_time" property="activeExpireTime" jdbcType="TIMESTAMP" />
+	    <result column="active_code" property="activeCode" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="all_columns" >
+	    coupon_id, sum_money, balance_money, is_active, active_time, expire_time, user_id, product_type, batch_no, active_expire_time, active_code 
+    </sql>
+	<!-- 查询订单，根据id -->
+	 <insert id="insert" parameterType="couponDto" useGeneratedKeys="true" keyProperty="couponId">  
+        insert into user_coupon(sum_money,balance_money,is_active,active_time,expire_time,user_id,product_type,batch_no, active_expire_time, active_code) values(#{sumMoney},#{balanceMoney},#{isActive},#{activeTime},#{expireTime},#{userId},#{productType},#{batchNo},#{activeExpireTime},#{activeCode})  
+    </insert>
+    <!-- 查询用户代金券信息 -->
+    <select id="findById" parameterType="long" resultType="couponDto">
+		select <include refid="all_columns"/> from user_coupon where coupon_id = #{couponId}
+    </select>
+    <!-- 根据userId查询代金券信息 -->
+    <select id="findAllByUser" parameterType="long" resultType="map">
+		select <include refid="all_columns"/> from user_coupon where user_id = #{userId}
+    </select>
+     <!-- 更新代金券余额   --> 
+     <update id="updateCouponBalance" parameterType="couponDto">
+	    <![CDATA[
+			update user_coupon set balance_money = #{balanceMoney} user_coupon where coupon_id = #{couponId}
+		]]> 
+     </update>
+     <!-- 更新代金券余额   --> 
+     <update id="subCouponBalance" parameterType="map">
+		   update user_coupon set balance_money = balance_money - #{subMoney}  where coupon_id = #{couponId}
+     </update>
+     <!-- 获取代金券余额  --> 
+     <select id="getCouponBalance" parameterType="map" resultType="BigDecimal">
+		select sum(balance_money) from user_coupon 
+		<where>  
+			<if test="userId != null">
+			   user_id = #{userId}
+			</if>
+			<if test="isActive != null">
+			   and is_active = #{isActive}
+			</if>
+			<if test="expireTime != null">
+			    and expire_time >= #{expireTime}
+			</if>
+			<if test="productType != 0">
+			    and product_type = #{productType}
+			</if>
+		</where>
+     </select>
+     <!-- 获取代金券列表，不分页 -->
+    <select id="getValidCoupon" parameterType="map" resultType="couponDto">
+		select coupon_id as "couponId", balance_money as "balanceMoney" from user_coupon 
+		<where>  
+		       balance_money > 0 
+			<if test="userId != null">
+			   and user_id = #{userId}
+			</if>
+			<if test="isActive != null">
+			   and is_active = #{isActive}
+			</if>
+			<if test="expireTime != null">
+			    and expire_time >= #{expireTime}
+			</if>
+			<if test="productType != 0">
+			    and product_type = #{productType}
+			</if>
+		</where>
+		 order by expire_time asc;
+     </select>
+     <!-- 获取代金券信息，分页显示 -->
+     <select id="getAllCoupons" parameterType="map" resultMap="couponDtoMap">
+		select <include refid="all_columns"/> from user_coupon 
+		<where>  
+			<if test="userId != null">
+			   and user_id = #{userId}
+			</if>
+			<if test="isActive != null">
+			   and is_active = #{isActive}
+			</if>
+			<if test="batch_no != null">
+			    and batch_no = #{batchNo}
+			</if>
+		</where>
+		 order by coupon_id desc;
+     </select>
+     <!-- 不分页显示 -->
+      <select id="getAllCouponsByBatchNo" parameterType="map" resultMap="couponDtoMap">
+		select <include refid="all_columns"/> from user_coupon 
+		<where>  
+			<if test="batchNo != null">
+			   and batch_no = #{batchNo}
+			</if>
+		</where>
+		 order by coupon_id desc;
+     </select>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ksyun.payment.dto.KvmStockDto">
+	<resultMap type="com.ksyun.payment.dto.KvmStockDto" id="kvmStockDtoMap">
+		<id property="kvmType" column="kvm_type"/>
+		<result property="amount" column="amount"/>
+		<result property="memo" column="memo"/>
+		
+	</resultMap>
+	<sql id="all_columns" >
+	    kvm_type,amount,memo
+    </sql>
+	<!-- 根据用户ID 查询用户状态 -->
+    <select id="findById" parameterType="string" resultMap="kvmStockDtoMap">
+		select <include refid="all_columns"/> from kvm_stock where kvm_type = #{kvmType}
+    </select>
+    
+    <select id="findAll" parameterType="map" resultMap="kvmStockDtoMap">
+		select <include refid="all_columns"/> from kvm_stock
+    </select>
+     <!-- 更新代金券余额   --> 
+   <update id="updateAmount" parameterType="map">
+       update kvm_stock set amount = amount - #{count} where kvm_type = #{kvmType}
+   </update>
+   
+   <update id="updateTotalAmount" parameterType="map">
+       update kvm_stock set amount = #{amount} where kvm_type = #{kvmType}
+   </update>
+</mapper>
