@@ -1,10 +1,13 @@
 package com.ksyun.vm.service;
 
-import com.ksyun.vm.dao.LoginDao;
+import com.ksyun.vm.dao.interfaces.ILoginDao;
 import com.ksyun.vm.pojo.login.User;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+
 import java.util.List;
 
 /**
@@ -15,8 +18,8 @@ import java.util.List;
  */
 @Service
 public class LoginService {
-    @Resource
-    private LoginDao loginDao;
+    @Autowired
+    private ILoginDao loginDao;
 
     public List<User> getUser(String username,String password) {
         return loginDao.getUser(username, password);

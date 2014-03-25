@@ -2,13 +2,15 @@ package com.ksyun.vm.dao;
 
 import org.springframework.stereotype.Repository;
 
+import com.ksyun.vm.dao.interfaces.IMonitorVmStatusFlowDao;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Repository
-public class MonitorVmStatusFlowDao<MonitorVmStatusFlowPo> extends BaseDao<MonitorVmStatusFlowPo,Integer> {
+public class MonitorVmStatusFlowDao<MonitorVmStatusFlowPo> extends BaseDao<MonitorVmStatusFlowPo,Integer> implements IMonitorVmStatusFlowDao<MonitorVmStatusFlowPo> {
 
     @SuppressWarnings("unchecked")
 	public List<MonitorVmStatusFlowPo> getLatestVmStatusData(){

@@ -13,7 +13,7 @@ import org.apache.commons.lang.ClassUtils;
  * 
  */
 public class DataSourceMethodInterceptor implements MethodInterceptor {
-	private String packageName;
+	//private String packageName;
 
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -27,11 +27,9 @@ public class DataSourceMethodInterceptor implements MethodInterceptor {
 		if (packageName.contains("com.ksyun.payment.dao")) {
 			CustomerContextHolder
 					.setCustomerType(CustomerContextHolder.DATA_SOURCE_B);
-			packageName = CustomerContextHolder.DATA_SOURCE_B;
-		} else if ("com.ksyun.vm.dao".contains(packageName)) {
+		} else if (packageName.contains("com.ksyun.vm.dao")) {
 			CustomerContextHolder
 					.setCustomerType(CustomerContextHolder.DATA_SOURCE_A);
-			packageName = CustomerContextHolder.DATA_SOURCE_A;
 		}
 		Object result = invocation.proceed();
 		return result;
