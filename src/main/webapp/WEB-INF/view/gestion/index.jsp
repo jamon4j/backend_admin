@@ -96,26 +96,27 @@
 					target="mainframe">订单账单</a></li>
 				<li id="order_div">
 					<ul>
-						<li><a>&nbsp;&nbsp;|-订单列表</a></li>
-						<li><a>&nbsp;&nbsp;|-账单列表</a></li>
-						<li><a>&nbsp;&nbsp;|-代金券列表</a></li>
-						<li><a>&nbsp;&nbsp;|-现金账户明细</a></li>
+						<li><a href="/admin/order/order_index?p=user">&nbsp;&nbsp;|-订单列表</a></li>
+						<li><a href="/admin/bill/bill_index?p=user">&nbsp;&nbsp;|-账单列表</a></li>
+						<li><a href="/admin/coupon/index?p=user">&nbsp;&nbsp;|-代金券列表</a></li>
+						<li><a href="/admin/account/cash_detail_index?p=user">&nbsp;&nbsp;|-现金账户明细</a></li>
 					</ul>
 				</li>
 				<li><a href="/kpi/home.jsp?t=1" id="config_li"
 					router="home/3/1" target="mainframe">库存配置</a></li>
 				<li id="config_div">
 					<ul>
-						<li><a>&nbsp;&nbsp;|-库存列表</a></li>
-						<li><a>&nbsp;&nbsp;|-配置列表</a></li>
+						<li><a href="/admin/kstock/kstock_index?p=user">&nbsp;&nbsp;|-库存列表</a></li>
+						<li><a href="/admin/mt/mt_index?p=user">&nbsp;&nbsp;|-配置列表</a></li>
 					</ul>
 				</li>
 				<li><a href="/kpi/home.jsp?t=1" router="home/3/2" id="user_li"
 					target="mainframe">用户与KVM</a></li>
 				<li id="user_div">
 					<ul>
-						<li><a>&nbsp;&nbsp;|-用户列表</a></li>
-						<li><a>&nbsp;&nbsp;|-超管切换</a></li>
+						<li><a href="/admin/user/user_index?p=user">&nbsp;&nbsp;|-用户列表</a></li>
+						<li><a href="/admin/user/user_sudo?p=user">&nbsp;&nbsp;|-超管切换</a></li>
+						<li><a href="/admin/kvm/application_index?p=user">&nbsp;&nbsp;|-KVM试用申请</a></li>
 					</ul>
 				</li>
 			</ul>
