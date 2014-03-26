@@ -1,0 +1,75 @@
+#set($ctx=$rc.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	background-color: #F8F9FA;
+}
+-->
+</style>
+
+<link href="${ctx}/css/images/skin.css" rel="stylesheet" type="text/css" />
+<link type="text/css" rel="stylesheet" href="/js/frame/admin.css"
+	media="screen" />
+<body class="main-body">
+
+
+	<div class="path">
+		<p>
+			当前位置：库存配置<span>&gt;</span>配置列表
+		</p>
+	</div>
+	<div class="set-area">
+		<table width="100%" height="31" border="0" cellpadding="0"
+			cellspacing="0" class="nowtable">
+			<tr>
+				<td class="left_bt2">&nbsp;&nbsp;&nbsp;&nbsp;<a href="#"
+					onclick="openwin('${ctx}/admin/mt/mt_add_input')">增加新的模板</a></td>
+			</tr>
+		</table>
+
+		<table width="100%" height="31" border="0" cellpadding="0"
+			cellspacing="0" class="nowtable">
+			<tr>
+				<td class="left_bt2">&nbsp;&nbsp;&nbsp;&nbsp;模板列表</td>
+			</tr>
+		</table>
+
+
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+			<tr>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">业务类型</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">消息类型</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">备注</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">更新时间</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">编辑</td>
+
+			</tr>
+			#foreach($elem in $list)
+			<tr>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$elem.bizType</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$elem.msgType</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$elem.comment</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$date.format("yyyy-MM-dd
+					HH:mm:ss", $elem.lastModified)</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2"><a
+					href="#"
+					onclick="openwin('${ctx}/admin/mt/mt_update_input?bizType=${elem.bizType}&msgType=${elem.msgType}')">编辑</a></td>
+			</tr>
+			#end
+		</table>
+	</div>
+</body>
+</html>
+<script LANGUAGE="javascript">
+　　function openwin(pageUrl) { 
+       window.open(pageUrl, "newwindow", "height=500, width=1000, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=yes, status=no, channelmode=yes left=300 top=300");
+　　}
+ </script>
