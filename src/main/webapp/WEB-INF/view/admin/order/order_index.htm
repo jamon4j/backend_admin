@@ -1,0 +1,221 @@
+#set($ctx=$rc.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	background-color: #F8F9FA;
+}
+-->
+</style>
+
+<link href="${ctx}/css/images/skin.css" rel="stylesheet" type="text/css" />
+<link type="text/css" rel="stylesheet" href="/js/frame/admin.css"
+	media="screen" />
+<body class="main-body">
+
+	<div class="path">
+		<p>
+			当前位置：订单账单<span>&gt;</span>订单列表
+		</p>
+	</div>
+	<div class="set-area">
+		<table width="100%" height="31" border="0" cellpadding="0"
+			cellspacing="0" class="nowtable">
+			<tr>
+				<td class="left_bt2">&nbsp;&nbsp;&nbsp;&nbsp;查询</td>
+			</tr>
+		</table>
+		<form name="form1" method="post"
+			action="${ctx}/admin/order/order_index">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">产品类型：</td>
+					<td bgcolor="#f2f2f2"><select name="productType">
+							<option value="0" #if($productType== 0) selected #end>所有类型</option>
+							<option value="1" #if($productType== 1) selected #end>云主机服务</option>
+							<option value="2" #if($productType== 2) selected #end>标准存储服务</option>
+							<option value="3" #if($productType== 3) selected #end>ebs存储</option>
+							<option value="11" #if($productType== 11) selected #end>促销活动</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">订单类型：</td>
+					<td bgcolor="#f2f2f2"><select name="orderType">
+							<option value="0" #if($orderType== 0) selected #end>所有类型</option>
+							<option value="1" #if($orderType== 1) selected #end>试用订单</option>
+							<option value="2" #if($orderType== 2) selected #end>常规订单</option>
+							<option value="3" #if($orderType== 3) selected #end>协议订单</option>
+							<option value="4" #if($orderType== 4) selected #end>活动订单</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">用户ID：</td>
+					<td bgcolor="#f2f2f2"><input name="userId" type="text"
+						size="30" value="${userId}" /></td>
+				</tr>
+				<tr>
+					<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">订单时间区间：</td>
+					<td bgcolor="#f2f2f2"><input name="stime" type="text"
+						size="20" value="${stime}" /><input name="etime" type="text"
+						size="20" value="${etime}" /></td>
+				</tr>
+				<tr>
+					<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">订单ID：</td>
+					<td bgcolor="#f2f2f2"><input name="orderId" type="text"
+						size="30" value="${orderId}" /></td>
+				</tr>
+				<tr>
+					<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">状态：</td>
+					<td bgcolor="#f2f2f2"><select name="status">
+							<option value="0" #if($status== 0) selected #end>所有状态</option>
+							<option value="2" #if($status== 2) selected #end>未开通</option>
+							<option value="3" #if($status== 3) selected #end>已开通</option>
+							<option value="-3" #if($status== -3) selected #end>开通失败</option>
+							<option value="-4" #if($status== -4) selected #end>已过期</option>
+							<option value="4" #if($status== 4) selected #end>已续费</option>
+							<option value="-1" #if($status== -1) selected #end>已作废</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td width="20%" height="30" align="center" bgcolor="#f2f2f2"
+						class="left_txt2" colspan="4"><input type="submit" value="提交" /></td>
+
+				</tr>
+
+			</table>
+		</form>
+
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="20%" height="30" align="center" bgcolor="#f2f2f2"
+					class="left_txt2" colspan="4"><a href="#"
+					onclick="openwin('${ctx}/admin/order/order_protocol_start_input')">协议订单(开通)</a></td>
+				<td width="20%" height="30" align="center" bgcolor="#f2f2f2"
+					class="left_txt2" colspan="4"><a href="#"
+					onclick="openwin('${ctx}/admin/order/order_protocol_input')">协议订单</a></td>
+			</tr>
+		</table>
+
+		<table width="100%" height="31" border="0" cellpadding="0"
+			cellspacing="0" class="nowtable">
+			<tr>
+				<td class="left_bt2">&nbsp;&nbsp;&nbsp;&nbsp;订单列表</td>
+			</tr>
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+			<tr>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">用户昵称</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">email</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">手机号码</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">订单编号</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">订单类型</td>
+				<td height="30" align="center" bgcolor="#f2f2f2">#if($ss == 0)<a
+					href="${ctx}/admin/order/order_index?productType=${productType}&stime=${stime}&etime=${etime}&orderId=${orderId}&userId=${userId}&status=${status}&ss=-1&se=0"><font
+						color="green">订单创建时间</font></a>#end #if($ss == 1)<a
+					href="${ctx}/admin/order/order_index?productType=${productType}&stime=${stime}&etime=${etime}&orderId=${orderId}&userId=${userId}&status=${status}&ss=-1&se=0"><font
+						color="green">订单创建时间</font></a><img
+					src="${ctx}/css/images/arrow_up.png" />#end #if($ss == -1)<a
+					href="${ctx}/admin/order/order_index?productType=${productType}&stime=${stime}&etime=${etime}&orderId=${orderId}&userId=${userId}&status=${status}&ss=1&se=0"><font
+						color="green">订单创建时间</font></a><img
+					src="${ctx}/css/images/arrow_down.png" />#end
+				</td>
+
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">所属产品</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">用户ID</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">支付金额</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">产品ID</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">状态</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+
+					#if($se == 0)<a
+					href="${ctx}/admin/order/order_index?productType=${productType}&stime=${stime}&etime=${etime}&orderId=${orderId}&userId=${userId}&status=${status}&ss=0&se=-1"><font
+						color="green">到期时间</font></a>#end #if($se == 1)<a
+					href="${ctx}/admin/order/order_index?productType=${productType}&stime=${stime}&etime=${etime}&orderId=${orderId}&userId=${userId}&status=${status}&ss=0&se=-1"><font
+						color="green">到期时间</font><img src="${ctx}/images/arrow_up.png" /></a>#end
+					#if($se == -1)<a
+					href="${ctx}/admin/order/order_index?productType=${productType}&stime=${stime}&etime=${etime}&orderId=${orderId}&userId=${userId}&status=${status}&ss=0&se=1"><font
+						color="green">到期时间</font><img src="${ctx}/images/arrow_down.png" /></a>#end
+				</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">查看配置</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">操作</td>
+			</tr>
+			#foreach($elem in $pageList)
+			<tr>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$!elem.name</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$!elem.email</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$!elem.mobile</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$!elem.order_id</td>
+
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+					#if($elem.order_type == 1) 试用订单 #elseif($elem.order_type == 2) 常规订单
+					#elseif($elem.order_type == 3) 协议订单 #elseif($elem.order_type == 4)
+					活动订单 #else ... #end</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$date.format("yyyy-MM-dd
+					HH:mm:ss", $elem.submit_time)</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+					#if($elem.product_type == 1) 云主机服务 #elseif($elem.product_type == 2)
+					标准存储服务 #elseif($elem.product_type == 3) 数据盘
+					#elseif($elem.product_type == 11) 促销活动 #else ... #end</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$elem.user_id</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">#decimal(${elem.real_money})</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$!elem.product_id</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+					#if($elem.status == 0) 未支付 #elseif($elem.status == 1) 已支付
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#"
+					onclick="openwin('${ctx}/admin/order/order_change_status?orderId=${elem.order_id}')">更改</a>
+					#elseif($elem.status == 2) 未开通 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a
+					href="#"
+					onclick="openwin('${ctx}/admin/order/order_change_status?orderId=${elem.order_id}')">更改</a>
+					#elseif($elem.status == 3) 已开通 #elseif($elem.status == -1) 已作废
+					#elseif($elem.status == -3) 开通失败
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#"
+					onclick="openwin('${ctx}/admin/order/order_change_status?orderId=${elem.order_id}')">更改</a>
+					#elseif($elem.status == -4) 已过期 #elseif($elem.status == 4) 已续费
+					#else ... #end
+				</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$date.format("yyyy-MM-dd
+					HH:mm:ss", $elem.service_end_time)</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+					#if($elem.product_type != 2) <a href="#"
+					onclick="openwin('${ctx}/admin/order/order_detail?orderId=${elem.order_id}')">查看配置</a>
+					#end
+				</td>
+
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+					#if($elem.product_type != 2 && ($elem.status == 3 || $elem.status
+					== -4 || $elem.status == 4) ) <a href="#"
+					onclick="openwin('${ctx}/admin/order/order_destroy_confirm?orderId=${elem.order_id}')">作废</a>
+					#end #if($elem.order_type == 1 && ($elem.product_type != 2) &&
+					$elem.status == 3) &nbsp;&nbsp; <a href="#"
+					onclick="openwin('${ctx}/admin/order/order_extend_input?orderId=${elem.order_id}')">延期试用单</a>
+					#end #if($elem.order_type == 3 && ($elem.product_type != 2) &&
+					$elem.status == 3) &nbsp;&nbsp; <a href="#"
+					onclick="openwin('${ctx}/admin/order/order_extend_input?orderId=${elem.order_id}')">延期协议单</a>
+					#end
+
+				</td>
+			</tr>
+			#end
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+					#set($url="${ctx}/admin/order/order_index?productType=${productType}&orderType=${orderType}&stime=${stime}&etime=${etime}&orderId=${orderId}&userId=${userId}&status=${status}&ss=${ss}&se=${se}")
+					#pager( $url $pageList.paginator)</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
+<script LANGUAGE="javascript">
+　　function openwin(pageUrl) { 
+       window.open(pageUrl, "newwindow", "height=500, width=900, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=yes, status=no, channelmode=yes left=300 top=300");
+　　}
+ </script>
