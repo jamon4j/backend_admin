@@ -1,0 +1,55 @@
+				
+#macro( pager_load $url $page $type ) 
+
+#set($pageNum = $page.page)
+
+#set($maxPageNum = $page.totalPages)
+
+#set($pageSize = $page.limit)
+
+<!--  <div class="dt_tbl_info">Showing $page.startRow to $page.endRow of ${page.totalCount} entries</div>-->
+
+<div class="dt_tbl_ft">
+   <div class="dt_tbl_paginate" id="dynamic_paginate">
+#if($pageNum == 1) <a href="#" class="pgi_btn first disabled">首页</a> #else <a href="#" class="pgi_btn first" onclick="outHTML('$type','$url',{page:1, pageSize:$pageSize})">首页</a> #end
+
+#if($pageNum != 1 && $pageNum <= $maxPageNum)#set($ppageNum = $pageNum - 1)<a href="#" class="pgi_btn previous" onclick="outHTML('$type','$url',{page:$ppageNum, pageSize:$pageSize})">前一页</a>#else <a href="#" class="pgi_btn previous disabled">前一页</a> #end
+<span>
+#if($pageNum < 5)
+	#set($nums = [1 .. 5])
+	#foreach($i in $nums)
+	    
+		#if($i <= $maxPageNum)
+		    #if($i == $pageNum)
+			  <a href="#" class="pgi_btn cur">$i</a>
+			#else 
+			  <a href="#" class="pgi_btn cur disabled" onclick="outHTML('$type','$url',{page:$i, pageSize:$pageSize})">$i</a>
+			#end
+		#else
+		    #break
+		#end
+	#end  
+#else
+    #set($rangeBegin = $pageNum - 2)
+	#set($rangeEnd = $pageNum + 2)
+	#set($nums = [$rangeBegin .. $rangeEnd])
+	#foreach($i in $nums)
+		#if($i <= $maxPageNum)
+		    #if($i == $pageNum)
+			  <a href="#" class="pgi_btn cur">$i</a>
+			#else 
+			  <a href="#" class="pgi_btn cur disabled" onclick="outHTML('$type','$url',{page:$i, pageSize:$pageSize})">$i</a>
+			#end
+		#else
+		    #break
+		#end
+	#end
+#end
+</span>
+#if($pageNum < $maxPageNum) #set($npageNum = $pageNum + 1)<a href="#" class="pgi_btn next" onclick="outHTML('$type','$url',{page:$npageNum, pageSize:$pageSize})">下一页</a>#else <a href="#" class="pgi_btn next disabled">下一页 </a>#end
+ 
+#if($pageNum == $maxPageNum) <a href="#" class="pgi_btn last disabled">尾页</a>  #else<a href="#" class="pgi_btn last" onclick="outHTML('$type','$url',{page:$maxPageNum, pageSize:$pageSize})" >尾页</a>#end
+ 
+#end
+</div>
+</div>
