@@ -1,0 +1,128 @@
+#set($ctx=$rc.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	background-color: #F8F9FA;
+}
+-->
+</style>
+
+<link href="${ctx}/css/images/skin.css" rel="stylesheet" type="text/css" />
+<link type="text/css" rel="stylesheet" href="/js/frame/admin.css"
+	media="screen" />
+<body class="main-body">
+
+	<div class="path">
+		<p>
+			当前位置：用户与KVM<span>&gt;</span>用户列表
+		</p>
+	</div>
+	<div class="set-area">
+		<table width="100%" height="31" border="0" cellpadding="0"
+			cellspacing="0" class="nowtable">
+			<tr>
+				<td class="left_bt2">&nbsp;&nbsp;&nbsp;&nbsp;查询</td>
+			</tr>
+		</table>
+		<form name="form1" method="post" action="${ctx}/admin/user/user_index">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+
+				<tr>
+					<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">用户ID：</td>
+					<td bgcolor="#f2f2f2"><input name="userId" type="text"
+						size="30" value="${userId}" /></td>
+				</tr>
+				<tr>
+					<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">用户email：</td>
+					<td bgcolor="#f2f2f2"><input name="email" type="text"
+						size="30" value="${email}" /></td>
+				</tr>
+				<tr>
+					<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">联系方式：</td>
+					<td bgcolor="#f2f2f2"><input name="mobile" type="text"
+						size="30" value="${mobile}" /></td>
+				</tr>
+
+				<tr>
+					<td width="20%" height="30" align="center" bgcolor="#f2f2f2"
+						class="left_txt2" colspan="4"><input type="submit" value="提交" /></td>
+
+				</tr>
+
+			</table>
+		</form>
+
+
+		<table width="100%" height="31" border="0" cellpadding="0"
+			cellspacing="0" class="nowtable">
+			<tr>
+				<td class="left_bt2">&nbsp;&nbsp;&nbsp;&nbsp;订单列表</td>
+			</tr>
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+			<tr>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">用户ID</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">用户昵称</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">email</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">手机号码</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">邮箱是否激活</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">余额</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">注册时间</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">用户类型</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">用户来源</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">用户类型设置</td>
+
+			</tr>
+			#foreach($elem in $pageList)
+			<tr>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$!elem.user_id</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$!elem.name</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$!elem.email</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$!elem.mobile</td>
+
+
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+					#if($elem.is_activated == 0) 未验证邮箱 #elseif($elem.is_activated == 1)
+					已验证邮箱 #else ... #end</td>
+
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$!elem.balance</td>
+
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+					#if($elem.reg_time) $date.format("yyyy-MM-dd HH:mm:ss",
+					$elem.reg_time) #end</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+					#if($elem.user_type == 0) 普通用户 #elseif($elem.user_type == 1) 内部介绍
+					#elseif($elem.user_type == 2) 代理 #elseif($elem.user_type == 3) 销售用户
+					#end</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$!elem.user_from</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2"><a
+					href="#"
+					onclick="openwin('${ctx}/admin/user/user_cr_input?userId=$elem.user_id')">
+						设置 </a></td>
+			</tr>
+			#end
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+					#set($url="${ctx}/admin/user/user_index?userId=${userId}&email=${email}&mobile=${mobile}")
+					#pager( $url $pageList.paginator)</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
+<script LANGUAGE="javascript">
+　　function openwin(pageUrl) { 
+       window.open(pageUrl, "newwindow", "height=500, width=900, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=yes, status=no, channelmode=yes left=300 top=300");
+　　}
+ </script>

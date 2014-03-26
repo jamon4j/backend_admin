@@ -1,0 +1,127 @@
+#set($ctx=$rc.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	background-color: #F8F9FA;
+}
+-->
+</style>
+
+<link href="${ctx}/css/images/skin.css" rel="stylesheet" type="text/css" />
+<link type="text/css" rel="stylesheet" href="/js/frame/admin.css"
+	media="screen" />
+</head>
+<body class="main-body">
+	<div class="path">
+		<p>
+			当前位置：用户与KVM<span>&gt;</span>KVM试用申请
+		</p>
+	</div>
+	<div class="set-area">
+		<form name="form1" method="post"
+			action="${ctx}/admin/kvm/application_index">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+				<tr>
+					<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">手机号码：</td>
+					<td bgcolor="#f2f2f2"><input name="phone" type="text"
+						size="30" value="$!phone" /></td>
+				</tr>
+
+				<tr>
+					<td width="20%" height="30" align="center" bgcolor="#f2f2f2"
+						class="left_txt2" colspan="4"><input type="submit" value="提交" /></td>
+
+				</tr>
+
+			</table>
+		</form>
+		<table width="100%" height="31" border="0" cellpadding="0"
+			cellspacing="0" class="nowtable">
+			<tr>
+				<td class="left_bt2">&nbsp;&nbsp;&nbsp;&nbsp;kvm试用</td>
+			</tr>
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+			<tr>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">用户类型</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">联系人</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">推荐人</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2"
+					style="width:15%">网址</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">联系电话</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">邮箱</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">公司名称</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">联系人职位</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">即时通讯</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">公司地址</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">业务类型</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">cpu</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">内存</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">数据盘</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">网络带宽</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">操作系统</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">申请时间</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">审核状态</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">操作</td>
+			</tr>
+			#foreach($elem in $pageList)
+			<tr>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+
+					#if($elem.utype == 1) 公司 #elseif($elem.utype == 2) 个人 #else 其他 #end</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$elem.uname</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$elem.referee</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2"
+					style="word-break:break-all">$elem.website</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$elem.phone</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$elem.email</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$elem.cname</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">${elem.uposition}</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">${elem.im}</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">${elem.caddress}</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">${elem.bussinessType}</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">${elem.cpu}个</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">${elem.mem}G</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">${elem.ebs}G</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">${elem.net}M</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">${elem.opsName}[<a
+					href="#"
+					onclick="openwin('${ctx}/admin/kvm/application_change_os_input?id=$elem.id')"><font
+						color="red">修改</font></a>]
+				</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">$date.format("yyyy-MM-dd
+					HH:mm", $elem.applicationTime)</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+					#if($elem.status == 0) 未通过 #elseif($elem.status == 1) 通过 #else 其他
+					#end</td>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">#if($elem.status
+					== 0)<a href="#"
+					onclick="openwin('${ctx}/admin/kvm/application_approval_input?id=$elem.id&phone=$elem.phone')">审核</a>#end
+				</td>
+			</tr>
+			#end
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td height="30" align="center" bgcolor="#f2f2f2" class="left_txt2">
+					#set($url="${ctx}/admin/kvm/application_index?phone=$!phone")
+					#pager( $url $pageList.paginator)</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
+<script LANGUAGE="javascript">
+　　function openwin(pageUrl) { 
+       window.open(pageUrl, "newwindow", "height=500, width=900, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=yes, status=no, channelmode=yes left=300 top=300");
+　　}
+ </script>
