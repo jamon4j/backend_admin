@@ -31,7 +31,7 @@ public class IndexController extends BaseController {
 		return "login_input";
 	}
 	
-	@RequestMapping("/login")
+	/*@RequestMapping("/login")
 	public String login(HttpServletRequest req, HttpServletResponse response, ModelMap model){
 		String name = ServletUtil.getStr(req, "name");
 		String password = ServletUtil.getStr(req, "password");
@@ -40,7 +40,7 @@ public class IndexController extends BaseController {
 			return "redirect:admin/index";
 		}
 		return "redirect:login_input?ret=0";
-	}
+	}*/
 	
 	@RequestMapping("/logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response){
