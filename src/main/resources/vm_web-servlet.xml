@@ -47,9 +47,36 @@
 			class="com.ksyun.payment.interceptor.HandlerSysContextInterceptor"></bean>
 	</mvc:interceptors>
 	<!-- 对模型视图名称的解析，即在模型视图名称添加前后缀 -->
-	<bean
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
-		p:prefix="/WEB-INF/view/" p:suffix=".jsp" />
+	<!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" 
+		p:prefix="/WEB-INF/view/" p:suffix=".jsp" /> -->
+
+	<!-- jsp视图解析器 -->
+	<bean id="jspViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="com.ksyun.vm.utils.CustomJstlView" /><!-- 
+			需要重新定义JstlView解析器 -->
+		<property name="prefix" value="/WEB-INF/view/" />
+		<property name="suffix" value=".jsp" />
+		<property name="order" value="0" />
+	</bean>
+
+	<!-- velocity 配置 -->
+	<bean id="velocityViewResolver"
+		class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+		<property name="prefix" value="" />
+		<property name="suffix" value=".htm" />
+		<property name="requestContextAttribute" value="rc" />
+		<property name="exposeRequestAttributes" value="true" />
+		<property name="numberToolAttribute" value="number" />
+		<property name="dateToolAttribute" value="date" />
+		<property name="contentType" value="text/html;charset=utf-8" />
+		<property name="order" value="0" />
+	</bean>
+	<bean id="velocityConfigurer"
+		class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+		<property name="resourceLoaderPath" value="WEB-INF/view" />
+		<property name="configLocation" value="classpath:velocity.properties" />
+	</bean>
 
 
 	<bean id="multipartResolver"
