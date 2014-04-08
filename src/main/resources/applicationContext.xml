@@ -69,7 +69,7 @@
 				<entry value-ref="payDS" key="payDataSource"></entry>
 			</map>
 		</property>
-		<property name="defaultTargetDataSource" ref="payDS">
+		<property name="defaultTargetDataSource" ref="dataSource">
 		</property>
 	</bean>
 
@@ -105,9 +105,8 @@
 		<aop:pointcut id="allMagangerMethod" expression="execution(* com..service..*(..))" />
 		<aop:pointcut id="PayDSInterpointCut"
 			expression="execution(* com.ksyun.payment.dao.impl.*Dao.*(..))" />
-		<!-- backend_admin将数据源切换拦截到Service层 -->
 		<aop:pointcut id="VMDSInterpointCut"
-			expression="execution(* com.ksyun.vm.service.*Service.*(..))" />
+			expression="execution(* com.ksyun.vm.dao.*Dao.*(..))" />
 		<!-- <aop:advisor>标签相当于Aspect -->
 		<aop:advisor pointcut-ref="allMagangerMethod" advice-ref="txAdvice" />
 		<aop:advisor pointcut-ref="VMDSInterpointCut" advice-ref="dataSourceMethodInterceptor" />

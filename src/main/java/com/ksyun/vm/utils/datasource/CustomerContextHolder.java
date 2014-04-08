@@ -16,6 +16,9 @@ public class CustomerContextHolder {
 	}
 
 	public static String getCustomerType() {
+		if (contextHolder.get() == null) {
+			return DATA_SOURCE_A;
+		}
 		return contextHolder.get();
 	}
 
