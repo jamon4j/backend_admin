@@ -17,6 +17,7 @@
 			<li><a href="<%=webRootPath%>/kpi/home.jsp">KPI统计</a></li>
 			<!-- 添加iConsole标签 -->
 			<li><a href="<%=webRootPath%>/kpi/home.jsp">iConsole</a></li>
+			<li><a href="<%=webRootPath%>/acl/role_list.jsp">ACL管理</a></li>
 			<!--
         <li><a href="#">用户管理</a></li>
         <li><a href="#">虚拟机管理</a></li>
@@ -119,6 +120,18 @@
 						<li><a href="/admin/kvm/application_index?p=user">&nbsp;&nbsp;|-KVM试用申请</a></li>
 					</ul>
 				</li>
+			</ul>
+		</div>
+
+		<div class="menu-group">
+			<h2 class="first">ACL管理</h2>
+			<ul>
+				<li><a href="/g/acl/user_list?" router="home/4/0"
+					target="mainframe">用户管理</a></li>
+				<li><a href="/g/acl/role_list?" router="home/4/1"
+					target="mainframe">角色管理</a></li>
+				<li><a href="/g/acl/role_uri?" router="home/4/2"
+					target="mainframe">权限uri对应表</a></li>
 			</ul>
 		</div>
 

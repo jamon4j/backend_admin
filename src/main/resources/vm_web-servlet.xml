@@ -38,9 +38,10 @@
 	<context:component-scan base-package="com.ksyun.ic.controller" />
 	<!-- 鉴权系统拦截器 -->
 	<mvc:interceptors>
-		<bean id="handlerAuthenticationInterceptor"
-			class="com.ksyun.vm.interceptor.HandleAuthenticationInterceptor" />
-	</mvc:interceptors>
+        <bean id="handlerAuthenticationInterceptor" class="com.ksyun.vm.interceptor.HandleAuthenticationInterceptor">
+        	<property name="roleService" ref="roleService"/>
+        </bean>
+    </mvc:interceptors>
 	<!-- ThreadLocal 拦截器信息，现在用户分页page、pageSize获取 -->
 	<mvc:interceptors>
 		<bean id="handlerSysContextInterceptor"
