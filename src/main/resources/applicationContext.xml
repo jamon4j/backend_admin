@@ -23,7 +23,7 @@
 	</bean>
 
 	<!-- 公有云数据源 -->
-	<bean id="dataSource_1" destroy-method="close"
+	<bean id="dataSource" destroy-method="close"
 		class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
@@ -99,11 +99,11 @@
 	</bean>
 
 	<!-- 公有云数据源事务配置 -->
-	<bean id="transactionManager_1"
+	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
-		p:dataSource-ref="dataSource_1">
+		p:dataSource-ref="dataSource">
 	</bean>
-	<tx:advice id="txAdvice_1" transaction-manager="transactionManager_1">
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
 			<tx:method name="add*" propagation="REQUIRED" />
 			<tx:method name="save*" propagation="REQUIRED" />
@@ -167,15 +167,15 @@
 	<!-- 配置那些类的那些方法参与事务 -->
 	<aop:config>
 		<!-- 公有云AOP配置 -->
-		<aop:pointcut id="allMagangerMethod_1" expression="execution(* com..service..*(..))" />
-		<aop:advisor pointcut-ref="allMagangerMethod_1"
-			advice-ref="txAdvice_1" />
+		<aop:pointcut id="allMagangerMethod" expression="execution(* com..service..*(..))" />
+		<aop:advisor pointcut-ref="allMagangerMethod"
+			advice-ref="txAdvice" />
 	</aop:config>
 	<aop:config>
 		<!-- 私有云AOP配置 -->
 		<aop:pointcut id="allMagangerMethod_2" expression="execution(* com..service..*(..))" />
 		<aop:advisor pointcut-ref="allMagangerMethod_2"
-			advice-ref="txAdvice_3" />
+			advice-ref="txAdvice_2" />
 	</aop:config>
 	<aop:config>
 		<!-- iConsole AOP配置 -->
@@ -187,7 +187,7 @@
 	<!-- session config -->
 	<!-- 公有云 sqlSessionFactory -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource_1" />
+		<property name="dataSource" ref="dataSource" />
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 		<property name="mapperLocations" value="classpath:mappers/**/*.xml" />
 	</bean>

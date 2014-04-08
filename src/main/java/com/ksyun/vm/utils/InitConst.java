@@ -70,4 +70,8 @@ public class InitConst {
     public static final String MONITOR_HBASE_TABLE_NETWORK="vm_table_network";
     public static final String MONITOR_HBASE_TABLE_LOAD="vm_table_load";
     public static final String MONITOR_HBASE_TABLE_DISK="vm_table_disk";
+    
+    public static final String SESSION_NOW_NAME = "now";
+    public static final String SESSION_PUBLIC_NAME = "allow_public";
+    public static final String SESSION_PRIVATE_NAME = "allow_private";
 }

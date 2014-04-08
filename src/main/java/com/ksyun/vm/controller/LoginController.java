@@ -72,13 +72,22 @@ public class LoginController {
 			msg.setSuccess("true");
 			msg.setUrl("/g/");
 			// 设置Cookie
+			Cookie nowCookie = null;// 当前Cookie
+			Cookie allowCookie = null;// 已登录过的Cookie
 			switch (scloud) {
 			case "public":
 				request.getSession().setAttribute("type", "public");
-				
+				nowCookie = new Cookie(InitConst.SESSION_NOW_NAME, username
+						+ "01" + "public");// 全局JS
+				allowCookie = new Cookie(InitConst.SESSION_PUBLIC_NAME,
+						username + "01" + "public");
 				break;
 			case "private":
 				request.getSession().setAttribute("type", "private");
+				nowCookie = new Cookie(InitConst.SESSION_NOW_NAME, username
+						+ "01" + "private");
+				allowCookie = new Cookie(InitConst.SESSION_PRIVATE_NAME,
+						username + "01" + "private");
 				break;
 			}
 			String cookie = SHA1
@@ -89,6 +98,8 @@ public class LoginController {
 			HandleAuthenticationInterceptor.mapUserRoles.put(cookie, list
 					.get(0).getRoles()); // 缓存用户的Roles
 			msg.setCookie(cookie);
+			response.addCookie(allowCookie);
+			response.addCookie(nowCookie);
 			return JSONObject.toJSONString(msg);
 		} else {
 			msg.setMsg("登陆失败");
