@@ -10,7 +10,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.ksyun.vm.dao.interfaces.IBaseDao;
 import com.ksyun.vm.routedatasource.DataSourceInstances;
-import com.ksyun.vm.utils.datasource.CustomerContextHolder;
 
 /**
  * 基础DAO类 ，（提供基本的方法，由于mybatis需要有配置文件mapper ID对应，所以在mapper文件中还是要有相应的insert deleteById findById, findALL配置）
@@ -21,7 +20,7 @@ import com.ksyun.vm.utils.datasource.CustomerContextHolder;
  */
 public abstract class BaseDao<T, PK> implements IBaseDao<T, PK> {
 	
-	@Resource
+
 	protected SqlSession sqlSession;
 	
 	protected String nameSpace;

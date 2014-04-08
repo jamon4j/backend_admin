@@ -22,7 +22,8 @@
 		</property>
 	</bean>
 
-	<bean id="dataSource" destroy-method="close"
+	<!-- 公有云数据源 -->
+	<bean id="dataSource_1" destroy-method="close"
 		class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
@@ -50,32 +51,17 @@
 		<property name="removeAbandoned" value="true" />
 		<property name="removeAbandonedTimeout" value="180" />
 	</bean>
-	<!-- datasource config -->
-	<!-- <bean id="payDS" class="org.logicalcobwebs.proxool.ProxoolDataSource"> 
-		<property name="alias" value="data1" /> <property name="driver" value="com.mysql.jdbc.Driver" 
-		/> <property name="driverUrl" value="jdbc:mysql://${db1.url}/${db1.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;transformedBitIsBoolean=true" 
-		/> <property name="user" value="${db1.user}" /> <property name="password" 
-		value="${db1.pwd}" /> <property name="maximumConnectionCount" value="20" 
-		/> </bean> -->
 
-	<bean id="payDS" destroy-method="close"
-		class="org.apache.commons.dbcp.BasicDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url"
-			value="jdbc:mysql://${db1.url}/${db1.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;transformedBitIsBoolean=true" />
-		<property name="username" value="${db1.user}" />
-		<property name="password" value="${db1.pwd}" />
+	<!-- 私有云数据源 -->
+	<bean id="dataSource_2" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${jdbc_c.driverClassName}" />
+		<property name="url" value="${jdbc_c.url}" />
+		<property name="username" value="${jdbc_c.username}" />
+		<property name="password" value="${jdbc_c.password}" />
 		<property name="initialSize" value="10" />
 		<property name="maxActive" value="100" />
 		<property name="maxIdle" value="2" />
 		<property name="minIdle" value="1" />
-		<!-- testOnBorrow :borrowObject进行处理时，对拿到的connection进行validateObject校验 testOnReturn 
-			: returnObject对返回的connection进行validateObject校验，个人觉得对数据库连接池的管理意义不大 testWhileIdle 
-			: 关注的重点，GenericObjectPool中针对pool管理，起了一个 异步Evict的TimerTask定时线程进行控制 ( 可通过设置参数 
-			timeBetweenEvictionRunsMillis>0), 定时对线程池中的链接进行validateObject校验，对无效的链接进行关闭后，会调用 
-			ensureMinIdle，适当建立链接保证最小的minIdle连接数。 timeBetweenEvictionRunsMillis, 设置的Evict线程的时间，单位ms，大于0才会开启evict检查线程 
-			validateQuery ， 代表检查的sql validateQueryTimeout ， 代表在执行检查时，通过statement设置， statement.setQueryTimeout(validationQueryTimeout) 
-			numTestsPerEvictionRun ，代表每次检查链接的数量，建议设置和maxActive一样大，这样每次可以有效检查所有的链接. -->
 		<property name="testWhileIdle" value="true" />
 		<property name="testOnBorrow" value="false" />
 		<property name="testOnReturn" value="false" />
@@ -88,33 +74,42 @@
 		<property name="removeAbandonedTimeout" value="180" />
 	</bean>
 
-	<!-- 多数据源配置 -->
-	<bean id="dynamicDataSource" class="com.ksyun.vm.utils.datasource.DynamicDataSource">
-		<property name="targetDataSources">
-			<map key-type="java.lang.String">
-				<entry value-ref="dataSource" key="VMDataSource"></entry>
-				<entry value-ref="payDS" key="payDataSource"></entry>
-			</map>
-		</property>
-		<property name="defaultTargetDataSource" ref="dataSource">
-		</property>
+	<!-- iConsole数据源 -->
+	<bean id="dataSource_3" destroy-method="close"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://${db1.url}/${db1.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;transformedBitIsBoolean=true" />
+		<property name="username" value="${db1.user}" />
+		<property name="password" value="${db1.pwd}" />
+		<property name="initialSize" value="10" />
+		<property name="maxActive" value="100" />
+		<property name="maxIdle" value="2" />
+		<property name="minIdle" value="1" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="validationQuery" value="select now()" />
+		<property name="validationQueryTimeout" value="1" />
+		<property name="timeBetweenEvictionRunsMillis" value="30000" />
+		<property name="numTestsPerEvictionRun" value="16" />
+		<property name="minEvictableIdleTimeMillis" value="18000000" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="180" />
 	</bean>
 
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" p:
-		p:dataSource-ref="dynamicDataSource">
+	<!-- 公有云数据源事务配置 -->
+	<bean id="transactionManager_1"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		p:dataSource-ref="dataSource_1">
 	</bean>
-	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+	<tx:advice id="txAdvice_1" transaction-manager="transactionManager_1">
 		<tx:attributes>
 			<tx:method name="add*" propagation="REQUIRED" />
 			<tx:method name="save*" propagation="REQUIRED" />
 			<tx:method name="delete*" propagation="REQUIRED" />
 			<tx:method name="update*" propagation="REQUIRED" />
 			<tx:method name="modify*" propagation="REQUIRED" />
-			<tx:method name="save*" propagation="REQUIRED" />
-			<tx:method name="insert*" propagation="REQUIRED" />
-			<tx:method name="incr*" propagation="REQUIRED" />
-			<tx:method name="merge*" propagation="REQUIRED" />
 			<!-- 将save、delete、modify开头的事务之外的事务全部设置 为只读事务，这样也可以在一定程序上提高系统性能 -->
 			<tx:method name="get*" read-only="true" />
 			<tx:method name="find*" read-only="true" />
@@ -123,34 +118,99 @@
 			<tx:method name="*" read-only="true" />
 		</tx:attributes>
 	</tx:advice>
+
+	<!-- 私有云数据源事务配置 -->
+	<bean id="transactionManager_2"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		p:dataSource-ref="dataSource_2">
+	</bean>
+	<tx:advice id="txAdvice_2" transaction-manager="transactionManager_2">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="modify*" propagation="REQUIRED" />
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="search*" read-only="true" />
+			<tx:method name="query*" read-only="true" />
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- iConsole数据源配置 -->
+	<bean id="transactionManager_3"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource_3" />
+	</bean>
+	<tx:advice id="txAdvice_3" transaction-manager="transactionManager_3">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="incr*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="merge*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="pay*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="cancel*" propagation="REQUIRED" />
+			<tx:method name="get*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="count*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="find*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="list*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="*" propagation="SUPPORTS" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+
 	<!-- 配置那些类的那些方法参与事务 -->
-	<!-- 配置一个拦截器对象，处理具体的切换数据源的业务 -->
-	<bean id="dataSourceMethodInterceptor"
-		class="com.ksyun.vm.utils.datasource.DataSourceMethodInterceptor" />
 	<aop:config>
-		<!-- <aop:pointcut>标签指的是一个范围 -->
-		<aop:pointcut id="allMagangerMethod" expression="execution(* com..service..*(..))" />
-		<aop:pointcut id="PayDSInterpointCut"
-			expression="execution(* com.ksyun.payment.dao.impl.*Dao.*(..))" />
-		<aop:pointcut id="VMDSInterpointCut"
-			expression="execution(* com.ksyun.vm.dao.*Dao.*(..))" />
-		<!-- <aop:advisor>标签相当于Aspect -->
-		<aop:advisor pointcut-ref="allMagangerMethod" advice-ref="txAdvice" />
-		<aop:advisor pointcut-ref="VMDSInterpointCut" advice-ref="dataSourceMethodInterceptor" />
-		<aop:advisor pointcut-ref="PayDSInterpointCut" advice-ref="dataSourceMethodInterceptor" />
+		<!-- 公有云AOP配置 -->
+		<aop:pointcut id="allMagangerMethod_1" expression="execution(* com..service..*(..))" />
+		<aop:advisor pointcut-ref="allMagangerMethod_1"
+			advice-ref="txAdvice_1" />
+			
+		<!-- 私有云AOP配置 -->
+		<aop:pointcut id="allMagangerMethod_2" expression="execution(* com..service..*(..))" />
+		<aop:advisor pointcut-ref="allMagangerMethod_2"
+			advice-ref="txAdvice_3" />
+			
+		<!-- iConsole AOP配置 -->
+		<aop:pointcut id="allMagangerMethod_3"
+			expression="execution(* com.ksyun.payment.service.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice_3" pointcut-ref="allMagangerMethod_3" />
 	</aop:config>
+
 	<!-- session config -->
+	<!-- 公有云 sqlSessionFactory -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dynamicDataSource" />
+		<property name="dataSource" ref="dataSource_1" />
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 		<property name="mapperLocations" value="classpath:mappers/**/*.xml" />
 	</bean>
+	
+	<!-- 私有云 sqlSessionFactory -->
+	<bean id="sqlSessionFactory_2" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource_2" />
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+        <property name="mapperLocations" value="classpath:mappers/*.xml" />
+    </bean>
+	
+	<!-- iConsole sqlSessionFactory -->
+	<bean id="sqlSessionFactory_3" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource_3" />
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+        <property name="mapperLocations" value="classpath:mappers/iconsole/*.xml" />
+    </bean>
 	<bean id="sqlSession_batch" class="org.mybatis.spring.SqlSessionTemplate">
-		<constructor-arg index="0" ref="sqlSessionFactory" />
+		<constructor-arg index="0" ref="sqlSessionFactory_3" />
 		<constructor-arg index="1" value="BATCH" />
 	</bean>
+	
+	<!-- iConsole sqlSession -->
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
-		<constructor-arg index="0" ref="sqlSessionFactory" />
+		<constructor-arg index="0" ref="sqlSessionFactory_3" />
 	</bean>
 
 	<bean id="cashSerialIdGenarater"
@@ -158,25 +218,9 @@
 		<property name="incrementerName" value="cash_serial_tb" />
 		<property name="columnName" value="serial_id" />
 		<property name="cacheSize" value="10" />
-		<property name="dataSource" ref="payDS" />
+		<property name="dataSource" ref="dataSource_3" />
 	</bean>
 
-	<!-- kpi datasource <tx:annotation-driven transaction-manager="txManager"/> 
-		<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
-		<property name="dataSource" ref="dataSource_kpi"/> </bean> <bean id="dataSource_kpi" 
-		destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource"> <property 
-		name="driverClassName" value="${jdbc_kpi.driverClassName}" /> <property name="url" 
-		value="${jdbc_kpi.url}" /> <property name="username" value="${jdb_kpi.username}" 
-		/> <property name="password" value="${jdbc_kpi.password}" /> <property name="initialSize" 
-		value="10" /> <property name="maxActive" value="100" /> <property name="maxIdle" 
-		value="2" /> <property name="minIdle" value="1" /> <property name="testWhileIdle" 
-		value="true" /> <property name="testOnBorrow" value="false" /> <property 
-		name="testOnReturn" value="false" /> <property name="validationQuery" value="select 
-		now()" /> <property name="validationQueryTimeout" value="1" /> <property 
-		name="timeBetweenEvictionRunsMillis" value="30000" /> <property name="numTestsPerEvictionRun" 
-		value="16" /> <property name="minEvictableIdleTimeMillis" value="18000000" 
-		/> <property name="removeAbandoned" value="true" /> <property name="removeAbandonedTimeout" 
-		value="180" /> </bean> -->
 	<rabbit:connection-factory id="connectionFactory"
 		host="${jms_server}" port="${jms_port}" />
 	<rabbit:template id="amqpTemplate" connection-factory="connectionFactory" />

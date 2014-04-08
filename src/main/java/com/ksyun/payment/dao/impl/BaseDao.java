@@ -12,7 +12,6 @@ import com.github.miemiedev.mybatis.paginator.domain.Order;
 import com.github.miemiedev.mybatis.paginator.domain.PageBounds;
 import com.ksyun.payment.common.SysContext;
 import com.ksyun.payment.dao.IBaseDao;
-import com.ksyun.vm.utils.datasource.CustomerContextHolder;
 /**
  * 基础DAO类 ，（提供基本的方法，由于mybatis需要有配置文件mapper ID对应，所以在mapper文件中还是要有相应的insert deleteById findById, findALL配置）
  * @author ZhangYanchun

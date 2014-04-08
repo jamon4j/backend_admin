@@ -10,7 +10,6 @@ import java.util.Set;
 import org.springframework.stereotype.Repository;
 
 import com.ksyun.payment.dao.ICouponDao;
-import com.ksyun.vm.utils.datasource.CustomerContextHolder;
 /**
  * 代金券DAO
  * @author ZhangYanchun
