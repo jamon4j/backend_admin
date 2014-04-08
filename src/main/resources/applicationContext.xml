@@ -101,7 +101,7 @@
 	</bean>
 
 	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" p:
 		p:dataSource-ref="dynamicDataSource">
 	</bean>
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
