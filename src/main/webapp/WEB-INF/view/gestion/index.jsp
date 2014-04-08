@@ -27,6 +27,7 @@
 		</ul>
 		<p>
 			<span><font color="red"><b>金山云 - 虚拟主机</b></font></span> <span
+				class="line">|</span><span><b><A>切换</A></b></span><span
 				class="line">|</span> <span>欢迎回来：${uname} ( ${uid} ) </span> <span
 				class="line">|</span> <a
 				href="/gestion/logout?ref=%2fgestion%2findex">退出</a>

@@ -92,7 +92,8 @@ $(function() {
 					url : "/login",
 					data : {
 						username : $("#email").val(),
-						password : $("#password").val()
+						password : $("#password").val(),
+						scloud : $("#scloud").find("option:selected").val()
 					},
 					success : function(data) {
 						if (data.success == "false") {

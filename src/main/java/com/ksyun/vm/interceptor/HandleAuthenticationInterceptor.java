@@ -41,6 +41,9 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
         if(uri.indexOf("/login")>-1||uri.indexOf("/html")>-1||uri.indexOf("/js")>-1||uri.indexOf("/img")>-1|| uri.indexOf("/getvmsum")>-1 || host.equals("127.0.0.1")||type.equals("test")){
             return true;
         }
+       /* if(uri.indexOf("/login")>-1||uri.indexOf("/html")>-1||uri.indexOf("/js")>-1||uri.indexOf("/img")>-1|| uri.indexOf("/getvmsum")>-1){
+            return true;
+        }*/
         if(cookie!=null){
             String backend = cookie.getValue();
             if(backend!=null){

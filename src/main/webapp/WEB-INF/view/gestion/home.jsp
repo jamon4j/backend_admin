@@ -21,13 +21,13 @@
                 <div align="center" class="item">登录信息：uid=${uid} uname=${uname} isLogin=${isLogin}
                 </div>
                 <div align="center" class="item" style="font-size: 22px;font-weight: bold;">
-                    <c:if test="${type=='public'}">
+                    <c:if test="${sessionScope.type=='public'}">
                         您现在访问的是<b style="color:red;">公有云</b>,请小心使用!
                     </c:if>
-                    <c:if test="${type=='private'}">
+                    <c:if test="${sessionScope.type=='private'}">
                         您现在访问的是<b style="color:orange;">私有云</b>,请小心使用!
                     </c:if>
-                    <c:if test="${type=='test'}">
+                    <c:if test="${sessionScope.type=='test'}">
                         您现在访问的是<b style="color:green;">测试环境</b>,请玩命造吧!
                     </c:if>
                 </div>
