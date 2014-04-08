@@ -6,7 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.ksyun.vm.dao.interfaces.IRoleDao;
+import com.ksyun.vm.dao.RoleDao;
 import com.ksyun.vm.pojo.acl.RolePo;
 
 /**
@@ -19,7 +19,7 @@ import com.ksyun.vm.pojo.acl.RolePo;
 public class RoleService {
 	
 	@Resource
-    private IRoleDao<RolePo> roleDao;
+    private RoleDao<RolePo> roleDao;
 
     
     public List<RolePo> getAll() {

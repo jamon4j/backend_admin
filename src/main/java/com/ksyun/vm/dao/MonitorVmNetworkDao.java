@@ -1,17 +1,14 @@
 package com.ksyun.vm.dao;
 
-import com.ksyun.vm.dao.interfaces.IMonitorVmNetworkDao;
-import com.ksyun.vm.pojo.chart.MonitorVmLoadPo;
-
-import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Repository;
+
 @Repository
-public class MonitorVmNetworkDao<MonitorVmNetworkPo> extends BaseDao<MonitorVmNetworkPo,Integer> implements IMonitorVmNetworkDao<MonitorVmNetworkPo> {
+public class MonitorVmNetworkDao<MonitorVmNetworkPo> extends BaseDao<MonitorVmNetworkPo,Integer>  {
 
     public List<MonitorVmNetworkPo> getLatestVmNetworkData(){
 		List<MonitorVmNetworkPo> list = (List<MonitorVmNetworkPo>)sqlSession.selectList(nameSpace + ".getLatestVmNetworkData");

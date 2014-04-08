@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ksyun.vm.dao.interfaces.ILoginDao;
+import com.ksyun.vm.dao.LoginDao;
 import com.ksyun.vm.pojo.login.User;
 
 /**
@@ -14,7 +14,7 @@ import com.ksyun.vm.pojo.login.User;
 @Service
 public class LoginService {
 	@Autowired
-	private ILoginDao loginDao;
+	private LoginDao loginDao;
 
 	public List<User> getUser(String username, String password) {
 		return loginDao.getUser(username, password);
