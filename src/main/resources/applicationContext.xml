@@ -51,14 +51,41 @@
 		<property name="removeAbandonedTimeout" value="180" />
 	</bean>
 	<!-- datasource config -->
-	<bean id="payDS" class="org.logicalcobwebs.proxool.ProxoolDataSource">
-		<property name="alias" value="data1" />
-		<property name="driver" value="com.mysql.jdbc.Driver" />
-		<property name="driverUrl"
+	<!-- <bean id="payDS" class="org.logicalcobwebs.proxool.ProxoolDataSource"> 
+		<property name="alias" value="data1" /> <property name="driver" value="com.mysql.jdbc.Driver" 
+		/> <property name="driverUrl" value="jdbc:mysql://${db1.url}/${db1.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;transformedBitIsBoolean=true" 
+		/> <property name="user" value="${db1.user}" /> <property name="password" 
+		value="${db1.pwd}" /> <property name="maximumConnectionCount" value="20" 
+		/> </bean> -->
+
+	<bean id="payDS" destroy-method="close"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
 			value="jdbc:mysql://${db1.url}/${db1.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;transformedBitIsBoolean=true" />
-		<property name="user" value="${db1.user}" />
+		<property name="username" value="${db1.user}" />
 		<property name="password" value="${db1.pwd}" />
-		<property name="maximumConnectionCount" value="20" />
+		<property name="initialSize" value="10" />
+		<property name="maxActive" value="100" />
+		<property name="maxIdle" value="2" />
+		<property name="minIdle" value="1" />
+		<!-- testOnBorrow :borrowObject进行处理时，对拿到的connection进行validateObject校验 testOnReturn 
+			: returnObject对返回的connection进行validateObject校验，个人觉得对数据库连接池的管理意义不大 testWhileIdle 
+			: 关注的重点，GenericObjectPool中针对pool管理，起了一个 异步Evict的TimerTask定时线程进行控制 ( 可通过设置参数 
+			timeBetweenEvictionRunsMillis>0), 定时对线程池中的链接进行validateObject校验，对无效的链接进行关闭后，会调用 
+			ensureMinIdle，适当建立链接保证最小的minIdle连接数。 timeBetweenEvictionRunsMillis, 设置的Evict线程的时间，单位ms，大于0才会开启evict检查线程 
+			validateQuery ， 代表检查的sql validateQueryTimeout ， 代表在执行检查时，通过statement设置， statement.setQueryTimeout(validationQueryTimeout) 
+			numTestsPerEvictionRun ，代表每次检查链接的数量，建议设置和maxActive一样大，这样每次可以有效检查所有的链接. -->
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="validationQuery" value="select now()" />
+		<property name="validationQueryTimeout" value="1" />
+		<property name="timeBetweenEvictionRunsMillis" value="30000" />
+		<property name="numTestsPerEvictionRun" value="16" />
+		<property name="minEvictableIdleTimeMillis" value="18000000" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="180" />
 	</bean>
 
 	<!-- 多数据源配置 -->

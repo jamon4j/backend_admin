@@ -1,14 +1,13 @@
 package com.ksyun.vm.service;
 
-import com.ksyun.vm.dao.acl.RoleDao;
-import com.ksyun.vm.pojo.acl.RolePo;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import java.util.List;
 
 import javax.annotation.Resource;
 
-import java.util.List;
+import org.springframework.stereotype.Service;
+
+import com.ksyun.vm.dao.interfaces.IRoleDao;
+import com.ksyun.vm.pojo.acl.RolePo;
 
 /**
  * User: zhangzongli
@@ -20,7 +19,7 @@ import java.util.List;
 public class RoleService {
 	
 	@Resource
-    private RoleDao<RolePo> roleDao;
+    private IRoleDao<RolePo> roleDao;
 
     
     public List<RolePo> getAll() {
