@@ -27,7 +27,7 @@ public class DataSourceMethodInterceptor implements MethodInterceptor {
 		if (packageName.contains("com.ksyun.payment.dao")) {
 			CustomerContextHolder
 					.setCustomerType(CustomerContextHolder.DATA_SOURCE_B);
-		} else if (packageName.contains("com.ksyun.vm.dao")) {
+		} else if (packageName.contains("com.ksyun.vm.service")) {//backend_admin将数据源切换拦截到Service层
 			CustomerContextHolder
 					.setCustomerType(CustomerContextHolder.DATA_SOURCE_A);
 		}
