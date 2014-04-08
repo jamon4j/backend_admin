@@ -24,4 +24,31 @@ public class LoginService {
     public List<User> getUser(String username,String password) {
         return loginDao.getUser(username, password);
     }
+    
+    public List<User> getUserAll()
+    {
+    	return loginDao.findAll();
+    }
+    
+    public void addUser(String email,String passwd, String roles)
+    {
+    	User dto = new User();
+    	dto.setPassword(passwd);
+    	dto.setRoles(roles);
+    	dto.setUsername(email);
+    	loginDao.save(dto);
+    }
+    
+    public void deleteUser(int userId)
+    {
+    	loginDao.deleteById(userId);
+    }
+    
+    public void updateUserRoles(int userId, String roles)
+    {
+    	User dto = new User();
+    	dto.setId(userId);
+    	dto.setRoles(roles);
+    	loginDao.updateIfNecessary(dto);
+    }
 }

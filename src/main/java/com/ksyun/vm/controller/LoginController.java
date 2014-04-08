@@ -52,6 +52,7 @@ public class LoginController {
             msg.setUrl("/g/");
             String cookie = SHA1.getDigestOfString((username+"{"+password+"}").getBytes());
             HandleAuthenticationInterceptor.map.put(cookie, Calendar.getInstance());
+            HandleAuthenticationInterceptor.mapUserRoles.put(cookie, list.get(0).getRoles());  //缓存用户的Roles
             msg.setCookie(cookie);
             return JSONObject.toJSONString(msg);
         }else{

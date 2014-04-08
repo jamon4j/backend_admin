@@ -1,12 +1,16 @@
 package com.ksyun.vm.interceptor;
 
+import com.ksyun.vm.pojo.acl.RolePo;
+import com.ksyun.vm.service.RoleService;
 import com.ksyun.vm.utils.Constants;
 import com.ksyun.vm.utils.InitConst;
+
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +22,10 @@ import java.util.Map;
  */
 public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
     public static Map<String, Calendar> map = new HashMap<>();
+    public static Map<String, String> mapUserRoles = new HashMap<>();
+
+    private RoleService roleService;
+    
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String uri = request.getRequestURI();
@@ -39,6 +47,7 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
                 }
                 if(now.getTimeInMillis()-time.getTimeInMillis()>timeout) {
                     map.remove(backend);
+                    mapUserRoles.remove(backend);
                     response.sendRedirect("/login");
                     return false;
                 }
@@ -46,9 +55,21 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
                 response.sendRedirect("/login");
                 return false;
             }
+            
         }else{
             response.sendRedirect("/login");
             return false;
+        }
+        
+        String cookieValue = cookie.getValue();
+        String roles = mapUserRoles.get(cookieValue);
+      
+        if (uri.equals("/g/")) {
+        	 return true;	
+        }
+        if (!isHavePower(roles,uri)) {
+        	response.sendRedirect("/test.jsp");
+        	return false;
         }
         return true;
     }
@@ -84,4 +105,43 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
         }
         return cookieMap;
     }
+    
+    
+    public boolean isHavePower(String roles, String uri)
+    {    	
+    	String[] role_power_list = null;
+    	if (uri.indexOf("/g/home") == 0  || uri.endsWith("/g/")) return true;  //主页不判断权限
+    	
+    	if (roles == null) return true;
+    	String[] role_list = roles.split(",");
+    	String[] uri_list = uri.split("/");
+    	int length = role_list.length;
+    	for(int i=0; i< length; i++){
+    		int roleId = Integer.parseInt(role_list[i]);
+    		if (roleId == 1) return true;                 //admin
+    		
+    		//普通员工--根据role_power判断权限。
+    		RolePo role = roleService.getRole(roleId);    	
+    		if (role !=null){    
+        		role_power_list = role.getRolePower().split(",");
+        		for(int j=0; j<role_power_list.length; j++){
+        			if (uri.indexOf(role_power_list[j])==0) return true;
+        		}	
+    		}
+    	}
+    	
+    	return false;
+    }
+    
+    
+
+	public RoleService getRoleService() {
+		return roleService;
+	}
+
+	public void setRoleService(RoleService roleService) {
+		this.roleService = roleService;
+	}
+    
+    
 }
