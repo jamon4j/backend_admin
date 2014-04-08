@@ -1,6 +1,8 @@
 package com.ksyun.vm.interceptor;
 
 import com.ksyun.vm.pojo.acl.RolePo;
+import com.ksyun.vm.routedatasource.DataSourceInstances;
+import com.ksyun.vm.service.DataSwitchService;
 import com.ksyun.vm.service.RoleService;
 import com.ksyun.vm.utils.Constants;
 import com.ksyun.vm.utils.InitConst;
@@ -23,8 +25,11 @@ import java.util.Map;
 public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
     public static Map<String, Calendar> map = new HashMap<>();
     public static Map<String, String> mapUserRoles = new HashMap<>();
+    public static Map<String, String> mapDataSource = new HashMap<>();
 
     private RoleService roleService;
+    
+    private DataSwitchService dataSwitchService;
     
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -62,6 +67,24 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
         }
         
         String cookieValue = cookie.getValue();
+        
+        String dataSource = mapDataSource.get(cookieValue);
+        
+        System.out.println("dataSource="+dataSource);
+        
+        //ds1代表公有云  ds2代表私有云
+        
+        if (dataSource == null){
+        	mapDataSource.put(cookieValue, DataSourceInstances.DS1);
+        	dataSwitchService.setDataSource(DataSourceInstances.DS1);
+        }
+        else{
+        	dataSwitchService.setDataSource(dataSource);
+        	if (dataSource.equals(DataSourceInstances.DS2)){
+        		Constants.setPropertyValue(InitConst.HTTP_HOST, "192.168.16.23"); //这里写上私有云的ip，正式部署部署公有云环境。需要确保公有云环境可以访问私有云数据库以及ip
+        	}
+        }
+        
         String roles = mapUserRoles.get(cookieValue);
       
         if (uri.equals("/g/")) {
@@ -143,5 +166,12 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		this.roleService = roleService;
 	}
     
+	public DataSwitchService getDataSwitchService() {
+		return dataSwitchService;
+	}
+
+	public void setDataSwitchService(DataSwitchService dataSwitchService) {
+		this.dataSwitchService = dataSwitchService;
+	}
     
 }

@@ -40,6 +40,7 @@
 	<mvc:interceptors>
         <bean id="handlerAuthenticationInterceptor" class="com.ksyun.vm.interceptor.HandleAuthenticationInterceptor">
         	<property name="roleService" ref="roleService"/>
+        	<property name="dataSwitchService" ref="dataSwitchService"/>    	
         </bean>
     </mvc:interceptors>
 	<!-- ThreadLocal 拦截器信息，现在用户分页page、pageSize获取 -->

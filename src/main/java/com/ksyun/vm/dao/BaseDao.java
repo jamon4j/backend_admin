@@ -6,8 +6,10 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.ksyun.vm.dao.interfaces.IBaseDao;
+import com.ksyun.vm.routedatasource.DataSourceInstances;
 import com.ksyun.vm.utils.datasource.CustomerContextHolder;
 
 /**
@@ -23,6 +25,13 @@ public abstract class BaseDao<T, PK> implements IBaseDao<T, PK> {
 	protected SqlSession sqlSession;
 	
 	protected String nameSpace;
+	
+	@Resource 
+	protected SqlSessionFactory sqlSessionFactory;
+	
+	@Resource 
+	protected SqlSessionFactory sqlSessionFactory_2;
+	
 
     /* (non-Javadoc)
 	 * @see com.ksyun.vm.dao.IBaseDao#getNameSpace()
@@ -46,6 +55,24 @@ public abstract class BaseDao<T, PK> implements IBaseDao<T, PK> {
         nameSpace = String.format("com.ksyun.vm.pojo.chart.%s", t_name);
     }
 	
+    
+    
+    /**
+     * 设置数据源
+     * @param ds
+     */
+	public void setDataSource(String ds)
+	{	
+		if (ds.equals(DataSourceInstances.DS1)){
+			sqlSession = sqlSessionFactory.openSession();
+		}
+		
+		else{
+			sqlSession = sqlSessionFactory_2.openSession();
+		}
+	}
+    
+    
 	/* (non-Javadoc)
 	 * @see com.ksyun.vm.dao.IBaseDao#save(T)
 	 */

@@ -16,4 +16,9 @@ public class Constants {
 	public static String getPropertyValue(String key, Object... arguments) {
 		return propertiesAccessor.getValue(key, arguments);
 	}
+	
+	
+	public static void setPropertyValue(String key, String value){
+		propertiesAccessor.setValue(key, value);
+	}
 }
