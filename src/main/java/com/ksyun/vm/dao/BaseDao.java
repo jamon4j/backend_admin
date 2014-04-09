@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionTemplate;
 
 import com.ksyun.vm.routedatasource.DataSourceInstances;
 
@@ -23,7 +24,15 @@ import com.ksyun.vm.routedatasource.DataSourceInstances;
  */
 public abstract class BaseDao<T, PK> {
 
-	protected SqlSession sqlSession;
+	@Resource
+	private SqlSessionTemplate sqlSession_1;
+
+	@Resource
+	private SqlSessionTemplate sqlSession_2;
+
+	// protected SqlSession sqlSession;
+
+	protected SqlSessionTemplate sqlSession;
 
 	protected String nameSpace;
 
@@ -66,11 +75,13 @@ public abstract class BaseDao<T, PK> {
 	 */
 	public void setDataSource(String ds) {
 		if (ds.equals(DataSourceInstances.DS1)) {
-			sqlSession = sqlSessionFactory.openSession();
+			// sqlSession = sqlSessionFactory.openSession();
+			sqlSession = sqlSession_1;
 		}
 
 		else {
-			sqlSession = sqlSessionFactory_2.openSession();
+			// sqlSession = sqlSessionFactory_2.openSession();
+			sqlSession = sqlSession_2;
 		}
 	}
 

@@ -76,6 +76,9 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		String cookieValue = cookie.getValue();
 
 		String dataSource = mapDataSource.get(cookieValue);
+
+		// ds1代表公有云 ds2代表私有云
+
 		// 获取Cookie中当前使用的云类型
 		Cookie nowCookie = getCookieByName(request, InitConst.COOKIE_NOW_NAME);
 		if (nowCookie != null && nowCookie.getValue() != null) {// 云类型Cookie存在，且值存在
@@ -86,27 +89,33 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 				dataSource = DataSourceInstances.DS1;
 				mapDataSource.put(cookieValue, DataSourceInstances.DS1);
 				dataSwitchService.setDataSource(dataSource);
+				Constants.setPropertyValue(InitConst.HTTP_HOST,
+						Constants.getPropertyValue("http.host"));
 				break;
 			case InitConst.COOKIE_PRIVATE:// 私有云
 				dataSource = DataSourceInstances.DS2;
+				mapDataSource.put(cookieValue, DataSourceInstances.DS2);
+				dataSwitchService.setDataSource(dataSource);
+				Constants.setPropertyValue(InitConst.HTTP_HOST,
+						InitConst.HTTP_HOST_IP); // 这里写上私有云的ip，正式部署部署公有云环境。需要确保公有云环境可以访问私有云数据库以及ip
 				break;
 			}
 		}
 		System.out.println("dataSource=" + dataSource);
 
-		// ds1代表公有云 ds2代表私有云
-
-		if (dataSource == null) {
-			mapDataSource.put(cookieValue, DataSourceInstances.DS1);
-			dataSwitchService.setDataSource(DataSourceInstances.DS1);
-			Constants.setPropertyValue(InitConst.HTTP_HOST, Constants.getPropertyValue("sys.type"));
-		} else {
-			dataSwitchService.setDataSource(dataSource);
-			if (dataSource.equals(DataSourceInstances.DS2)) {
-				Constants
-						.setPropertyValue(InitConst.HTTP_HOST, InitConst.HTTP_HOST_IP); // 这里写上私有云的ip，正式部署部署公有云环境。需要确保公有云环境可以访问私有云数据库以及ip
-			}
-		}
+		// 该段代码与上面功能重复
+		/*
+		 * if (dataSource == null) { mapDataSource.put(cookieValue,
+		 * DataSourceInstances.DS1);
+		 * dataSwitchService.setDataSource(DataSourceInstances.DS1);
+		 * Constants.setPropertyValue(InitConst.HTTP_HOST,
+		 * Constants.getPropertyValue("http.host")); } else {
+		 * dataSwitchService.setDataSource(dataSource); if
+		 * (dataSource.equals(DataSourceInstances.DS2)) {
+		 * Constants.setPropertyValue(InitConst.HTTP_HOST,
+		 * InitConst.HTTP_HOST_IP); //
+		 * 这里写上私有云的ip，正式部署部署公有云环境。需要确保公有云环境可以访问私有云数据库以及ip } }
+		 */
 
 		String roles = mapUserRoles.get(cookieValue);
 

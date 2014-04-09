@@ -30,8 +30,8 @@
 		<property name="password" value="${jdbc.password}" />
 		<property name="initialSize" value="10" />
 		<property name="maxActive" value="100" />
-		<property name="maxIdle" value="2" />
-		<property name="minIdle" value="1" />
+		<property name="maxIdle" value="5" />
+		<property name="minIdle" value="2" />
 		<!-- testOnBorrow :borrowObject进行处理时，对拿到的connection进行validateObject校验 testOnReturn 
 			: returnObject对返回的connection进行validateObject校验，个人觉得对数据库连接池的管理意义不大 testWhileIdle 
 			: 关注的重点，GenericObjectPool中针对pool管理，起了一个 异步Evict的TimerTask定时线程进行控制 ( 可通过设置参数 
@@ -211,6 +211,16 @@
 	<!-- iConsole sqlSession -->
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
 		<constructor-arg index="0" ref="sqlSessionFactory_3" />
+	</bean>
+
+	<!-- 公有云 sqlSession -->
+	<bean id="sqlSession_1" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+
+	<!-- 私有云 sqlSession -->
+	<bean id="sqlSession_2" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory_2" />
 	</bean>
 
 	<bean id="cashSerialIdGenarater"

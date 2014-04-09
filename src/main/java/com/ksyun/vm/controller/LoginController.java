@@ -53,13 +53,11 @@ public class LoginController {
 		String scloud = request.getParameter("scloud");
 		// 设置数据源
 		switch (scloud) {
-		case "public":
+		case InitConst.COOKIE_PUBLIC:
 			dataSwitchService.setDataSource(DataSourceInstances.DS1);
-			Constants.setPropertyValue(InitConst.HTTP_HOST, Constants.getPropertyValue("sys.type"));
 			break;
-		case "private":
+		case InitConst.COOKIE_PRIVATE:
 			dataSwitchService.setDataSource(DataSourceInstances.DS2);
-			Constants.setPropertyValue(InitConst.HTTP_HOST, InitConst.HTTP_HOST_IP);
 			break;
 		}
 		List<User> list = loginService.getUser(username, password);
@@ -73,15 +71,20 @@ public class LoginController {
 			Cookie allowCookie = null;// 已登录过的Cookie
 			switch (scloud) {
 			case InitConst.COOKIE_PUBLIC:
+				// 设置公有云地址 配置文件
+				Constants.setPropertyValue(InitConst.HTTP_HOST,
+						Constants.getPropertyValue("http.host"));
 				request.getSession().setAttribute("type",
 						InitConst.COOKIE_PUBLIC);
 				nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME, username
 						+ InitConst.COOKIE_SPLIT + InitConst.COOKIE_PUBLIC);// 全局Cookie
-				allowCookie = new Cookie(InitConst.COOKIE_PUBLIC_NAME,
-						username + InitConst.COOKIE_SPLIT
-								+ InitConst.COOKIE_PUBLIC);
+				allowCookie = new Cookie(InitConst.COOKIE_PUBLIC_NAME, username
+						+ InitConst.COOKIE_SPLIT + InitConst.COOKIE_PUBLIC);
 				break;
 			case InitConst.COOKIE_PRIVATE:
+				// 配置私有云地址
+				Constants.setPropertyValue(InitConst.HTTP_HOST,
+						InitConst.HTTP_HOST_IP);
 				request.getSession().setAttribute("type",
 						InitConst.COOKIE_PRIVATE);
 				nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME, username
