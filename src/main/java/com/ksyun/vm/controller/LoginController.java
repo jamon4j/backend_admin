@@ -55,14 +55,10 @@ public class LoginController {
 		switch (scloud) {
 		case "public":
 			dataSwitchService.setDataSource(DataSourceInstances.DS1);
-			// 这里写上私有云的ip，正式部署部署公有云环境。需要确保公有云环境可以访问私有云数据库以及ip
-			Constants.setPropertyValue(InitConst.HTTP_HOST, "192.168.16.23");
-			System.out.println("已切换数据源--DS1");
 			break;
 		case "private":
 			dataSwitchService.setDataSource(DataSourceInstances.DS2);
-			Constants.setPropertyValue(InitConst.HTTP_HOST, "192.168.16.23");
-			System.out.println("已切换数据源--DS2");
+			Constants.setPropertyValue(InitConst.HTTP_HOST, InitConst.HTTP_HOST_IP);
 			break;
 		}
 		List<User> list = loginService.getUser(username, password);
@@ -75,21 +71,27 @@ public class LoginController {
 			Cookie nowCookie = null;// 当前Cookie
 			Cookie allowCookie = null;// 已登录过的Cookie
 			switch (scloud) {
-			case "public":
-				request.getSession().setAttribute("type", "public");
-				nowCookie = new Cookie(InitConst.SESSION_NOW_NAME, username
-						+ "01" + "public");// 全局JS
-				allowCookie = new Cookie(InitConst.SESSION_PUBLIC_NAME,
-						username + "01" + "public");
+			case InitConst.COOKIE_PUBLIC:
+				request.getSession().setAttribute("type",
+						InitConst.COOKIE_PUBLIC);
+				nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME, username
+						+ InitConst.COOKIE_SPLIT + InitConst.COOKIE_PUBLIC);// 全局Cookie
+				allowCookie = new Cookie(InitConst.COOKIE_PUBLIC_NAME,
+						username + InitConst.COOKIE_SPLIT
+								+ InitConst.COOKIE_PUBLIC);
 				break;
-			case "private":
-				request.getSession().setAttribute("type", "private");
-				nowCookie = new Cookie(InitConst.SESSION_NOW_NAME, username
-						+ "01" + "private");
-				allowCookie = new Cookie(InitConst.SESSION_PRIVATE_NAME,
-						username + "01" + "private");
+			case InitConst.COOKIE_PRIVATE:
+				request.getSession().setAttribute("type",
+						InitConst.COOKIE_PRIVATE);
+				nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME, username
+						+ InitConst.COOKIE_SPLIT + InitConst.COOKIE_PRIVATE);
+				allowCookie = new Cookie(InitConst.COOKIE_PRIVATE_NAME,
+						username + InitConst.COOKIE_SPLIT
+								+ InitConst.COOKIE_PRIVATE);
 				break;
 			}
+			allowCookie.setPath("/");
+			nowCookie.setPath("/");
 			String cookie = SHA1
 					.getDigestOfString((username + "{" + password + "}")
 							.getBytes());

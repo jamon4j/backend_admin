@@ -76,7 +76,22 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		String cookieValue = cookie.getValue();
 
 		String dataSource = mapDataSource.get(cookieValue);
-
+		// 获取Cookie中当前使用的云类型
+		Cookie nowCookie = getCookieByName(request, InitConst.COOKIE_NOW_NAME);
+		if (nowCookie != null && nowCookie.getValue() != null) {// 云类型Cookie存在，且值存在
+			String[] splitCookie = nowCookie.getValue().split(
+					InitConst.COOKIE_SPLIT);
+			switch (splitCookie[splitCookie.length - 1]) {
+			case InitConst.COOKIE_PUBLIC:// 公有云
+				dataSource = DataSourceInstances.DS1;
+				mapDataSource.put(cookieValue, DataSourceInstances.DS1);
+				dataSwitchService.setDataSource(dataSource);
+				break;
+			case InitConst.COOKIE_PRIVATE:// 私有云
+				dataSource = DataSourceInstances.DS2;
+				break;
+			}
+		}
 		System.out.println("dataSource=" + dataSource);
 
 		// ds1代表公有云 ds2代表私有云
@@ -88,7 +103,7 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 			dataSwitchService.setDataSource(dataSource);
 			if (dataSource.equals(DataSourceInstances.DS2)) {
 				Constants
-						.setPropertyValue(InitConst.HTTP_HOST, "192.168.16.23"); // 这里写上私有云的ip，正式部署部署公有云环境。需要确保公有云环境可以访问私有云数据库以及ip
+						.setPropertyValue(InitConst.HTTP_HOST, InitConst.HTTP_HOST_IP); // 这里写上私有云的ip，正式部署部署公有云环境。需要确保公有云环境可以访问私有云数据库以及ip
 			}
 		}
 

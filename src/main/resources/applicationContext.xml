@@ -23,8 +23,7 @@
 	</bean>
 
 	<!-- 公有云数据源 -->
-	<bean id="dataSource" destroy-method="close"
-		class="org.apache.commons.dbcp.BasicDataSource">
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
 		<property name="username" value="${jdbc.username}" />
@@ -168,8 +167,7 @@
 	<aop:config>
 		<!-- 公有云AOP配置 -->
 		<aop:pointcut id="allMagangerMethod" expression="execution(* com..service..*(..))" />
-		<aop:advisor pointcut-ref="allMagangerMethod"
-			advice-ref="txAdvice" />
+		<aop:advisor pointcut-ref="allMagangerMethod" advice-ref="txAdvice" />
 	</aop:config>
 	<aop:config>
 		<!-- 私有云AOP配置 -->
@@ -189,7 +187,7 @@
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
-		<property name="mapperLocations" value="classpath:mappers/**/*.xml" />
+		<property name="mapperLocations" value="classpath:mappers/*.xml" />
 	</bean>
 
 	<!-- 私有云 sqlSessionFactory -->

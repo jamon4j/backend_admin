@@ -27,7 +27,7 @@
 		</ul>
 		<p>
 			<span><font color="red"><b>金山云 - 虚拟主机</b></font></span> <span
-				class="line">|</span><span><b><A>切换</A></b></span><span
+				class="line">|</span><span><b><A href="#" id="change">切换</A></b></span><span
 				class="line">|</span> <span>欢迎回来：${uname} ( ${uid} ) </span> <span
 				class="line">|</span> <a
 				href="/gestion/logout?ref=%2fgestion%2findex">退出</a>
@@ -173,6 +173,34 @@
 			frameborder="0" title="main frame content"></iframe>
 	</div>
 	<script type='text/javascript'>
+		//切换按钮AJAX
+		$("#change").click(function() {
+			$.ajax({
+				type : "POST",
+				url : "/exchange/change",
+				dataType : "json",
+				timeout : 5000,
+				success : function(data) {
+					if (data.msg == "noNow") {
+						alert("切换失败，请您重新操作或登陆");
+						window.location.href = "/login";
+					} else if (data.msg == "noPrivate") {
+						alert("切换私有云失败，请您登陆私有云");
+						window.location.href = "/login";
+					} else if (data.msg == "noPublic") {
+						alert("切换公有云失败，请您登陆公有云");
+						window.location.href = "/login";
+					} else {
+						alert("切换成功");
+						window.location.reload();
+					}
+				},
+				error : function(a, b, c) {
+					alert("错误，请您重新操作或登陆");
+					window.location.href = "/login";
+				}
+			});
+		});
 		$("#order_div").hide();
 		$("#config_div").hide();
 		$("#user_div").hide();
