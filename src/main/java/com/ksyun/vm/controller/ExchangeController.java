@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
@@ -24,12 +25,11 @@ import com.ksyun.vm.utils.InitConst;
  * 
  */
 @Controller
-@RequestMapping("/exchange")
 public class ExchangeController {
 	@Autowired
 	private DataSwitchService dataSwitchService;
 
-	@RequestMapping(value = "/change")
+	@RequestMapping(value = "/change", method = RequestMethod.POST)
 	@ResponseBody
 	public String exchange(HttpServletRequest request,
 			HttpServletResponse response) {
@@ -38,7 +38,8 @@ public class ExchangeController {
 				request, InitConst.COOKIE_NOW_NAME);
 		Msg msg = new Msg();
 		msg.setSuccess("true");
-		if (nowCookie == null || nowCookie.getValue() == null) {
+		if (nowCookie == null || "".equals(nowCookie.getValue())
+				|| nowCookie.getValue() == null) {
 			msg.setMsg("noNow");
 		} else {// 当前云类型存在
 			Cookie new_nowCookie = null;
@@ -52,7 +53,9 @@ public class ExchangeController {
 				 */
 				Cookie privateCookie = HandleAuthenticationInterceptor
 						.getCookieByName(request, InitConst.COOKIE_PRIVATE_NAME);
-				if (privateCookie == null || privateCookie.getValue() == null) {// 私有云的Cookie不存在，登陆
+				if (privateCookie == null
+						|| "".equals(privateCookie.getValue())
+						|| privateCookie.getValue() == null) {// 私有云的Cookie不存在，登陆
 					msg.setMsg("noPrivate");
 					return JSONObject.toJSONString(msg);
 				} else {
@@ -69,7 +72,8 @@ public class ExchangeController {
 			case InitConst.COOKIE_PRIVATE:// 私有云
 				Cookie publicCookie = HandleAuthenticationInterceptor
 						.getCookieByName(request, InitConst.COOKIE_PUBLIC_NAME);
-				if (publicCookie == null || publicCookie.getValue() == null) {// 共有云的Cookie不存在，登陆
+				if (publicCookie == null || "".equals(publicCookie.getValue())
+						|| publicCookie.getValue() == null) {// 共有云的Cookie不存在，登陆
 					msg.setMsg("noPublic");
 					return JSONObject.toJSONString(msg);
 				} else {
@@ -84,7 +88,9 @@ public class ExchangeController {
 				}
 				break;
 			}
+			// 切换成功，返回JSON的数据
 			msg.setMsg("change");
+			// 设置新的全局Cookie的作用域
 			new_nowCookie.setPath("/");
 			response.addCookie(new_nowCookie);
 		}
