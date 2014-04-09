@@ -99,6 +99,7 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		if (dataSource == null) {
 			mapDataSource.put(cookieValue, DataSourceInstances.DS1);
 			dataSwitchService.setDataSource(DataSourceInstances.DS1);
+			Constants.setPropertyValue(InitConst.HTTP_HOST, Constants.getPropertyValue("sys.type"));
 		} else {
 			dataSwitchService.setDataSource(dataSource);
 			if (dataSource.equals(DataSourceInstances.DS2)) {

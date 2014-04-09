@@ -55,6 +55,7 @@ public class LoginController {
 		switch (scloud) {
 		case "public":
 			dataSwitchService.setDataSource(DataSourceInstances.DS1);
+			Constants.setPropertyValue(InitConst.HTTP_HOST, Constants.getPropertyValue("sys.type"));
 			break;
 		case "private":
 			dataSwitchService.setDataSource(DataSourceInstances.DS2);

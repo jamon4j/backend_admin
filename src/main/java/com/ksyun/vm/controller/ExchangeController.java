@@ -74,6 +74,8 @@ public class ExchangeController {
 					return JSONObject.toJSONString(msg);
 				} else {
 					dataSwitchService.setDataSource(DataSourceInstances.DS1);
+					Constants.setPropertyValue(InitConst.HTTP_HOST,
+							Constants.getPropertyValue("sys.type"));
 					request.getSession().setAttribute("type",
 							InitConst.COOKIE_PUBLIC);
 					new_nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME,
