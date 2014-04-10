@@ -7,6 +7,7 @@ import com.ksyun.vm.service.RoleService;
 import com.ksyun.vm.utils.Constants;
 import com.ksyun.vm.utils.InitConst;
 
+import org.apache.log4j.Logger;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.Cookie;
@@ -28,6 +29,9 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 	private RoleService roleService;
 
 	private DataSwitchService dataSwitchService;
+
+	// 定义日志
+	protected Logger logger = Logger.getLogger(getClass());
 
 	@Override
 	public boolean preHandle(HttpServletRequest request,
@@ -101,7 +105,7 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 				break;
 			}
 		}
-		System.out.println("dataSource=" + dataSource);
+		logger.debug(String.format("DataSource: %s", dataSource));
 
 		// 该段代码与上面功能重复
 		/*
