@@ -94,14 +94,18 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 				mapDataSource.put(cookieValue, DataSourceInstances.DS1);
 				dataSwitchService.setDataSource(dataSource);
 				Constants.setPropertyValue(InitConst.HTTP_HOST,
-						Constants.getPropertyValue("http.host"));
+						Constants.getPropertyValue(InitConst.HTTP_HOST_PUBLIC));
+				Constants.setPropertyValue(InitConst.HTTP_PORT,
+						Constants.getPropertyValue(InitConst.HTTP_PORT_PUBLIC));
 				break;
 			case InitConst.COOKIE_PRIVATE:// 私有云
 				dataSource = DataSourceInstances.DS2;
 				mapDataSource.put(cookieValue, DataSourceInstances.DS2);
 				dataSwitchService.setDataSource(dataSource);
 				Constants.setPropertyValue(InitConst.HTTP_HOST,
-						InitConst.HTTP_HOST_IP); // 这里写上私有云的ip，正式部署部署公有云环境。需要确保公有云环境可以访问私有云数据库以及ip
+						Constants.getPropertyValue(InitConst.HTTP_HOST_PRIVATE));
+				Constants.setPropertyValue(InitConst.HTTP_PORT,
+						Constants.getPropertyValue(InitConst.HTTP_PORT_PRIVATE));
 				break;
 			}
 		}

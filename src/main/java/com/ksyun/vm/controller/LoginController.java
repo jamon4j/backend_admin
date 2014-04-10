@@ -74,7 +74,9 @@ public class LoginController {
 			case InitConst.COOKIE_PUBLIC:
 				// 设置公有云地址 配置文件
 				Constants.setPropertyValue(InitConst.HTTP_HOST,
-						Constants.getPropertyValue("http.host"));
+						Constants.getPropertyValue(InitConst.HTTP_HOST_PUBLIC));
+				Constants.setPropertyValue(InitConst.HTTP_PORT,
+						Constants.getPropertyValue(InitConst.HTTP_PORT_PUBLIC));
 				request.getSession().setAttribute("type",
 						InitConst.COOKIE_PUBLIC);
 				nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME, username
@@ -85,7 +87,9 @@ public class LoginController {
 			case InitConst.COOKIE_PRIVATE:
 				// 配置私有云地址
 				Constants.setPropertyValue(InitConst.HTTP_HOST,
-						InitConst.HTTP_HOST_IP);
+						Constants.getPropertyValue(InitConst.HTTP_HOST_PRIVATE));
+				Constants.setPropertyValue(InitConst.HTTP_PORT,
+						Constants.getPropertyValue(InitConst.HTTP_PORT_PRIVATE));
 				request.getSession().setAttribute("type",
 						InitConst.COOKIE_PRIVATE);
 				nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME, username

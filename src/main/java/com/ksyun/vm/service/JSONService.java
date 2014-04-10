@@ -223,6 +223,7 @@ public class JSONService {
     private String getUrl(String key, Object... param) {
         String host = Constants.getPropertyValue(InitConst.HTTP_HOST);
         String port = Constants.getPropertyValue(InitConst.HTTP_PORT);
+        logger.info(Constants.getPropertyValue(InitConst.HTTP_HOST)+"-------------------"+Constants.getPropertyValue(InitConst.HTTP_PORT));
         String uri = Constants.getPropertyValue(key, param);
         return "http://" + host + ":" + port + uri;
     }

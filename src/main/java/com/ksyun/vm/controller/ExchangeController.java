@@ -60,8 +60,10 @@ public class ExchangeController {
 					return JSONObject.toJSONString(msg);
 				} else {
 					dataSwitchService.setDataSource(DataSourceInstances.DS2);
-					Constants.setPropertyValue(InitConst.HTTP_HOST,
-							InitConst.HTTP_HOST_IP);
+					Constants.setPropertyValue(InitConst.HTTP_HOST, Constants
+							.getPropertyValue(InitConst.HTTP_HOST_PRIVATE));
+					Constants.setPropertyValue(InitConst.HTTP_PORT, Constants
+							.getPropertyValue(InitConst.HTTP_PORT_PRIVATE));
 					request.getSession().setAttribute("type",
 							InitConst.COOKIE_PRIVATE);
 					// 设置私有云的用户名Session
@@ -85,8 +87,10 @@ public class ExchangeController {
 					return JSONObject.toJSONString(msg);
 				} else {
 					dataSwitchService.setDataSource(DataSourceInstances.DS1);
-					Constants.setPropertyValue(InitConst.HTTP_HOST,
-							Constants.getPropertyValue("http.host"));
+					Constants.setPropertyValue(InitConst.HTTP_HOST, Constants
+							.getPropertyValue(InitConst.HTTP_HOST_PUBLIC));
+					Constants.setPropertyValue(InitConst.HTTP_PORT, Constants
+							.getPropertyValue(InitConst.HTTP_PORT_PUBLIC));
 					request.getSession().setAttribute("type",
 							InitConst.COOKIE_PUBLIC);
 					// 设置公有云的用户名Session

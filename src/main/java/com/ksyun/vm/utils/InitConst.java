@@ -8,8 +8,12 @@ public class InitConst {
 	public static final String HTTP_COOKIE = "kscdigest";
 
 	public static final String HTTP_HOST = "http.host";
-	public static final String HTTP_HOST_IP = "192.168.16.23";
 	public static final String HTTP_PORT = "http.port";
+
+	public static final String HTTP_HOST_PUBLIC = "http.host.public";
+	public static final String HTTP_PORT_PUBLIC = "http.port.public";
+	public static final String HTTP_HOST_PRIVATE = "http.host.private";
+	public static final String HTTP_PORT_PRIVATE = "http.port.private";
 
 	public static final String KVM_ZONE_LIST = "kvm.zone.list";
 	public static final String KVM_ZONE_HOST = "kvm.zone.host";
