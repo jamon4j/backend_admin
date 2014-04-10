@@ -59,6 +59,8 @@ public class IndexController extends BaseController {
 				request, InitConst.COOKIE_PUBLIC_NAME);
 		Cookie private_cookie = HandleAuthenticationInterceptor
 				.getCookieByName(request, InitConst.COOKIE_PRIVATE_NAME);
+		Cookie backend_cookie = HandleAuthenticationInterceptor
+				.getCookieByName(request, "backend");
 		if (now_cookie != null) {
 			now_cookie.setValue(null);
 			now_cookie.setPath("/");
@@ -73,6 +75,11 @@ public class IndexController extends BaseController {
 			private_cookie.setValue(null);
 			private_cookie.setPath("/");
 			response.addCookie(private_cookie);
+		}
+		if(backend_cookie != null) {
+			backend_cookie.setValue(null);
+			backend_cookie.setPath("/");
+			response.addCookie(backend_cookie);
 		}
 		return "redirect:/login";
 	}
