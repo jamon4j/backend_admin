@@ -10,6 +10,7 @@
 <link rel="shortcut icon" href="/html/ico/ksyun.ico" />
 <link rel="stylesheet" type="text/css" href="/html/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="/html/css/bootstrap-responsive.min.css">
+<link rel="stylesheet" type="text/css" href="/html/css/bootstrap-select.css">
 <link rel="stylesheet" type="text/css" href="/html/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="/html/css/messenger-theme-air.css">
 <link rel="stylesheet" type="text/css" href="/html/css/messenger.css">
@@ -18,5 +19,6 @@
 <script type="text/javascript" src="/html/js/jquery-1.9.0.js"></script>
 <script type="text/javascript" src="/html/js/jquery-ui-1.10.2.custom.min.js"></script>
 <script type="text/javascript" src="/html/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/html/js/bootstrap-select.min.js"></script>
 <script type="text/javascript" src="/html/js/jquery.validate.js"></script>
 <script type="text/javascript" src="/html/js/messenger.min.js"></script>

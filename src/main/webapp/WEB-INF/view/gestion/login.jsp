@@ -8,19 +8,11 @@
 <head>
 <link rel="stylesheet" type="text/css" href="/html/css/login/login.css">
 <script type="text/javascript" src="/html/js/login/login.js"></script>
+
 </head>
 <body>
 	<div class="container">
 		<h2 class="form-signin-heading" align="center">金山云后台管理</h2>
-		<%-- <c:if test="${type=='public'}">
-            <div style="font-size:16px;line-height:25px;color:#feed8a;" align="center">(公有云)</div>
-        </c:if>
-        <c:if test="${type=='private'}">
-            <div style="font-size:16px;line-height:25px;color:#feed8a;" align="center">(私有云)</div>
-        </c:if>
-        <c:if test="${type=='test'}">
-            <div style="font-size:16px;line-height:25px;color:#feed8a;" align="center">(测试环境)</div>
-        </c:if> --%>
 		<form id="form-signin" name="form-signin" action="/login"
 			method="post">
 			<div class="div-center">
@@ -34,17 +26,17 @@
 						class="span2.5" type="password" placeholder="密码/Password"
 						name="password" id="password" />
 				</div>
-				<div>
-					<font size="2.5px" style="color: #feed8a;">TO:</font> 
-						<select name="scloud" id="scloud">
-							<option value="public">公有云</option>
+				<div class="input-prepend control-group">
+					<span class="add-on"><i class="icon-fire"></i></span> <span
+						style="height: 5px"><select name="scloud" id="scloud"><option
+								value="public">公有云</option>
 							<option value="private">私有云</option>
-						</select>
+					</select></span>
 				</div>
 			</div>
-			<button class="btn btn-small btn-warning" type="button" name="lost"
+			<button class="btn-small btn-warning" type="button" name="lost"
 				id="lost">忘记密码?</button>
-			<button class="btn btn-small btn-success span1" style="float:right;"
+			<button class="btn-small btn-success span1" style="float:right;"
 				type="button" name="login" id="login">登陆</button>
 		</form>
 		<form id="form-lostpassword">
@@ -66,4 +58,9 @@
 		</form>
 	</div>
 </body>
+<script type="text/javascript">
+	$(function() {
+		$('#scloud').selectpicker();
+	});
+</script>
 </html>
