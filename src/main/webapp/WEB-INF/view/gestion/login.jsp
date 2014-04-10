@@ -28,9 +28,9 @@
 				</div>
 				<div class="input-prepend control-group">
 					<span class="add-on"><i class="icon-fire"></i></span> <span
-						style="height: 5px"><select name="scloud" id="scloud"><option
+						style="height: 5px"><select name="scloud" id="scloud"><option style="color: red"
 								value="public">公有云</option>
-							<option value="private">私有云</option>
+							<option value="private" style="color:orange;">私有云</option>
 					</select></span>
 				</div>
 			</div>

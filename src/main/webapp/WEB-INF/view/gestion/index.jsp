@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ include file="../include/include.jsp"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <%@include file="inc/meta.jspf"%>
@@ -28,17 +29,18 @@
 		<input type="hidden" id="changeType" value="${sessionScope.type}" />
 		<p>
 			<span><font color="red"><b>金山云 - 虚拟主机</b></font></span> <span
-				class="line">|</span><span>当前： <c:if
-					test="${sessionScope.type=='public'}">
+				class="line">|</span><span>欢迎回来：( ${sessionScope.username} )
+			</span><a onclick="return confirm('确定退出？')"
+				href="/logout?ref=%2fgestion%2findex">退出</a> <span class="line">|</span><span>当前：
+				<c:if test="${sessionScope.type=='public'}">
 					<b style="color:red;">公有云</b>
 				</c:if> <c:if test="${sessionScope.type=='private'}">
 					<b style="color:orange;">私有云</b>
 				</c:if> <c:if test="${sessionScope.type=='test'}">
 					<b style="color:green;">测试环境</b>
-				</c:if> <b><A href="#" target="_self" id="change">切换</A></b>
-			</span><span class="line">|</span> <span>欢迎回来：( ${sessionScope.username} ) </span> <span
-				class="line">|</span> <a onclick="return confirm('确定退出？')"
-				href="/logout?ref=%2fgestion%2findex">退出</a>
+				</c:if> <!-- <b><A href="#" target="_self" id="change">切换</A></b> -->
+				<button type="button" id="change" class="btn btn-primary btn-xs">切换</button>
+			</span>
 		</p>
 	</div>
 

@@ -18,8 +18,6 @@
 
         <div class="operate-cont">
             <div class="form-s2">
-                <div align="center" class="item">登录信息：uid=${uid} uname=${uname} isLogin=${isLogin}
-                </div>
                 <div align="center" class="item" style="font-size: 22px;font-weight: bold;">
                     <c:if test="${sessionScope.type=='public'}">
                         您现在访问的是<b style="color:red;">公有云</b>,请小心使用!
