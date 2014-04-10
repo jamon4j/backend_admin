@@ -36,7 +36,7 @@
 				</c:if> <c:if test="${sessionScope.type=='test'}">
 					<b style="color:green;">测试环境</b>
 				</c:if> <b><A href="#" target="_self" id="change">切换</A></b>
-			</span><span class="line">|</span> <span>欢迎回来：${uname} ( ${uid} ) </span> <span
+			</span><span class="line">|</span> <span>欢迎回来：( ${sessionScope.username} ) </span> <span
 				class="line">|</span> <a onclick="return confirm('确定退出？')"
 				href="/logout?ref=%2fgestion%2findex">退出</a>
 		</p>

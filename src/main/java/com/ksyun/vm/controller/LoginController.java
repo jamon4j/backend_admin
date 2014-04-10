@@ -66,6 +66,7 @@ public class LoginController {
 			msg.setMsg("登陆成功");
 			msg.setSuccess("true");
 			msg.setUrl("/g/");
+			request.getSession().setAttribute("username", username);
 			// 设置Cookie
 			Cookie nowCookie = null;// 当前Cookie
 			Cookie allowCookie = null;// 已登录过的Cookie

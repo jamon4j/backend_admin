@@ -64,6 +64,13 @@ public class ExchangeController {
 							InitConst.HTTP_HOST_IP);
 					request.getSession().setAttribute("type",
 							InitConst.COOKIE_PRIVATE);
+					// 设置私有云的用户名Session
+					String[] splitPrivate = privateCookie.getValue().split(
+							InitConst.COOKIE_SPLIT);
+					String privateUsername = splitPrivate[0];
+					request.getSession().setAttribute("username",
+							privateUsername);
+					// 设置新的nowCookie
 					new_nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME,
 							"exchange" + InitConst.COOKIE_SPLIT
 									+ InitConst.COOKIE_PRIVATE);
@@ -82,6 +89,12 @@ public class ExchangeController {
 							Constants.getPropertyValue("http.host"));
 					request.getSession().setAttribute("type",
 							InitConst.COOKIE_PUBLIC);
+					// 设置公有云的用户名Session
+					String[] splitPublic = publicCookie.getValue().split(
+							InitConst.COOKIE_SPLIT);
+					String publicUsername = splitPublic[0];
+					request.getSession().setAttribute("username",
+							publicUsername);
 					new_nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME,
 							"exchange" + InitConst.COOKIE_SPLIT
 									+ InitConst.COOKIE_PUBLIC);
