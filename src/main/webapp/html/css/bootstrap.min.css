@@ -3258,8 +3258,7 @@ button.btn.btn-mini,input[type="submit"].btn.btn-mini {
 }
 
 .btn-group>.btn,.btn-group>.dropdown-menu,.btn-group>.popover {
-	//ԭֵ14
-	font-size: 11px
+	font-size: 11px;//ԭֵ14
 }
 
 .btn-group>.btn-mini {
