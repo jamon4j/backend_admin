@@ -78,11 +78,9 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		String cookieValue = cookie.getValue();
-
 		String dataSource = mapDataSource.get(cookieValue);
 
 		// ds1代表公有云 ds2代表私有云
-
 		// 获取Cookie中当前使用的云类型
 		Cookie nowCookie = getCookieByName(request, InitConst.COOKIE_NOW_NAME);
 		if (nowCookie != null && nowCookie.getValue() != null) {// 云类型Cookie存在，且值存在

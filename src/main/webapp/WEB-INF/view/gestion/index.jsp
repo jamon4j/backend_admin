@@ -17,7 +17,7 @@
 			<li><a href="<%=webRootPath%>/userlist">用户管理</a></li>
 			<li><a href="<%=webRootPath%>/kpi/home.jsp">KPI统计</a></li>
 			<!-- 添加iConsole标签 -->
-			<li><a href="<%=webRootPath%>/kpi/home.jsp">iConsole</a></li>
+			<li><a href="<%=webRootPath%>/iconsole_page/home.jsp">iConsole</a></li>
 			<li><a href="<%=webRootPath%>/acl/role_list.jsp">ACL管理</a></li>
 			<!--
         <li><a href="#">用户管理</a></li>
@@ -104,7 +104,7 @@
 		<div class="menu-group">
 			<h2 class="first">iConsole</h2>
 			<ul>
-				<li><a href="/kpi/home.jsp?t=1" router="home/3/0" id="order_li"
+				<li><a href="/iconsole_page/home.jsp?t=1" router="home/3/0" id="order_li"
 					target="mainframe">订单账单</a></li>
 				<li id="order_div">
 					<ul>
@@ -114,7 +114,7 @@
 						<li><a href="/admin/account/cash_detail_index?p=user">&nbsp;&nbsp;|-现金账户明细</a></li>
 					</ul>
 				</li>
-				<li><a href="/kpi/home.jsp?t=1" id="config_li"
+				<li><a href="/iconsole_page/home.jsp?t=1" id="config_li"
 					router="home/3/1" target="mainframe">库存配置</a></li>
 				<li id="config_div">
 					<ul>
@@ -122,7 +122,7 @@
 						<li><a href="/admin/mt/mt_index?p=user">&nbsp;&nbsp;|-配置列表</a></li>
 					</ul>
 				</li>
-				<li><a href="/kpi/home.jsp?t=1" router="home/3/2" id="user_li"
+				<li><a href="/iconsole_page/home.jsp?t=1" router="home/3/2" id="user_li"
 					target="mainframe">用户与KVM</a></li>
 				<li id="user_div">
 					<ul>
