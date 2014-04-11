@@ -24,7 +24,6 @@ if(cookie!=null){
         //这里权限判断根据params
     
         String roles = HandleAuthenticationInterceptor.mapUserRoles.get(backend);
-        System.out.println("auth.inc:----" + roles);
         String product = request.getParameter("p");
         
         int flag = 0;
@@ -40,7 +39,6 @@ if(cookie!=null){
 	    			flag = 1;
 	    			break;
 	    		}
-	    		System.out.println("auth.ic--->Role" + roleId);
 	    		//普通员工--根据role_power判断权限。
 	    		RolePo role = roleService.getRole(roleId);
 	    		if (role != null){
