@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.ksyun.vm.dao.RoleDao;
 import com.ksyun.vm.pojo.acl.RolePo;
+import com.ksyun.vm.routedatasource.DataSourceInstances;
 
 /**
  * User: zhangzongli
@@ -29,6 +30,10 @@ public class RoleService {
     public RolePo getRole(int roleId)
     {
     	return roleDao.findById(roleId);
+    }
+    
+    public void setSource() {
+    	roleDao.setDataSource(DataSourceInstances.DS1);
     }
     
     public void addRole(String name, String roles, Byte roleType)
