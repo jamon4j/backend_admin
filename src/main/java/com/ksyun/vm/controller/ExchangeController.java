@@ -68,8 +68,6 @@ public class ExchangeController {
 							.getPropertyValue(InitConst.HTTP_HOST_PRIVATE));
 					Constants.setPropertyValue(InitConst.HTTP_PORT, Constants
 							.getPropertyValue(InitConst.HTTP_PORT_PRIVATE));
-					request.getSession().setAttribute("type",
-							InitConst.COOKIE_PRIVATE);
 					// 设置私有云的用户名Session
 					String[] splitPrivate = privateCookie.getValue().split(
 							InitConst.COOKIE_SPLIT);
@@ -79,6 +77,8 @@ public class ExchangeController {
 					role = splitPrivate[splitPrivate.length - 3];
 					request.getSession().setAttribute("username",
 							privateUsername);
+					request.getSession().setAttribute("type",
+							InitConst.COOKIE_PRIVATE);
 					// 设置新的nowCookie
 					new_nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME,
 							"exchange" + InitConst.COOKIE_SPLIT
@@ -98,8 +98,6 @@ public class ExchangeController {
 							.getPropertyValue(InitConst.HTTP_HOST_PUBLIC));
 					Constants.setPropertyValue(InitConst.HTTP_PORT, Constants
 							.getPropertyValue(InitConst.HTTP_PORT_PUBLIC));
-					request.getSession().setAttribute("type",
-							InitConst.COOKIE_PUBLIC);
 					// 设置公有云的用户名Session
 					String[] splitPublic = publicCookie.getValue().split(
 							InitConst.COOKIE_SPLIT);
@@ -108,6 +106,8 @@ public class ExchangeController {
 					role = splitPublic[splitPublic.length - 3];
 					request.getSession().setAttribute("username",
 							publicUsername);
+					request.getSession().setAttribute("type",
+							InitConst.COOKIE_PUBLIC);
 					new_nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME,
 							"exchange" + InitConst.COOKIE_SPLIT
 									+ InitConst.COOKIE_PUBLIC);

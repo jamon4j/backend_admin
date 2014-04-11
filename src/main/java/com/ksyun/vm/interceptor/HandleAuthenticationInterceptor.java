@@ -97,33 +97,53 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 						Constants.getPropertyValue(InitConst.HTTP_HOST_PUBLIC));
 				Constants.setPropertyValue(InitConst.HTTP_PORT,
 						Constants.getPropertyValue(InitConst.HTTP_PORT_PUBLIC));
+				// 设置页面的Session信息，解决长时间页面没有操作后，Session信息丢失的问题
+				Cookie allow_public_cookie = getCookieByName(request,
+						InitConst.COOKIE_PUBLIC_NAME);
+				if (allow_public_cookie != null) {// 获取公有云Cookie
+					if (!"".equals(allow_public_cookie.getValue())) {
+						String[] splitPublic = allow_public_cookie.getValue()
+								.split(InitConst.COOKIE_SPLIT);
+						// 获取公有云用户名
+						String publicUsername = splitPublic[0];
+						// 设置Session
+						request.getSession().setAttribute("type",
+								InitConst.COOKIE_PUBLIC);
+						request.getSession().setAttribute("username",
+								publicUsername);
+					}
+				}
 				break;
 			case InitConst.COOKIE_PRIVATE:// 私有云
 				dataSource = DataSourceInstances.DS2;
 				mapDataSource.put(cookieValue, DataSourceInstances.DS2);
 				dataSwitchService.setDataSource(dataSource);
-				Constants.setPropertyValue(InitConst.HTTP_HOST,
-						Constants.getPropertyValue(InitConst.HTTP_HOST_PRIVATE));
-				Constants.setPropertyValue(InitConst.HTTP_PORT,
-						Constants.getPropertyValue(InitConst.HTTP_PORT_PRIVATE));
+				Constants
+						.setPropertyValue(InitConst.HTTP_HOST, Constants
+								.getPropertyValue(InitConst.HTTP_HOST_PRIVATE));
+				Constants
+						.setPropertyValue(InitConst.HTTP_PORT, Constants
+								.getPropertyValue(InitConst.HTTP_PORT_PRIVATE));
+				// 设置页面的Session信息，解决长时间页面没有操作后，Session信息丢失的问题
+				Cookie allow_private_cookie = getCookieByName(request,
+						InitConst.COOKIE_PRIVATE_NAME);
+				if (allow_private_cookie != null) {// 获取私有云Cookie
+					if (!"".equals(allow_private_cookie.getValue())) {// 内容不为空时
+						String[] splitPublic = allow_private_cookie.getValue()
+								.split(InitConst.COOKIE_SPLIT);
+						// 获取用户名
+						String privateUsername = splitPublic[0];
+						// 设置Session
+						request.getSession().setAttribute("type",
+								InitConst.COOKIE_PRIVATE);
+						request.getSession().setAttribute("username",
+								privateUsername);
+					}
+				}
 				break;
 			}
 		}
 		logger.debug(String.format("DataSource: %s", dataSource));
-
-		// 该段代码与上面功能重复
-		/*
-		 * if (dataSource == null) { mapDataSource.put(cookieValue,
-		 * DataSourceInstances.DS1);
-		 * dataSwitchService.setDataSource(DataSourceInstances.DS1);
-		 * Constants.setPropertyValue(InitConst.HTTP_HOST,
-		 * Constants.getPropertyValue("http.host")); } else {
-		 * dataSwitchService.setDataSource(dataSource); if
-		 * (dataSource.equals(DataSourceInstances.DS2)) {
-		 * Constants.setPropertyValue(InitConst.HTTP_HOST,
-		 * InitConst.HTTP_HOST_IP); //
-		 * 这里写上私有云的ip，正式部署部署公有云环境。需要确保公有云环境可以访问私有云数据库以及ip } }
-		 */
 
 		String roles = mapUserRoles.get(cookieValue);
 
