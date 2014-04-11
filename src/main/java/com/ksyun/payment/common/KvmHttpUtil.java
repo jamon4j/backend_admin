@@ -60,6 +60,7 @@ public class KvmHttpUtil {
 		Map<String,String> loginMap = new HashMap<String, String>();
 		loginMap.put("username", adminUser);
 		loginMap.put("password", adminPwd);
+		loginMap.put("scloud", "public");
 		String retStr = null;
 		try {
 			retStr = client.post(loginUrl,loginMap);

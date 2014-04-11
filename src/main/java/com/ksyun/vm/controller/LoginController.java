@@ -70,6 +70,10 @@ public class LoginController {
 			// 设置Cookie
 			Cookie nowCookie = null;// 当前Cookie
 			Cookie allowCookie = null;// 已登录过的Cookie
+			// 设置Backend Cookie
+			String cookie = SHA1
+					.getDigestOfString((username + "{" + password + "}")
+							.getBytes());
 			switch (scloud) {
 			case InitConst.COOKIE_PUBLIC:
 				// 设置公有云地址 配置文件
@@ -81,29 +85,34 @@ public class LoginController {
 						InitConst.COOKIE_PUBLIC);
 				nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME, username
 						+ InitConst.COOKIE_SPLIT + InitConst.COOKIE_PUBLIC);// 全局Cookie
+				// 已登录的Cookie中存放backend+role+username+云类型
 				allowCookie = new Cookie(InitConst.COOKIE_PUBLIC_NAME, username
+						+ InitConst.COOKIE_SPLIT + list.get(0).getRoles()
+						+ InitConst.COOKIE_SPLIT + cookie
 						+ InitConst.COOKIE_SPLIT + InitConst.COOKIE_PUBLIC);
 				break;
 			case InitConst.COOKIE_PRIVATE:
 				// 配置私有云地址
-				Constants.setPropertyValue(InitConst.HTTP_HOST,
-						Constants.getPropertyValue(InitConst.HTTP_HOST_PRIVATE));
-				Constants.setPropertyValue(InitConst.HTTP_PORT,
-						Constants.getPropertyValue(InitConst.HTTP_PORT_PRIVATE));
+				Constants
+						.setPropertyValue(InitConst.HTTP_HOST, Constants
+								.getPropertyValue(InitConst.HTTP_HOST_PRIVATE));
+				Constants
+						.setPropertyValue(InitConst.HTTP_PORT, Constants
+								.getPropertyValue(InitConst.HTTP_PORT_PRIVATE));
 				request.getSession().setAttribute("type",
 						InitConst.COOKIE_PRIVATE);
 				nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME, username
 						+ InitConst.COOKIE_SPLIT + InitConst.COOKIE_PRIVATE);
 				allowCookie = new Cookie(InitConst.COOKIE_PRIVATE_NAME,
 						username + InitConst.COOKIE_SPLIT
-								+ InitConst.COOKIE_PRIVATE);
+								+ list.get(0).getRoles()
+								+ InitConst.COOKIE_SPLIT + cookie
+								+ InitConst.COOKIE_SPLIT
+								+ InitConst.COOKIE_PUBLIC);
 				break;
 			}
 			allowCookie.setPath("/");
 			nowCookie.setPath("/");
-			String cookie = SHA1
-					.getDigestOfString((username + "{" + password + "}")
-							.getBytes());
 			HandleAuthenticationInterceptor.map.put(cookie,
 					Calendar.getInstance());
 			HandleAuthenticationInterceptor.mapUserRoles.put(cookie, list

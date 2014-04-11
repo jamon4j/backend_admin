@@ -1,5 +1,7 @@
 package com.ksyun.vm.controller;
 
+import java.util.Calendar;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +47,8 @@ public class ExchangeController {
 			Cookie new_nowCookie = null;
 			String[] splitCookie = nowCookie.getValue().split(
 					InitConst.COOKIE_SPLIT);
+			String backend = "";
+			String role = "";
 			switch (splitCookie[splitCookie.length - 1]) {
 			// 取得当前云类型
 			case InitConst.COOKIE_PUBLIC:// 公有云
@@ -70,6 +74,9 @@ public class ExchangeController {
 					String[] splitPrivate = privateCookie.getValue().split(
 							InitConst.COOKIE_SPLIT);
 					String privateUsername = splitPrivate[0];
+					// 重置backend role信息
+					backend = splitPrivate[splitPrivate.length - 2];
+					role = splitPrivate[splitPrivate.length - 3];
 					request.getSession().setAttribute("username",
 							privateUsername);
 					// 设置新的nowCookie
@@ -97,6 +104,8 @@ public class ExchangeController {
 					String[] splitPublic = publicCookie.getValue().split(
 							InitConst.COOKIE_SPLIT);
 					String publicUsername = splitPublic[0];
+					backend = splitPublic[splitPublic.length - 2];
+					role = splitPublic[splitPublic.length - 3];
 					request.getSession().setAttribute("username",
 							publicUsername);
 					new_nowCookie = new Cookie(InitConst.COOKIE_NOW_NAME,
@@ -105,8 +114,15 @@ public class ExchangeController {
 				}
 				break;
 			}
+			HandleAuthenticationInterceptor.map.put(backend,
+					Calendar.getInstance());
+			if ("null".equals(role)) {
+				role = null;
+			}
+			HandleAuthenticationInterceptor.mapUserRoles.put(backend, role); // 缓存用户的Roles
 			// 切换成功，返回JSON的数据
 			msg.setMsg("change");
+			msg.setCookie(backend);
 			// 设置新的全局Cookie的作用域
 			new_nowCookie.setPath("/");
 			response.addCookie(new_nowCookie);

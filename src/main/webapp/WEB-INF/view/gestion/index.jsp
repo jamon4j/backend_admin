@@ -184,41 +184,44 @@
 	</div>
 	<script type='text/javascript'>
 		//切换按钮AJAX
-		$("#change").click(function() {
-			var tempString;
-			if ($("#changeType").val() == "public") {
-				tempString = "确定从公有云切换到私有云？";
-			} else if ($("#changeType").val() == "private") {
-				tempString = "确定从私有云切换到公有云？";
-			}
-			if (confirm(tempString)) {
-				$.ajax({
-					type : "POST",
-					url : "/change",
-					dataType : "json",
-					cache : false,
-					success : function(data) {
-						if (data.msg == "noNow") {
-							alert("切换失败，请您重新操作或登陆");
-							window.location.href = "/login";
-						} else if (data.msg == "noPrivate") {
-							alert("切换私有云失败，请您登陆私有云");
-							window.location.href = "/login";
-						} else if (data.msg == "noPublic") {
-							alert("切换公有云失败，请您登陆公有云");
-							window.location.href = "/login";
-						} else {
-							alert("切换成功");
-							window.location.href = "/g/";
-						}
-					},
-					error : function(a, b, c) {
-						alert("错误，请您重新操作或登陆&" + c);
-						window.location.href = "/login";
+		$("#change").click(
+				function() {
+					var tempString;
+					if ($("#changeType").val() == "public") {
+						tempString = "确定从公有云切换到私有云？";
+					} else if ($("#changeType").val() == "private") {
+						tempString = "确定从私有云切换到公有云？";
+					}
+					if (confirm(tempString)) {
+						$.ajax({
+							type : "POST",
+							url : "/change",
+							dataType : "json",
+							cache : false,
+							success : function(data) {
+								if (data.msg == "noNow") {
+									alert("切换失败，请您重新操作或登陆");
+									window.location.href = "/login";
+								} else if (data.msg == "noPrivate") {
+									alert("切换私有云失败，请您登陆私有云");
+									window.location.href = "/login";
+								} else if (data.msg == "noPublic") {
+									alert("切换公有云失败，请您登陆公有云");
+									window.location.href = "/login";
+								} else {
+									alert("切换成功");
+									setCookie("backend", data.cookie,
+											24 * 3600000, "/", "");
+									window.location.href = "/g/";
+								}
+							},
+							error : function(a, b, c) {
+								alert("错误，请您重新操作或登陆&" + c);
+								window.location.href = "/login";
+							}
+						});
 					}
 				});
-			}
-		});
 		$("#order_div").hide();
 		$("#config_div").hide();
 		$("#user_div").hide();
@@ -282,6 +285,18 @@
 		}
 		autoSize();
 		$(window).resize(autoSize);
+
+		function setCookie(name, value, time, path, domain, secure) {
+			var exp = new Date();
+			exp.setTime(exp.getTime() + time * 1);
+			document.cookie = name
+					+ "="
+					+ escape(value)
+					+ ((exp == null) ? "" : ("; expires=" + exp.toDateString()))
+					+ ((path == null) ? "" : ("; path=" + path))
+					+ ((domain == null) ? "" : ("; domain=" + domain))
+					+ ((secure == true) ? "; secure" : "");
+		}
 	</script>
 </body>
 

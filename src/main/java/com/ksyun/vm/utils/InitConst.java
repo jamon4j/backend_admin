@@ -80,5 +80,5 @@ public class InitConst {
 	public static final String COOKIE_PRIVATE_NAME = "allow_private";
 	public static final String COOKIE_PUBLIC = "public";
 	public static final String COOKIE_PRIVATE = "private";
-	public static final String COOKIE_SPLIT = "3B87652BA0916C03C634D5DB8558D494";
+	public static final String COOKIE_SPLIT = "&3B87652BA0916C03C634D5DB8558D494&";
 }
