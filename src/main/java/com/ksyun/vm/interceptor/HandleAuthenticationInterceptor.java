@@ -202,6 +202,10 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 			// 普通员工--根据role_power判断权限。
 			RolePo role = roleService.getRole(roleId);
 			if (role != null) {
+				// admin角色的用户，没有指定URL，所以直接true返回
+				if ("admin".equals(role.getRoleName())) {
+					return true;
+				}
 				role_power_list = role.getRolePower().split(",");
 				for (int j = 0; j < role_power_list.length; j++) {
 					if (uri.indexOf(role_power_list[j]) == 0)

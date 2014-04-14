@@ -41,6 +41,11 @@ if(cookie!=null){
 	    		//普通员工--根据role_power判断权限。
 	    		RolePo role = roleService.getRole(roleId);
 	    		if (role != null){
+	    			// admin角色的用户，没有指定URL，所以直接true返回
+	    			if("admin".equals(role.getRoleName())) {
+	    				flag = 1;
+	    				break;
+	    			}
 	    			if (role.getRolePower().indexOf("kpi_"+product)>=0) {
 	    				flag = 1;
 	    				//只要有URI与当前匹配，就终止循环
