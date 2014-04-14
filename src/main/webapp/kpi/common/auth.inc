@@ -43,8 +43,9 @@ if(cookie!=null){
 	    		if (role != null){
 	    			if (role.getRolePower().indexOf("kpi_"+product)>=0) {
 	    				flag = 1;
-	    				continue;
-	    		}
+	    				//只要有URI与当前匹配，就终止循环
+	    				break;
+	    			}
 	    		}
     		}
     		if (flag == 0){

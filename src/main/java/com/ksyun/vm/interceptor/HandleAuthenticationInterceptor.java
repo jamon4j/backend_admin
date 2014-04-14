@@ -42,11 +42,6 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		String type = Constants.getPropertyValue("sys.type");
 		Integer timeout = Integer.valueOf(Constants
 				.getPropertyValue("cookie.timeout"));
-		/*
-		 * if(uri.indexOf("/login")>-1||uri.indexOf("/html")>-1||uri.indexOf("/js"
-		 * )>-1||uri.indexOf("/img")>-1|| uri.indexOf("/getvmsum")>-1 ||
-		 * host.equals("127.0.0.1")||type.equals("test")){ return true; }
-		 */
 		if (uri.indexOf("/login") > -1 || uri.indexOf("/html") > -1
 				|| uri.indexOf("/js") > -1 || uri.indexOf("/img") > -1
 				|| uri.indexOf("/getvmsum") > -1 || uri.indexOf("/change") > -1
@@ -204,9 +199,6 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		int length = role_list.length;
 		for (int i = 0; i < length; i++) {
 			int roleId = Integer.parseInt(role_list[i]);
-			/*
-			 * if (roleId == 1) return true; // admin
-			 */
 			// 普通员工--根据role_power判断权限。
 			RolePo role = roleService.getRole(roleId);
 			if (role != null) {
