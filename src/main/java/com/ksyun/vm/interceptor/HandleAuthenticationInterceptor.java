@@ -49,7 +49,7 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		 */
 		if (uri.indexOf("/login") > -1 || uri.indexOf("/html") > -1
 				|| uri.indexOf("/js") > -1 || uri.indexOf("/img") > -1
-				|| uri.indexOf("/getvmsum") > -1) {
+				|| uri.indexOf("/getvmsum") > -1 || uri.indexOf("/change") > -1) {
 			return true;
 		}
 		if (cookie != null) {
