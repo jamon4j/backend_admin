@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ksyun.vm.dao.LoginDao;
 import com.ksyun.vm.pojo.login.User;
+import com.ksyun.vm.utils.MD5Utils;
 
 /**
  * User: liuchuandong Date: 13-10-31 Time: 上午11:00 Func:
@@ -17,6 +18,7 @@ public class LoginService {
 	private LoginDao loginDao;
 
 	public List<User> getUser(String username, String password) {
+		password = MD5Utils.MD5Encoding(password);
 		return loginDao.getUser(username, password);
 	}
 
@@ -25,6 +27,7 @@ public class LoginService {
 	}
 
 	public void addUser(String email, String passwd, String roles) {
+		passwd = MD5Utils.MD5Encoding(passwd);
 		User dto = new User();
 		dto.setPassword(passwd);
 		dto.setRoles(roles);

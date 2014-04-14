@@ -25,7 +25,6 @@ if(cookie!=null){
     
         String roles = HandleAuthenticationInterceptor.mapUserRoles.get(backend);
         String product = request.getParameter("p");
-        
         int flag = 0;
         
         if (roles != null) {
@@ -35,16 +34,16 @@ if(cookie!=null){
     		int length = role_list.length;
     		for(int i=0; i< length; i++){
 	    		int roleId = Integer.parseInt(role_list[i]);
-	    		if (roleId == 1) {
-	    			flag = 1;
-	    			break;
-	    		}
+	    		//if (roleId == 1) {
+	    		//	flag = 1;
+	    		//	break;
+	    		//}
 	    		//普通员工--根据role_power判断权限。
 	    		RolePo role = roleService.getRole(roleId);
 	    		if (role != null){
 	    			if (role.getRolePower().indexOf("kpi_"+product)>=0) {
 	    				flag = 1;
-	    				break;
+	    				continue;
 	    		}
 	    		}
     		}

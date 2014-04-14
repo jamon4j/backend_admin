@@ -204,9 +204,9 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		int length = role_list.length;
 		for (int i = 0; i < length; i++) {
 			int roleId = Integer.parseInt(role_list[i]);
-			if (roleId == 1)
-				return true; // admin
-
+			/*
+			 * if (roleId == 1) return true; // admin
+			 */
 			// 普通员工--根据role_power判断权限。
 			RolePo role = roleService.getRole(roleId);
 			if (role != null) {
