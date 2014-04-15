@@ -137,6 +137,9 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 				}
 				break;
 			}
+		} else {
+			response.sendRedirect("/login");
+			return false;
 		}
 		logger.debug(String.format("DataSource: %s", dataSource));
 
