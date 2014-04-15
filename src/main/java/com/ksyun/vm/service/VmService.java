@@ -144,4 +144,26 @@ public class VmService {
 		jsonService.poPost(InitConst.KVM_VM_RESET, null, null, null,
 				requestBody);
 	}
+
+	/**
+	 * 更新带宽
+	 * 
+	 * @param tenantId
+	 * @param userId
+	 * @param vm_id
+	 * @param new_brand
+	 * @throws ErrorCodeException
+	 * @throws NoTokenException
+	 */
+	public void updateBrand(String tenantId, String userId, String vm_id,
+			String new_brand) throws NoTokenException, ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		Map<String, String> map = new HashMap<>();
+		map.put("vm_id", vm_id);
+		map.put("egress", new_brand);
+		String requestBody = JSONObject.toJSONString(map);
+		jsonService.poPost(InitConst.KVM_BANDWIDTH, null, null, null,
+				requestBody);
+	}
 }

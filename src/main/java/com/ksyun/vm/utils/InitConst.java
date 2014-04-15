@@ -69,6 +69,8 @@ public class InitConst {
 	public static final String KVM_STAT_IP = "kvm.stat.ip";
 
 	public static final String KVM_VNC = "kvm.vnc";
+	
+	public static final String KVM_BANDWIDTH = "kvm.bandwidthtune";
 
 	public static final String MONITOR_HBASE_TABLE_STATUS = "vm_table_status";
 	public static final String MONITOR_HBASE_TABLE_NETWORK = "vm_table_network";

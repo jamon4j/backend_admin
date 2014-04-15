@@ -495,6 +495,44 @@
 	   		});
 	   		$("#setebs_dialog").dialog("open");
 	   	}
+	   	
+	   	function update_brand(tenantId,userId,vmId,network_bandwidth) {
+	   		$("#update_brand").dialog({
+	   			autoOpen: false,
+				height: 200,
+				width: 400,
+				modal: true,
+				buttons: {
+					"更新":function() {
+						if($("#new_brand").val()!="") {
+							var new_brand = $("#new_brand").val();
+							if(confirm("确定修改带宽:"+network_bandwidth+"M -> "+new_brand+"M ?")) {
+								$.ajax({
+									url:'/g/user/vm/getbandwidth/'+tenantId+'/'+userId+'/'+vmId+'/'+new_brand,
+									success:function(data) {
+										if(data == "ok") {
+											alert("更新虚拟机带宽成功！"+network_bandwidth+"M -> "+new_brand+"M");
+											window.location.reload();
+										} else {
+											alert("更新虚拟机带宽失败");
+										}
+									},
+									error : function(a,b,c) {
+										alert("更新虚拟机" + vmId +"带宽失败"+a+" " +b+" " + c);
+										window.location.reload();
+									}
+								});	
+							}
+						} else {
+							alert("请输入新的带宽值");
+						}
+					}
+				}
+	   		});
+	   		$("#now_brand_value").html(network_bandwidth+"M");
+	   		$("#brand_vm_id").html(vmId);
+	   		$("#update_brand").dialog("open");
+	   	}
  	</script>
 </head>
 
@@ -547,6 +585,9 @@
                 <th width="5%">
                     <div class="th-gap">重装系统</div>
                 </th>
+                <th width="5%">
+                    <div class="th-gap">带宽更新</div>
+                </th>
                 <th width="12%">
                     <div class="th-gap">状态查看</div>
                 </th>
@@ -564,6 +605,7 @@
 						<td><button onclick="createsnapshot('<%=tenantId %>','<%=userId %>','${vm.id}')">创建</button></td>
 						<td><button onclick="ebslist('${vm.tenant_id}','${vm.id}')">查看ebs列表</button><button onclick="setEBS('${vm.tenant_id}','${vm.id}')">关联ebs</button></td>
                         <td><button onclick="reset_system('${vm.id}')">重装</button></td>
+                        <td><button onclick="update_brand('<%=tenantId %>','<%=userId %>','${vm.id}','${vm.instance_type.network_bandwidth }')">更新</button></td>
 						<td><button onclick="chart_load('${vm.id}')">查看cpu及内存</button>
                             <button onclick="chart_network('${vm.id}')">查看网络</button>
                             <button onclick="chart_status('${vm.id}')">查看状态</button>
@@ -631,6 +673,27 @@
 			<input type="text" name="name" id="snapshot_name" value="" class="text ui-widget-content ui-corner-all" />
 		</fieldset>
 	</form>
+</div>
+<div id="update_brand" title="更新带宽" style="display: none">
+	<table align="left">
+		<tr>
+			<td>虚拟机ID:</td>
+			<td><span id="brand_vm_id"></span></td>
+			<td></td>
+		</tr>
+	</table>
+	<table>
+		<tr>
+			<td>当前带宽:</td>
+			<td><span id="now_brand_value"></span></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>新带宽值:</td>
+			<td><input id="new_brand" type="text" size="7"/></td>
+			<td>M</td>
+		</tr>
+	</table>
 </div>
 <div id="reset_system" title="重置系统" style="display: none">
     <form>
