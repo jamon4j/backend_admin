@@ -72,6 +72,10 @@ public class InitConst {
 	
 	public static final String KVM_BANDWIDTH = "kvm.bandwidthtune";
 
+	public static final String KVM_LBS_POOL_LIST = "kvm.lbs.pool.list";
+	public static final String KVM_LBS_POOL = "kvm.lbs.pool";
+	public static final String KVM_LBS_VIP_LIST = "kvm.lbs.vip.list";
+	
 	public static final String MONITOR_HBASE_TABLE_STATUS = "vm_table_status";
 	public static final String MONITOR_HBASE_TABLE_NETWORK = "vm_table_network";
 	public static final String MONITOR_HBASE_TABLE_LOAD = "vm_table_load";
