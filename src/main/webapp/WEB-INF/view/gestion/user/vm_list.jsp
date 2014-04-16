@@ -504,7 +504,7 @@
 				modal: true,
 				buttons: {
 					"更新":function() {
-						if($("#new_brand").val()!="") {
+						if($("#new_brand").val()!="" && parseInt($("#new_brand").val()) <= 1000) {
 							var new_brand = $("#new_brand").val();
 							if(confirm("确定修改带宽:"+network_bandwidth+"M -> "+new_brand+"M ?")) {
 								$.ajax({
@@ -512,6 +512,7 @@
 									success:function(data) {
 										if(data == "ok") {
 											alert("更新虚拟机带宽成功！"+network_bandwidth+"M -> "+new_brand+"M");
+											$("#new_brand").val("");
 											window.location.reload();
 										} else {
 											alert("更新虚拟机带宽失败");
@@ -524,7 +525,7 @@
 								});	
 							}
 						} else {
-							alert("请输入新的带宽值");
+							alert("请输入正确的带宽值");
 						}
 					}
 				}
@@ -645,6 +646,7 @@
                             <p>&nbsp;&nbsp;instance_type:</p>
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;ram:${vm.instance_type.ram}</p>
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;cpu:${vm.instance_type.cpu}</p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;network_bandwidth:${vm.instance_type.network_bandwidth}M</p>
                             <p>&nbsp;&nbsp;metadata: </p>
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;storage_location: ${vm.metadata.storage_location}</p>
 						</div>
