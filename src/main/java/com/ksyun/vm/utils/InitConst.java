@@ -69,13 +69,19 @@ public class InitConst {
 	public static final String KVM_STAT_IP = "kvm.stat.ip";
 
 	public static final String KVM_VNC = "kvm.vnc";
-	
+
 	public static final String KVM_BANDWIDTH = "kvm.bandwidthtune";
 
 	public static final String KVM_LBS_POOL_LIST = "kvm.lbs.pool.list";
 	public static final String KVM_LBS_POOL = "kvm.lbs.pool";
+	public static final String KVM_LBS_POOL_ADD = "kvm.lbs.pool.add";
+	public static final String KVM_LBS_POOL_DELETE = "kvm.lbs.pool.delete";
 	public static final String KVM_LBS_VIP_LIST = "kvm.lbs.vip.list";
-	
+	public static final String KVM_LBS_VIP_ADD = "kvm.lbs.vip.add";
+	public static final String KVM_LBS_MEMBER_LIST = "kvm.lbs.member.list";
+	public static final String KVM_LBS_MEMBER_ADD = "kvm.lbs.member.add";
+	public static final String KVM_LBS_HEALTH_LIST = "kvm.lbs.health.list";
+
 	public static final String MONITOR_HBASE_TABLE_STATUS = "vm_table_status";
 	public static final String MONITOR_HBASE_TABLE_NETWORK = "vm_table_network";
 	public static final String MONITOR_HBASE_TABLE_LOAD = "vm_table_load";

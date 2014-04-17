@@ -8,6 +8,10 @@
 <head>
 <%@include file="../inc/meta.jspf"%>
 <%@include file="../inc/jsCssIncludeHeader.jspf"%>
+<link rel="stylesheet"
+	href="/js/jquery/plugins/jquery_ui/themes/base/chosen.min.css" />
+<script type="text/javascript"
+	src="/js/jquery/plugins/jquery_ui/chosen.jquery.min.js"></script>
 <script type="text/javascript" src="/js/custome/lbs_list.js"></script>
 </head>
 
@@ -18,8 +22,11 @@
 		</p>
 	</div>
 	<div class="main-cont">
-		<h3 class="title">用户名：${pool_username} | userId：${user_id } |
-			tenantId：${tenant_id }</h3>
+		<h3 class="title">
+			用户名：${pool_username} | userId：${user_id } | tenantId：${tenant_id }
+			<button onclick="window.location.reload();"
+				class="ui-state-default ui-corner-all">刷新</button>
+		</h3>
 		<%-- <table cellpadding="0" cellspacing="0" width="100%" border="0">
 			<tr>
 				<td>
@@ -35,10 +42,10 @@
 			<h3>负载均衡</h3>
 			<table cellpadding="0" cellspacing="0" width="90%" border="0">
 				<tr>
-					<td style="margin-left: 10%"><span><button
-								onclick="window.location.reload();"
-								class="ui-state-default ui-corner-all">刷新</button>
-							<button class="ui-state-default ui-corner-all">创建 负载均衡</button></span></td>
+					<td style="margin-left: 10%"><span>
+							<button onclick="button_add_pool('${user_id }','${tenant_id }')"
+								class="ui-state-default ui-corner-all">创建 负载均衡</button>
+					</span></td>
 				</tr>
 			</table>
 			<table class="table" cellpadding="0" cellspacing="0" width="100%"
@@ -59,6 +66,9 @@
 						<th width="12%">
 							<div class="th-gap">status</div>
 						</th>
+						<th width="12%">
+							<div class="th-gap">admin_state_up</div>
+						</th>
 						<th width="5%">
 							<div class="th-gap">详情</div>
 						</th>
@@ -74,10 +84,12 @@
 							<td>${dto.name }</td>
 							<td>${dto.ip_address }</td>
 							<td>${dto.status }</td>
+							<td>${dto.admin_state_up }</td>
 							<td><button id="button_details_pool"
 									onclick="button_details_pool('${dto.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
-							<td><button class="ui-state-default ui-corner-all">修改</button>|
+							<td><button class="ui-state-default ui-corner-all">修改</button>
+								|
 								<button class="ui-state-default ui-corner-all">删除</button></td>
 							<div id="dialog_detail_pool_${dto.id }" title="POOL_${dto.id }详情"
 								style="display:none">
@@ -112,7 +124,9 @@
 			<table cellpadding="0" cellspacing="0" width="90%" border="0">
 				<tr>
 					<td style="margin-left: 10%"><span>
-							<button class="ui-state-default ui-corner-all">创建 规则</button></span></td>
+							<button onclick="button_add_vip('${user_id }','${tenant_id }')"
+								class="ui-state-default ui-corner-all">创建 规则</button>
+					</span></td>
 				</tr>
 			</table>
 			<table class="table" cellpadding="0" cellspacing="0" width="100%"
@@ -133,11 +147,17 @@
 						<th width="12%">
 							<div class="th-gap">status</div>
 						</th>
+						<th width="12%">
+							<div class="th-gap">admin_state_up</div>
+						</th>
 						<th width="5%">
 							<div class="th-gap">详情</div>
 						</th>
 						<th width="10%">
 							<div class="th-gap">操作</div>
+						</th>
+						<th width="10%">
+							<div class="th-gap">健康检查</div>
 						</th>
 					</tr>
 				</thead>
@@ -148,10 +168,15 @@
 							<td>${vip.name }</td>
 							<td>${vip.address }</td>
 							<td>${vip.status }</td>
+							<td>${vip.admin_state_up }</td>
 							<td><button onclick="button_details_vip('${vip.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
-							<td><button class="ui-state-default ui-corner-all">修改</button>|
+							<td><button class="ui-state-default ui-corner-all">修改</button>
+								|
 								<button class="ui-state-default ui-corner-all">删除</button></td>
+							<td><button onclick=""
+									class="ui-state-default ui-corner-all">绑定</button> |
+								<button onclick="" class="ui-state-default ui-corner-all">解除</button></td>
 							<div id="dialog_detail_vip_${vip.id }" title="VIP_${vip.id }详情"
 								style="display:none">
 								<p>status:${vip.status }</p>
@@ -165,25 +190,29 @@
 								<p>connection_limit:${vip.connection_limit }</p>
 								<p>pool_id:${vip.pool_id }</p>
 								<p>session_persistence:{
-										"cookie_name":${vip.session_persistence.cookie_name},
-										"type":${vip.session_persistence.type},
-										"timeout":${vip.session_persistence.timeout}
-									}</p>
+									"cookie_name":${vip.session_persistence.cookie_name},
+									"type":${vip.session_persistence.type},
+									"timeout":${vip.session_persistence.timeout} }</p>
 								<p>protocol_port:${vip.protocol_port }</p>
 								<p>create_time:${vip.create_time }</p>
-								<p>members:{
-										<c:forEach items="${vip.members }" var="v_members">
+								<p>
+									members:{
+									<c:forEach items="${vip.members }" var="v_members">
 											${v_members },
 										</c:forEach>
-									}</p>
+									}
+								</p>
 								<p>address:${vip.address }</p>
 								<p>port_id:${vip.port_id }</p>
 								<p>status_description:${vip.status_description }</p>
-								<p>health_monitors_status:{
-										<c:forEach items="${vip.health_monitors_status }" var="monitors_status">
+								<p>
+									health_monitors_status:{
+									<c:forEach items="${vip.health_monitors_status }"
+										var="monitors_status">
 											${monitors_status },
 										</c:forEach>
-									}</p>
+									}
+								</p>
 								<p>id:${vip.id }</p>
 								<p>tenant_id:${vip.tenant_id }</p>
 								<p>name:${vip.name }</p>
@@ -192,7 +221,303 @@
 					</c:forEach>
 				</tbody>
 			</table>
+			<br />
+			<hr />
+			<h3>负载主机</h3>
+			<table cellpadding="0" cellspacing="0" width="90%" border="0">
+				<tr>
+					<td style="margin-left: 10%"><span>
+							<button
+								onclick="button_add_member('${user_id }','${tenant_id }')"
+								class="ui-state-default ui-corner-all">创建 负载主机</button>
+					</span></td>
+				</tr>
+			</table>
+			<table class="table" cellpadding="0" cellspacing="0" width="100%"
+				border="0">
+				<colgroup>
+				</colgroup>
+				<thead class="tb-tit-bg">
+					<tr>
+						<th>
+							<div class="th-gap">id</div>
+						</th>
+						<th>
+							<div class="th-gap">vm_id</div>
+						</th>
+						<th>
+							<div class="th-gap">ip</div>
+						</th>
+						<th width="12%">
+							<div class="th-gap">status</div>
+						</th>
+						<th width="12%">
+							<div class="th-gap">admin_state_up</div>
+						</th>
+						<th width="5%">
+							<div class="th-gap">详情</div>
+						</th>
+						<th width="10%">
+							<div class="th-gap">操作</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach var="member" items="${member_list}" varStatus="status">
+						<tr>
+							<td>${member.id }</td>
+							<td>${member.vm_id }</td>
+							<td>${member.address }</td>
+							<td>${member.status }</td>
+							<td>${member.admin_state_up }</td>
+							<td><button onclick="button_details_member('${member.id }')"
+									class="ui-state-default ui-corner-all">查看</button></td>
+							<td><button class="ui-state-default ui-corner-all">修改</button>
+								|
+								<button class="ui-state-default ui-corner-all">删除</button></td>
+							<div id="dialog_detail_member_${member.id }"
+								title="MEMBER_${member.id }详情" style="display:none">
+								<p>status:${member.status }</p>
+								<p>protocol_port:${member.protocol_port }</p>
+								<p>vip_id:${member.vip_id }</p>
+								<p>weight:${member.weight }</p>
+								<p>admin_state_up:${member.admin_state_up }</p>
+								<p>tenant_id:${member.tenant_id }</p>
+								<p>create_time:${member.create_time }</p>
+								<p>address:${member.address }</p>
+								<p>deleted_time:${member.deleted_time }</p>
+								<p>status_description:${member.status_description }</p>
+								<p>vm_id:${member.vm_id }</p>
+								<p>id:${member.id }</p>
+							</div>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+			<br />
+			<hr />
+			<h3>健康检查</h3>
+			<table cellpadding="0" cellspacing="0" width="90%" border="0">
+				<tr>
+					<td style="margin-left: 10%"><span>
+							<button
+								onclick="button_add_health('${user_id }','${tenant_id }')"
+								class="ui-state-default ui-corner-all">创建 健康检查</button>
+					</span></td>
+				</tr>
+			</table>
+			<table class="table" cellpadding="0" cellspacing="0" width="100%"
+				border="0">
+				<colgroup>
+				</colgroup>
+				<thead class="tb-tit-bg">
+					<tr>
+						<th>
+							<div class="th-gap">id</div>
+						</th>
+						<th>
+							<div class="th-gap">type</div>
+						</th>
+						<th width="12%">
+							<div class="th-gap">admin_state_up</div>
+						</th>
+						<th width="5%">
+							<div class="th-gap">详情</div>
+						</th>
+						<th width="10%">
+							<div class="th-gap">操作</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach var="health" items="${health_list }">
+						<tr>
+							<td>${health.id }</td>
+							<td>${health.type }</td>
+							<td>${health.admin_state_up }</td>
+							<td><button onclick="button_details_health('${health.id }')"
+									class="ui-state-default ui-corner-all">查看</button></td>
+							<td><button class="ui-state-default ui-corner-all">修改</button>
+								|
+								<button class="ui-state-default ui-corner-all">删除</button></td>
+							<div id="dialog_detail_health_${health.id }"
+								title="HEALTH_${health.id }详情" style="display:none">
+								<p>
+									vips:{
+									<c:forEach var="health_vip" items="${health.vips }">
+											${health_vip.id },
+										</c:forEach>
+									}
+								</p>
+								<p>admin_state_up:${health.admin_state_up }</p>
+								<p>tenant_id:${health.tenant_id }</p>
+								<p>rise:${health.rise }</p>
+								<p>delay:${health.delay }</p>
+								<p>max_retries:${health.max_retries }</p>
+								<p>create_time:${health.create_time }</p>
+								<p>timeout:${health.timeout }</p>
+								<p>fall:${health.fall }</p>
+								<p>type:${health.type }</p>
+								<p>id:${health.id }</p>
+							</div>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
 		</div>
+	</div>
+	<!-- dialog弹出框 -->
+	<div id="dialog_add_pool" title="创建负载均衡" style="display:none">
+		<font color="red">以下内容均为必填项</font>
+		<table class="table" cellpadding="0" cellspacing="0" width="60%"
+			border="0">
+			<tr>
+				<td width="30%">名称(name):</td>
+				<td><input id="new_pool_name"></td>
+			</tr>
+			<tr>
+				<td>类型(network_type):</td>
+				<td><input type="radio" name="net_type" id="net_type"
+					value="public">公网 <input type="radio" name="net_type"
+					id="net_type" value="private">内网</td>
+			</tr>
+			<tr>
+				<td>带宽(egress):</td>
+				<td><input id="new_pool_egress">M</td>
+			</tr>
+		</table>
+	</div>
+
+	<div id="dialog_add_vip" title="创建规则" style="display:none">
+		<font color="red">以下内容均为必填项</font>
+		<table class="table" cellpadding="0" cellspacing="0" width="60%"
+			border="0">
+			<tr>
+				<td>名称(name):</td>
+				<td><input id="vip_name"></td>
+			</tr>
+			<tr>
+				<td width="32%">负载ID(pool_id):</td>
+				<td><select id="pool_id" style="width: 70%">
+						<c:forEach var="select_pool" items="${list}">
+							<option value="${select_pool.id }">${select_pool.name }</option>
+						</c:forEach>
+				</select></td>
+			</tr>
+			<tr>
+				<td>监听协议(protocol):</td>
+				<td id="protocol_td"></td>
+			</tr>
+			<tr>
+				<td>监听端口(protocol_port):</td>
+				<td><input id="vip_protocol_port"></td>
+			</tr>
+			<tr>
+				<td>转发规则(lb_method):</td>
+				<td><input type="radio" name="vip_lb_method"
+					id="vip_lb_method1" checked="checked" value="ROUND_ROBIN">轮询
+					<input type="radio" name="vip_lb_method" id="vip_lb_method2"
+					value="LEAST_CONNECTIONS">最小连接数</td>
+				</td>
+			</tr>
+			<tr>
+				<td>session_persistence:</td>
+				<td>
+					<table class="table" cellpadding="0" cellspacing="0" width="60%"
+						border="0">
+						<tr>
+							<td width="30%">cookie_name:</td>
+							<td><input id="cookie_name" size="15"><font
+								color="blue">#对于TCP无意义</font></td>
+						</tr>
+						<tr>
+							<td>type:</td>
+							<td><input id="cookie_type" size="15"><font
+								color="blue">#对于TCP无意义</font></td>
+						</tr>
+						<tr>
+							<td>timout:</td>
+							<td><input id="cookie_timeout" size="10"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div id="dialog_add_member" title="添加负载主机" style="display:none">
+		<font color="red">以下内容均为必填项</font>
+		<table class="table" cellpadding="0" cellspacing="0" width="60%"
+			border="0">
+			<tr>
+				<td>虚拟机(vm_id):</td>
+				<td><select id="add_vm_id" style="width: 70%">
+						<c:forEach var="select_vm" items="${vm_list}">
+							<option value="${select_vm.id }">${select_vm.name }</option>
+						</c:forEach>
+				</select></td>
+			</tr>
+			<tr>
+				<td>规则(vip_id)</td>
+				<td><select id="add_vip_id" style="width: 70%">
+						<c:forEach var="select_vip" items="${vip_list}">
+							<option value="${select_vip.id }">${select_vip.name }</option>
+						</c:forEach>
+				</select></td>
+			</tr>
+			<tr>
+				<td>IP(address):</td>
+				<td><input id="member_ip"></td>
+			</tr>
+			<tr>
+				<td>端口(protocol_port):</td>
+				<td><input id="member_port"></td>
+			</tr>
+			<tr>
+				<td>权重(weight):</td>
+				<td><input id="member_weight"></td>
+			</tr>
+		</table>
+	</div>
+
+	<div id="dialog_add_health" title="添加健康检查" style="display:none">
+		<font color="red">以下内容均为必填项</font>
+		<table class="table" cellpadding="0" cellspacing="0" width="60%"
+			border="0">
+			<tr>
+				<td>响应超时时间(timeout):</td>
+				<td><input id="health_timeout" size="10">ms </td>
+			</tr>
+			<tr>
+				<td>健康检查时间(delay):</td>
+				<td><input id="health_delay" size="10">s</td>
+			</tr>
+			<tr>
+				<td>不健康阈值(fall):</td>
+				<td><input id="health_fall" size="10"></td>
+			</tr>
+			<tr>
+				<td>健康阈值(rise):</td>
+				<td><input id="health_rise" size="10"></td>
+			</tr>
+			<tr>
+				<td>max_retries:</td>
+				<td><input id="health_max_retries" size="10"></td>
+			</tr>
+			<tr>
+				<td>检查类型(type):</td>
+				<td id="health_type_td">
+				</td>
+			</tr>
+			<tr>
+				<td>HTTP请求连接(url_path):</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>HTTP请求方式(http_method):</td>
+				<td>HEAD</td>
+			</tr>
+		</table>
 	</div>
 </body>
 </html>
