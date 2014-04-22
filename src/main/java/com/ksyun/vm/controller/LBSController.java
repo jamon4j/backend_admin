@@ -537,7 +537,7 @@ public class LBSController {
 	 */
 	@RequestMapping(value = "/g/lbs/health/update/{user_id}/{tenant_id}/{health_monitor_id}")
 	@ResponseBody
-	public String updateHealth(@PathVariable("user_id") String userId,
+	public String setHealth(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
 			@PathVariable("health_monitor_id") String healthId,
 			@RequestParam("timeout") String timeout,
@@ -567,4 +567,111 @@ public class LBSController {
 		}
 		return "ok";
 	}
+
+	/**
+	 * 更新Member
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param memberId
+	 * @param weight
+	 * @param admin_state_up
+	 * @return
+	 */
+	@RequestMapping(value = "/g/lbs/member/update/{user_id}/{tenant_id}/{member_id}")
+	@ResponseBody
+	public String setMember(@PathVariable("user_id") String userId,
+			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("member_id") String memberId,
+			@RequestParam("weight") String weight,
+			@RequestParam("admin_state_up") String admin_state_up) {
+		try {
+			lbsService.updateMember(userId, tenantId, memberId, weight,
+					admin_state_up);
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		}
+		return "ok";
+	}
+
+	/**
+	 * 更新VIP
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param vipId
+	 * @param name
+	 * @param admin_state_up
+	 * @param connection_limit
+	 * @param cookie_name
+	 * @param cookie_type
+	 * @param cookie_timeout
+	 * @return
+	 */
+	@RequestMapping(value = "/g/lbs/vip/update/{user_id}/{tenant_id}/{vip_id}")
+	@ResponseBody
+	public String setVip(@PathVariable("user_id") String userId,
+			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("vip_id") String vipId,
+			@RequestParam("name") String name,
+			@RequestParam("admin_state_up") String admin_state_up,
+			@RequestParam("connection_limit") String connection_limit,
+			@RequestParam("cookie_name") String cookie_name,
+			@RequestParam("cookie_type") String cookie_type,
+			@RequestParam("cookie_timeout") String cookie_timeout) {
+		try {
+			lbsService.updateVip(userId, tenantId, vipId, name, admin_state_up,
+					connection_limit, cookie_name, cookie_type, cookie_timeout);
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		}
+		return "ok";
+	}
+
+	/**
+	 * 更新pool
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param poolId
+	 * @param name
+	 * @param egress
+	 * @param admin_state_up
+	 * @return
+	 */
+	@RequestMapping(value = "/g/lbs/pool/update/{user_id}/{tenant_id}/{pool_id}")
+	@ResponseBody
+	public String setPool(@PathVariable("user_id") String userId,
+			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("pool_id") String poolId,
+			@RequestParam("name") String name,
+			@RequestParam("egress") String egress,
+			@RequestParam("admin_state_up") String admin_state_up) {
+		try {
+			lbsService.updatePool(userId, tenantId, poolId, name, egress,
+					admin_state_up);
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		}
+		return "ok";
+	}
+
 }

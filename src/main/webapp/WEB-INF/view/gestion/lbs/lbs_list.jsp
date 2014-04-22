@@ -88,8 +88,9 @@
 							<td><button id="button_details_pool"
 									onclick="button_details_pool('${dto.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
-							<td><button class="ui-state-default ui-corner-all">修改</button>
-								|
+							<td><button
+									onclick="button_update_pool('${user_id }','${tenant_id }','${dto.id }','${dto.name }','${dto.egress }','${dto.admin_state_up }')"
+									class="ui-state-default ui-corner-all">修改</button> |
 								<button
 									onclick="button_delete_pool('${user_id }','${tenant_id }','${dto.id }')"
 									class="ui-state-default ui-corner-all">删除</button></td>
@@ -170,10 +171,10 @@
 							<div class="th-gap">详情</div>
 						</th>
 						<th width="10%">
-							<div class="th-gap">操作</div>
+							<div class="th-gap">健康检查</div>
 						</th>
 						<th width="10%">
-							<div class="th-gap">健康检查</div>
+							<div class="th-gap">操作</div>
 						</th>
 					</tr>
 				</thead>
@@ -187,17 +188,18 @@
 							<td>${vip.admin_state_up }</td>
 							<td><button onclick="button_details_vip('${vip.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
-							<td><button class="ui-state-default ui-corner-all">修改</button>
-								|
-								<button
-									onclick="button_vip_delete('${user_id }','${tenant_id }','${vip.id }')"
-									class="ui-state-default ui-corner-all">删除</button></td>
 							<td><button
 									onclick="dialog_vip_bind_health('${user_id }','${tenant_id }','${vip.id }')"
 									class="ui-state-default ui-corner-all">绑定</button> |
 								<button
 									onclick="button_vip_unbind_health('${user_id }','${tenant_id }','${vip.id }')"
 									class="ui-state-default ui-corner-all">解除</button></td>
+							<td><button
+									onclick="button_update_vip('${user_id }','${tenant_id }','${vip.id }','${vip.name }','${vip.admin_state_up }','${vip.connection_limit }','${vip.session_persistence.cookie_name}','${vip.session_persistence.type}','${vip.session_persistence.timeout}','${vip.protocol }')"
+									class="ui-state-default ui-corner-all">修改</button> |
+								<button
+									onclick="button_vip_delete('${user_id }','${tenant_id }','${vip.id }')"
+									class="ui-state-default ui-corner-all">删除</button></td>
 							<div id="dialog_vip_delete_${vip.id }" title="VIP_${vip.id }删除"
 								style="display:none">
 								<p>
@@ -215,6 +217,9 @@
 									<c:forEach items="${vip.members }" var="delete_vip_members">
 											${delete_vip_members }<br />
 									</c:forEach>
+								</p>
+								<p>
+									当前规则关联的负载均衡:<br /> ${vip.pool_id }<br />
 								</p>
 								<hr />
 								<p>
@@ -327,8 +332,9 @@
 							<td>${member.admin_state_up }</td>
 							<td><button onclick="button_details_member('${member.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
-							<td><button class="ui-state-default ui-corner-all">修改</button>
-								|
+							<td><button
+									onclick="button_update_member('${user_id }','${tenant_id }','${member.id }','${member.weight }','${member.admin_state_up }')"
+									class="ui-state-default ui-corner-all">修改</button> |
 								<button
 									onclick="button_delete_member('${user_id }','${tenant_id }','${member.id }')"
 									class="ui-state-default ui-corner-all">删除</button></td>
@@ -670,6 +676,99 @@
 							<option value="${health.id }">${health.id }</option>
 						</c:forEach>
 				</select></td>
+			</tr>
+		</table>
+	</div>
+
+	<div id="dialog_update_member" title="修改负载主机" style="display:none">
+		<table class="table" cellpadding="0" cellspacing="0" width="60%"
+			border="0">
+			<tr>
+				<td width="20%">ID:</td>
+				<td><span id="span_update_member_id"></span> <input
+					type="hidden" id="update_member_id"></td>
+			</tr>
+			<tr>
+				<td>开关(open):</td>
+				<td id="td_update_member_open"></td>
+			</tr>
+			<tr>
+				<td>权重(weight):</td>
+				<td><input id="update_memeber_weight" size="10"></td>
+			</tr>
+		</table>
+	</div>
+
+	<div id="dialog_update_vip" title="修改规则" style="display:none">
+		<table class="table" cellpadding="0" cellspacing="0" width="60%"
+			border="0">
+			<tr>
+				<td>ID:</td>
+				<td><span id="span_update_vip_id"></span> <input type="hidden"
+					id="update_vip_id"></td>
+			</tr>
+			<tr>
+				<td>监听协议(protocol):</td>
+				<td><span id="span_update_vip_protocol"></span> <input
+					type="hidden" id="update_vip_protocol"></td>
+			</tr>
+			<tr>
+				<td>名称(name):</td>
+				<td><input id="update_vip_name"></td>
+			</tr>
+			<tr>
+				<td>开关(open):</td>
+				<td id="td_update_vip_open"></td>
+			</tr>
+			<tr>
+				<td>connection_limit:</td>
+				<td><input id="update_vip_connection_limit" size="10">
+				</td>
+			</tr>
+			<tr>
+				<td>session_persistence:</td>
+				<td>
+					<table class="table" cellpadding="0" cellspacing="0" width="60%"
+						border="0">
+						<tr>
+							<td width="30%">cookie_name:</td>
+							<td><input id="update_vip_cookie_name" size="15"><font
+								color="blue">#对于TCP无意义</font></td>
+						</tr>
+						<tr>
+							<td>type:</td>
+							<td><input id="update_vip_cookie_type" size="15"><font
+								color="blue">#对于TCP无意义</font></td>
+						</tr>
+						<tr>
+							<td>timout:</td>
+							<td><input id="update_vip_cookie_timeout" size="10"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div id="dialog_update_pool" title="修改负载均衡" style="display:none">
+		<table class="table" cellpadding="0" cellspacing="0" width="60%"
+			border="0">
+			<tr>
+				<td>ID:</td>
+				<td><span id="span_update_pool_id"></span> <input type="hidden"
+					id="update_pool_id"></td>
+			</tr>
+			<tr>
+				<td>开关(open):</td>
+				<td id="td_update_pool_open"></td>
+			</tr>
+			<tr>
+				<td>名称(name):</td>
+				<td><input id="update_pool_name"></td>
+			</tr>
+			<tr>
+				<td>带宽(egress):</td>
+				<td><input id="update_pool_egress"></td>
 			</tr>
 		</table>
 	</div>

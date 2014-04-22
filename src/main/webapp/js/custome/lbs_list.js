@@ -411,7 +411,7 @@ function dialog_vip_delete(userId, tenantId, vipId) {
 		autoOpen : false,
 		postion : "center",
 		modal : true,
-		height : 290,
+		height : 310,
 		width : 550,
 		buttons : {
 			"删除" : function() {
@@ -541,6 +541,163 @@ function dialog_update_health(userId, tenantId, healthId,timeout,delay,fall,rise
 	$("#dialog_update_health").dialog("open");
 }
 
+function dialog_update_member(userId, tenantId, memberId, weight, admin_state_up) {
+	var id_html = "<font color='red'>"+ memberId +"</font>";
+	$("#span_update_member_id").html(id_html);
+	if(admin_state_up == "true") {
+		var open_html = "<input type=\"radio\" name=\"update_member_admin_state_up\" id=\"update_member_admin_state_up1\" checked=\"checked\" value=\"true\">开"
+			+ " <input type=\"radio\" name=\"update_member_admin_state_up\" id=\"update_member_admin_state_up2\" value=\"false\">关";
+		$("#td_update_member_open").html(open_html);
+	} else {
+		var open_html = "<input type=\"radio\" name=\"update_member_admin_state_up\" id=\"update_member_admin_state_up1\" value=\"true\">开"
+			+ " <input type=\"radio\" name=\"update_member_admin_state_up\" id=\"update_member_admin_state_up2\" checked=\"checked\" value=\"false\">关";
+		$("#td_update_member_open").html(open_html);
+	}
+	$("#update_memeber_weight").val(weight);
+	$("#dialog_update_member").dialog({
+		autoOpen : false,
+		postion : "center",
+		modal : true,
+		height : 200,
+		width : 550,
+		buttons : {
+			'修改' : function() {
+				$.ajax({
+					url : "/g/lbs/member/update/" + userId + "/" + tenantId + "/" + memberId,
+					cache : false,
+					data :{
+						weight : $("#update_memeber_weight").val(),
+						admin_state_up : $('input[name="update_member_admin_state_up"]:checked').val()
+					},
+					success : function(data) {
+						if(data == "ok") {
+							alert("负载主机:"+ memberId + " 更新成功");
+							window.location.reload();
+						} else {
+							alert("负载主机:"+ memberId + " 更新失败");
+							window.location.reload();
+						}
+					},
+					error : function(a, b, c) {
+						alert("负载主机更新失败!"+ a + "|" + b + "|" + c);
+						window.location.reload();
+					}
+				});
+			}
+		}
+	});
+	$("#dialog_update_member").dialog("open");
+}
+
+function dialog_update_vip(userId, tenantId, vipId, name, admin_state_up, connection_limit, cookie_name, cookie_type, cookie_timeout, protocol) {
+	var id_html = "<font color='red'>" + vipId + "</font>";
+	var protocol_html = "<font color='blue'>" + protocol +"</font>";
+	$("#span_update_vip_id").html(id_html);
+	$("#span_update_vip_protocol").html(protocol_html);
+	if(admin_state_up == "true") {
+		var open_html = "<input type=\"radio\" name=\"update_vip_admin_state_up\" id=\"update_vip_admin_state_up1\" checked=\"checked\" value=\"true\">开"
+			+ " <input type=\"radio\" name=\"update_vip_admin_state_up\" id=\"update_vip_admin_state_up2\" value=\"false\">关";
+		$("#td_update_vip_open").html(open_html);
+	} else {
+		var open_html = "<input type=\"radio\" name=\"update_vip_admin_state_up\" id=\"update_vip_admin_state_up1\" value=\"true\">开"
+			+ " <input type=\"radio\" name=\"update_vip_admin_state_up\" id=\"update_vip_admin_state_up2\" checked=\"checked\" value=\"false\">关";
+		$("#td_update_vip_open").html(open_html);
+	}
+	$("#update_vip_name").val(name);
+	$("#update_vip_connection_limit").val(connection_limit);
+	$("#update_vip_cookie_name").val(cookie_name);
+	$("#update_vip_cookie_type").val(cookie_type);
+	$("#update_vip_cookie_timeout").val(cookie_timeout);
+	$("#update_vip_protocol").val(protocol);
+	$("#dialog_update_vip").dialog({
+		autoOpen : false,
+		postion : "center",
+		modal : true,
+		height : 380,
+		width : 550,
+		buttons : {
+			'修改' : function() {
+				$.ajax({
+					url : "/g/lbs/vip/update/" + userId + "/" + tenantId + "/" + vipId,
+					cache:false,
+					data :{
+						name : $("#update_vip_name").val(),
+						admin_state_up : $('input[name="update_vip_admin_state_up"]:checked').val(),
+						connection_limit : $("#update_vip_connection_limit").val(),
+						cookie_name : $("#update_vip_cookie_name").val(),
+						cookie_type : $("#update_vip_cookie_type").val(),
+						cookie_timeout : $("#update_vip_cookie_timeout").val()
+					},
+					success : function(data) {
+						if(data == "ok") {
+							alert("规则:" + vipId + " 更新成功");
+							window.location.reload();
+						} else {
+							alert("规则:" + vipId + " 更新失败");
+							window.location.reload();
+						}
+					},
+					error : function(a, b, c) {
+						alert("规则更新失败!" + a + "|" + b + "|" + c);
+						window.location.reload();
+					}
+				});
+			}
+		}
+	});
+	$("#dialog_update_vip").dialog("open");
+}
+
+function dialog_update_pool(userId, tenantId, poolId, name, egress, admin_state_up) {
+	var id_html = "<font color='red'>" + poolId +"</font>";
+	$("#span_update_pool_id").html(id_html);
+	if(admin_state_up == "true") {
+		var open_html = "<input type=\"radio\" name=\"update_pool_admin_state_up\" id=\"update_pool_admin_state_up1\" checked=\"checked\" value=\"true\">开"
+			+ " <input type=\"radio\" name=\"update_pool_admin_state_up\" id=\"update_pool_admin_state_up2\" value=\"false\">关";
+		$("#td_update_pool_open").html(open_html);
+	} else {
+		var open_html = "<input type=\"radio\" name=\"update_pool_admin_state_up\" id=\"update_pool_admin_state_up1\" value=\"true\">开"
+			+ " <input type=\"radio\" name=\"update_pool_admin_state_up\" id=\"update_pool_admin_state_up2\" checked=\"checked\" value=\"false\">关";
+		$("#td_update_pool_open").html(open_html);
+	}
+	$("#update_pool_name").val(name)
+	$("#update_pool_egress").val(egress)
+	$("#dialog_update_pool").dialog({
+		autoOpen : false,
+		postion : "center",
+		modal : true,
+		height : 220,
+		width : 550,
+		buttons : {
+			'修改' : function() {
+				$.ajax({
+					url : "/g/lbs/pool/update/" + userId + "/" + tenantId + "/" + poolId,
+					cache : false,
+					data : {
+						name : $("#update_pool_name").val(),
+						egress : $("#update_pool_egress").val(),
+						admin_state_up : $('input[name="update_pool_admin_state_up"]:checked').val()
+					},
+					success : function(data) {
+						if(data == "ok") {
+							alert("负载均衡:" + poolId + " 更新成功");
+							window.location.reload();
+						} else {
+							alert("负载均衡:" + poolId + " 更新失败");
+							window.location.reload();
+						}
+					},
+					error : function(a, b, c) {
+						alert("负载均衡更新失败!" + a + "|" + b + "|" + c);
+						window.location.reload();
+					}
+				});
+			}
+		}
+	});
+	$("#dialog_update_pool").dialog("open");
+}
+
 // JS自定义方法
 function button_details_pool(id) {
 	dialog_detail_pool(id);
@@ -610,6 +767,34 @@ function button_update_health(userId, tenantId,healthId,timeout,delay,fall,rise,
 	$("#update_health_url_path").val("");
 	$("#update_http_method").val("");
 	dialog_update_health(userId, tenantId,healthId,timeout,delay,fall,rise,max_retries,admin_state_up,type,url_path,http_method);
+}
+
+function button_update_member(userId, tenantId, memberId, weight, admin_state_up) {
+	$("#span_update_member_id").html("");
+	$("#td_update_member_open").html("");
+	$("#update_memeber_weight").val("");
+	dialog_update_member(userId, tenantId, memberId, weight, admin_state_up);
+}
+
+function button_update_vip(userId, tenantId, vipId, name, admin_state_up, connection_limit, cookie_name, cookie_type, cookie_timeout, protocol) {
+	$("#span_update_vip_id").html("");
+	$("#td_update_vip_open").html("");
+	$("#span_update_vip_protocol").html("");
+	$("#update_vip_name").val("");
+	$("#update_vip_connection_limit").val("");
+	$("#update_vip_cookie_name").val("");
+	$("#update_vip_cookie_type").val("");
+	$("#update_vip_cookie_timeout").val("");
+	$("#update_vip_protocol").val("");
+	dialog_update_vip(userId, tenantId, vipId, name, admin_state_up, connection_limit, cookie_name, cookie_type, cookie_timeout, protocol);
+}
+
+function button_update_pool(userId, tenantId, poolId, name, egress, admin_state_up){
+	$("#span_update_pool_id").html("");
+	$("#td_update_pool_open").html("");
+	$("#update_pool_name").val("")
+	$("#update_pool_egress").val("")
+	dialog_update_pool(userId, tenantId, poolId, name, egress, admin_state_up);
 }
 
 function radio_protocol_change(value) {

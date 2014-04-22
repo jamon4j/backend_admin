@@ -451,4 +451,113 @@ public class LBSService {
 		jsonService.poPut(InitConst.KVM_LBS_HEALTH_OPEN, null, null, null,
 				JSONObject.toJSONString(open_map), healthId);
 	}
+
+	/**
+	 * 更新Member
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param memberId
+	 * @param weight
+	 * @param admin_state_up
+	 * @throws ErrorCodeException
+	 * @throws NoTokenException
+	 */
+	public void updateMember(String userId, String tenantId, String memberId,
+			String weight, String admin_state_up) throws NoTokenException,
+			ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		Map<String, String> weight_map = new HashMap<>();
+		weight_map.put("weight", weight);
+		jsonService.poPut(InitConst.KVM_LBS_MEMBER_UPDATE_WEIGHT, null, null,
+				null, JSONObject.toJSONString(weight_map), memberId);
+		Map<String, String> open_map = new HashMap<>();
+		open_map.put("open", admin_state_up);
+		jsonService.poPut(InitConst.KVM_LBS_MEMBER_UPDATE_OPEN, null, null,
+				null, JSONObject.toJSONString(open_map), memberId);
+	}
+
+	/**
+	 * 更新VIP
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param vipId
+	 * @param name
+	 * @param admin_state_up
+	 * @param connection_limit
+	 * @param cookie_name
+	 * @param cookie_type
+	 * @param cookie_timeout
+	 * @throws ErrorCodeException
+	 * @throws NoTokenException
+	 */
+	public void updateVip(String userId, String tenantId, String vipId,
+			String name, String admin_state_up, String connection_limit,
+			String cookie_name, String cookie_type, String cookie_timeout)
+			throws NoTokenException, ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		// 更新name
+		Map<String, String> name_map = new HashMap<>();
+		name_map.put("name", name);
+		jsonService.poPut(InitConst.KVM_LBS_VIP_UPDATE_NAME, null, null, null,
+				JSONObject.toJSONString(name_map), vipId);
+		// 更新OPEN
+		Map<String, String> open_map = new HashMap<>();
+		open_map.put("open", admin_state_up);
+		jsonService.poPut(InitConst.KVM_LBS_VIP_UPDATE_OPEN, null, null, null,
+				JSONObject.toJSONString(open_map), vipId);
+		// 更新connection_limit
+		Map<String, String> connection_limit_map = new HashMap<>();
+		connection_limit_map.put("connection_limit", connection_limit);
+		jsonService.poPut(InitConst.KVM_LBS_VIP_UPDATE_CONNECTION_LIMIT, null,
+				null, null, JSONObject.toJSONString(connection_limit_map),
+				vipId);
+		// 更新session_persistence
+		SessionPersistencePOJO pojo = new SessionPersistencePOJO();
+		pojo.setCookie_name(cookie_name);
+		pojo.setTimeout(cookie_timeout);
+		pojo.setType(cookie_type);
+		Map<String, Object> session_persistence_map = new HashMap<>();
+		session_persistence_map.put("session_persistence", pojo);
+		jsonService.poPut(InitConst.KVM_LBS_VIP_UPDATE_SESSION_PERSISTENCE,
+				null, null, null,
+				JSONObject.toJSONString(session_persistence_map), vipId);
+	}
+
+	/**
+	 * 更新POOL
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param poolId
+	 * @param name
+	 * @param egress
+	 * @param admin_state_up
+	 * @throws ErrorCodeException
+	 * @throws NoTokenException
+	 */
+	public void updatePool(String userId, String tenantId, String poolId,
+			String name, String egress, String admin_state_up)
+			throws NoTokenException, ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		// 更新name
+		Map<String, String> name_map = new HashMap<>();
+		name_map.put("name", name);
+		jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_NAME, null, null, null,
+				JSONObject.toJSONString(name_map), poolId);
+		// 更新egress
+		Map<String, String> egress_map = new HashMap<>();
+		egress_map.put("egress", egress);
+		jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_EGRESS, null, null,
+				null, JSONObject.toJSONString(egress_map), poolId);
+		// 更新open
+		Map<String, String> open_map = new HashMap<>();
+		open_map.put("open", admin_state_up);
+		jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_OPEN, null, null, null,
+				JSONObject.toJSONString(open_map), poolId);
+	}
 }
