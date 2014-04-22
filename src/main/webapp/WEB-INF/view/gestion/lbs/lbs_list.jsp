@@ -408,7 +408,7 @@
 							<td><button onclick="button_details_health('${health.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
 							<td><button
-									onclick="button_update_health('${health.id }','${health.timeout }','${health.delay }','${health.fall }','${health.rise }','${health.max_retries }','${health.admin_state_up }')"
+									onclick="button_update_health('${user_id }','${tenant_id }','${health.id }','${health.timeout }','${health.delay }','${health.fall }','${health.rise }','${health.max_retries }','${health.admin_state_up }','${health.type }','${health.url_path }','${health.http_method }')"
 									class="ui-state-default ui-corner-all">修改</button> |
 								<button
 									onclick="button_delete_health('${user_id }','${tenant_id }','${health.id }')"
@@ -644,7 +644,9 @@
 			</tr>
 			<tr>
 				<td>检查类型(type):</td>
-				<td id="update_health_type_td"></td>
+				<td id="update_health_type_td"><span
+					id="update_health_type_span"></span> <input type="hidden"
+					id="update_health_type"></td>
 			</tr>
 			<tr id="update_health_url_path_td">
 				<td>HTTP请求连接(url_path):</td>
@@ -652,7 +654,7 @@
 			</tr>
 			<tr id="update_http_method_td">
 				<td>HTTP请求方式(http_method):</td>
-				<td>HEAD</td>
+				<td><input id="update_http_method" size="10"></td>
 			</tr>
 		</table>
 	</div>

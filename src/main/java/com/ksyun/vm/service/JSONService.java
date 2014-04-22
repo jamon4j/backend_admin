@@ -238,7 +238,7 @@ public class JSONService {
 				throw new ErrorCodeException(result);
 			}
 		case PUT:
-			result = HttpUtils.post(getUrl(proKey, param),
+			result = HttpUtils.put(getUrl(proKey, param),
 					setHeader(username, password), requestBody);
 			logger.info("username=[{}] put [{}],result=[{}] !", new Object[] {
 					username, proKey, result });

@@ -517,4 +517,54 @@ public class LBSController {
 		}
 		return "ok";
 	}
+
+	/**
+	 * 更新Health 健康检查
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param healthId
+	 * @param timeout
+	 * @param delay
+	 * @param fall
+	 * @param rise
+	 * @param max_retries
+	 * @param admin_state_up
+	 * @param type
+	 * @param url_path
+	 * @param http_method
+	 * @return
+	 */
+	@RequestMapping(value = "/g/lbs/health/update/{user_id}/{tenant_id}/{health_monitor_id}")
+	@ResponseBody
+	public String updateHealth(@PathVariable("user_id") String userId,
+			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("health_monitor_id") String healthId,
+			@RequestParam("timeout") String timeout,
+			@RequestParam("delay") String delay,
+			@RequestParam("fall") String fall,
+			@RequestParam("rise") String rise,
+			@RequestParam("max_retries") String max_retries,
+			@RequestParam("admin_state_up") String admin_state_up,
+			@RequestParam("type") String type,
+			@RequestParam("url_path") String url_path,
+			@RequestParam("http_method") String http_method) {
+		try {
+			// 将参数转换大写
+			type = type.trim().toUpperCase();
+			http_method = http_method.trim().toUpperCase();
+			lbsService.updateHealth(userId, tenantId, healthId, timeout, delay,
+					fall, rise, max_retries, admin_state_up, type, url_path,
+					http_method);
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		}
+		return "ok";
+	}
 }

@@ -470,9 +470,11 @@ function dialog_delete_pool(userId, tenantId, poolId) {
 	$("#dialog_delete_pool_" + poolId).dialog("open");
 }
 
-function dialog_update_health(healthId,timeout,delay,fall,rise,max_retries,admin_state_up) {
+function dialog_update_health(userId, tenantId, healthId,timeout,delay,fall,rise,max_retries,admin_state_up,type,url_path,http_method) {
 	var id_html = "<font color='red'>"+healthId+"</font>";
+	var type_html = "<font color='blue'>"+type+"</font>";
 	$("#span_update_id").html(id_html);
+	$("#update_health_type_span").html(type_html);
 	if(admin_state_up == "true") {
 		var open_html = "<input type=\"radio\" name=\"update_admin_state_up\" id=\"update_admin_state_up1\" checked=\"checked\" value=\"true\">开"
 			+ " <input type=\"radio\" name=\"update_admin_state_up\" id=\"update_admin_state_up2\" value=\"false\">关";
@@ -482,11 +484,21 @@ function dialog_update_health(healthId,timeout,delay,fall,rise,max_retries,admin
 			+ " <input type=\"radio\" name=\"update_admin_state_up\" id=\"update_admin_state_up2\" checked=\"checked\" value=\"false\">关";
 		$("#update_open_td").html(open_html);
 	}
+	if(type == "TCP") {
+		$("#update_health_url_path_td").hide();
+		$("#update_http_method_td").hide();
+	} else {
+		$("#update_health_url_path_td").show();
+		$("#update_http_method_td").show();
+	}
 	$("#update_health_timeout").val(timeout);
 	$("#update_health_delay").val(delay);
 	$("#update_health_fall").val(fall);
 	$("#update_health_rise").val(rise);
 	$("#update_health_max_retries").val(max_retries);
+	$("#update_health_type").val(type);
+	$("#update_health_url_path").val(url_path);
+	$("#update_http_method").val(http_method);
 	$("#dialog_update_health").dialog({
 		autoOpen : false,
 		postion : "center",
@@ -495,7 +507,34 @@ function dialog_update_health(healthId,timeout,delay,fall,rise,max_retries,admin
 		width : 550,
 		buttons : {
 			'修改' : function() {
-				
+				$.ajax({
+					url :"/g/lbs/health/update/" + userId + "/" + tenantId + "/" + healthId,
+					cache : false,
+					data :{
+						timeout : $("#update_health_timeout").val(),
+						delay : $("#update_health_delay").val(),
+						fall : $("#update_health_fall").val(),
+						rise : $("#update_health_rise").val(),
+						max_retries : $("#update_health_max_retries").val(),
+						admin_state_up : $('input[name="update_admin_state_up"]:checked').val(),
+						type : $("#update_health_type").val(),
+						url_path : $("#update_health_url_path").val(),
+						http_method : $("#update_http_method").val()
+					},
+					success : function(data) {
+						if(data == "ok") {
+							alert("健康检查:" + healthId + " 更新成功");
+							window.location.reload();
+						} else {
+							alert("健康检查:" + healthId + " 更新失败");
+							window.location.reload();
+						}
+					},
+					error : function(a,b,c) {
+						alert("健康检查更新失败!" + a + "|" + b + "|" + c);
+						window.location.reload();
+					}
+				});
 			}
 		}
 	});
@@ -559,15 +598,18 @@ function button_delete_pool(userId, tenantId, poolId) {
 	dialog_delete_pool(userId, tenantId, poolId);
 }
 
-function button_update_health(healthId,timeout,delay,fall,rise,max_retries,admin_state_up) {
+function button_update_health(userId, tenantId,healthId,timeout,delay,fall,rise,max_retries,admin_state_up,type,url_path,http_method) {
 	$("#span_update_id").html("");
+	$("#update_health_type_span").html("");
 	$("#update_open_td").html("");
 	$("#update_health_timeout").val("");
 	$("#update_health_delay").val("");
 	$("#update_health_fall").val("");
 	$("#update_health_rise").val("");
 	$("#update_health_max_retries").val("");
-	dialog_update_health(healthId,timeout,delay,fall,rise,max_retries,admin_state_up);
+	$("#update_health_url_path").val("");
+	$("#update_http_method").val("");
+	dialog_update_health(userId, tenantId,healthId,timeout,delay,fall,rise,max_retries,admin_state_up,type,url_path,http_method);
 }
 
 function radio_protocol_change(value) {

@@ -377,4 +377,78 @@ public class LBSService {
 		jsonService.poDelete(InitConst.KVM_LBS_HEALTH_UNBIND, null, null,
 				vip_id, health_monitor_id);
 	}
+
+	/**
+	 * 更新Health
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param healthId
+	 * @param timeout
+	 * @param delay
+	 * @param fall
+	 * @param rise
+	 * @param max_retries
+	 * @param admin_state_up
+	 * @param type
+	 * @param url_path
+	 * @param http_method
+	 * @throws ErrorCodeException
+	 * @throws NoTokenException
+	 */
+	public void updateHealth(String userId, String tenantId, String healthId,
+			String timeout, String delay, String fall, String rise,
+			String max_retries, String admin_state_up, String type,
+			String url_path, String http_method) throws NoTokenException,
+			ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		// 更新timeout
+		Map<String, String> timeout_map = new HashMap<>();
+		timeout_map.put("timeout", timeout);
+		String string = JSONObject.toJSONString(timeout_map);
+		jsonService.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_TIMEOUT, null, null,
+				null, string, healthId);
+		// 更新delay
+		Map<String, String> delay_map = new HashMap<>();
+		delay_map.put("delay", delay);
+		jsonService.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_DELAY, null, null,
+				null, JSONObject.toJSONString(delay_map), healthId);
+		// 更新max_retries
+		Map<String, String> max_retries_map = new HashMap<>();
+		max_retries_map.put("max_retries", max_retries);
+		jsonService.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_MAX_RETRIES, null,
+				null, null, JSONObject.toJSONString(max_retries_map), healthId);
+		// 要判断Type，TCP的时候不去更新url_path和http_method
+		if ("HTTP".equals(type)) {
+			// 更新http_method
+			Map<String, String> http_method_map = new HashMap<>();
+			http_method_map.put("http_method", http_method);
+			jsonService.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_HTTP_METHOD,
+					null, null, null, JSONObject.toJSONString(http_method_map),
+					healthId);
+			// 更新url_path
+			Map<String, String> url_path_map = new HashMap<>();
+			url_path_map.put("url_path", url_path);
+			jsonService
+					.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_URL_PATH, null,
+							null, null, JSONObject.toJSONString(url_path_map),
+							healthId);
+		}
+		// 更新rise
+		Map<String, String> rise_map = new HashMap<>();
+		rise_map.put("rise", rise);
+		jsonService.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_RISE, null, null,
+				null, JSONObject.toJSONString(rise_map), healthId);
+		// 更新fall
+		Map<String, String> fall_map = new HashMap<>();
+		fall_map.put("fall", fall);
+		jsonService.poPut(InitConst.KVM_LBS_HEALTH_FALL, null, null, null,
+				JSONObject.toJSONString(fall_map), healthId);
+		// 更新open
+		Map<String, String> open_map = new HashMap<>();
+		open_map.put("open", admin_state_up);
+		jsonService.poPut(InitConst.KVM_LBS_HEALTH_OPEN, null, null, null,
+				JSONObject.toJSONString(open_map), healthId);
+	}
 }

@@ -88,6 +88,14 @@ public class InitConst {
 	public static final String KVM_LBS_HEALTH_DELETE = "kvm.lbs.health.delete";
 	public static final String KVM_LBS_HEALTH_BIND = "kvm.lbs.health.bind";
 	public static final String KVM_LBS_HEALTH_UNBIND = "kvm.lbs.health.unbind";
+	public static final String KVM_LBS_HEALTH_UPDATE_TIMEOUT = "kvm.lbs.health.update.timeout";
+	public static final String KVM_LBS_HEALTH_UPDATE_DELAY = "kvm.lbs.health.update.delay";
+	public static final String KVM_LBS_HEALTH_UPDATE_MAX_RETRIES = "kvm.lbs.health.update.max_retries";
+	public static final String KVM_LBS_HEALTH_UPDATE_HTTP_METHOD = "kvm.lbs.health.update.http_method";
+	public static final String KVM_LBS_HEALTH_UPDATE_URL_PATH = "kvm.lbs.health.update.url_path";
+	public static final String KVM_LBS_HEALTH_UPDATE_RISE = "kvm.lbs.health.update.rise";
+	public static final String KVM_LBS_HEALTH_FALL = "kvm.lbs.health.update.fall";
+	public static final String KVM_LBS_HEALTH_OPEN = "kvm.lbs.health.update.open";
 
 	public static final String MONITOR_HBASE_TABLE_STATUS = "vm_table_status";
 	public static final String MONITOR_HBASE_TABLE_NETWORK = "vm_table_network";
