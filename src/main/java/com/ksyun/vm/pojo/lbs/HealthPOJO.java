@@ -11,7 +11,7 @@ import com.ksyun.vm.pojo.BasePo;
  * 
  */
 public class HealthPOJO extends BasePo {
-	private List<VipPOJO> vips;
+	private List<HealthVipPOJO> vips;
 	private String admin_state_up;
 	private String tenant_id;
 	private String rise;
@@ -22,12 +22,14 @@ public class HealthPOJO extends BasePo {
 	private String fall;
 	private String type;
 	private String id;
+	private String http_method;
+	private String url_path;
 
-	public List<VipPOJO> getVips() {
+	public List<HealthVipPOJO> getVips() {
 		return vips;
 	}
 
-	public void setVips(List<VipPOJO> vips) {
+	public void setVips(List<HealthVipPOJO> vips) {
 		this.vips = vips;
 	}
 
@@ -109,6 +111,22 @@ public class HealthPOJO extends BasePo {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getHttp_method() {
+		return http_method;
+	}
+
+	public void setHttp_method(String http_method) {
+		this.http_method = http_method;
+	}
+
+	public String getUrl_path() {
+		return url_path;
+	}
+
+	public void setUrl_path(String url_path) {
+		this.url_path = url_path;
 	}
 
 }

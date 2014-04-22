@@ -14,7 +14,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ksyun.vm.exception.ErrorCodeException;
 import com.ksyun.vm.exception.NoTokenException;
+import com.ksyun.vm.pojo.lbs.HealthMonitorsStatusPOJO;
 import com.ksyun.vm.pojo.lbs.HealthPOJO;
+import com.ksyun.vm.pojo.lbs.HealthVipPOJO;
 import com.ksyun.vm.pojo.lbs.MemberPOJO;
 import com.ksyun.vm.pojo.lbs.PoolPOJO;
 import com.ksyun.vm.pojo.lbs.SessionPersistencePOJO;
@@ -190,6 +192,21 @@ public class LBSController {
 		return "ok";
 	}
 
+	/**
+	 * 创建规则 VIP
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param name
+	 * @param protocol
+	 * @param protocol_port
+	 * @param lb_method
+	 * @param pool_id
+	 * @param cookie_name
+	 * @param cookie_type
+	 * @param cookie_timeout
+	 * @return
+	 */
 	@RequestMapping(value = "/g/lbs/vip/add/{user_id}/{tenant_id}")
 	@ResponseBody
 	public String createVip(@PathVariable("user_id") String userId,
@@ -221,6 +238,18 @@ public class LBSController {
 		return "ok";
 	}
 
+	/**
+	 * 创建Member 负载主机
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param address
+	 * @param protocol_port
+	 * @param vip_id
+	 * @param weight
+	 * @param vm_id
+	 * @return
+	 */
 	@RequestMapping(value = "/g/lbs/member/add/{user_id}/{tenant_id}")
 	@ResponseBody
 	public String createMember(@PathVariable("user_id") String userId,
@@ -233,6 +262,250 @@ public class LBSController {
 		try {
 			lbsService.addMember(userId, tenantId, address, protocol_port,
 					vip_id, weight, vm_id);
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		}
+		return "ok";
+	}
+
+	/**
+	 * 创建健康检查
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param delay
+	 * @param max_retries
+	 * @param type
+	 * @param timeout
+	 * @param rise
+	 * @param fall
+	 * @param http_method
+	 * @param url_path
+	 * @return
+	 */
+	@RequestMapping(value = "/g/lbs/health/add/{user_id}/{tenant_id}")
+	@ResponseBody
+	public String createHealth(@PathVariable("user_id") String userId,
+			@PathVariable("tenant_id") String tenantId,
+			@RequestParam("delay") String delay,
+			@RequestParam("max_retries") String max_retries,
+			@RequestParam("type") String type,
+			@RequestParam("timeout") String timeout,
+			@RequestParam("rise") String rise,
+			@RequestParam("fall") String fall,
+			@RequestParam("http_method") String http_method,
+			@RequestParam("url_path") String url_path) {
+		try {
+			lbsService.addHealth(userId, tenantId, delay, max_retries, type,
+					timeout, rise, fall, http_method, url_path);
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		}
+		return "ok";
+	}
+
+	/**
+	 * 删除健康检查
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param healthId
+	 * @return
+	 */
+	@RequestMapping(value = "/g/lbs/health/del/{user_id}/{tenant_id}/{health_monitor_id}")
+	@ResponseBody
+	public String removeHealth(@PathVariable("user_id") String userId,
+			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("health_monitor_id") String healthId) {
+		try {
+			lbsService.deleteHealth(userId, tenantId, healthId);
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		}
+		return "ok";
+	}
+
+	/**
+	 * 删除负载主机
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param memberId
+	 * @return
+	 */
+	@RequestMapping(value = "/g/lbs/member/del/{user_id}/{tenant_id}/{member_id}")
+	@ResponseBody
+	public String removeMember(@PathVariable("user_id") String userId,
+			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("member_id") String memberId) {
+		try {
+			lbsService.deleteMember(userId, tenantId, memberId);
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		}
+		return "ok";
+	}
+
+	/**
+	 * 删除规则
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param vip_id
+	 * @return
+	 */
+	@RequestMapping(value = "/g/lbs/vip/del/{user_id}/{tenant_id}/{vip_id}")
+	@ResponseBody
+	public String removeVip(@PathVariable("user_id") String userId,
+			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("vip_id") String vip_id) {
+		try {
+			// 同时要删除健康检查的引用
+			List<HealthPOJO> health_list = lbsService.getHealths(userId,
+					tenantId);
+			List<String> health_ids = new ArrayList<>();// 存放与该VIP绑定的健康检查ID
+			// 查找当前VIP绑定的Health的ID
+			for (HealthPOJO healthPOJO : health_list) {
+				List<HealthVipPOJO> vip = healthPOJO.getVips();
+				for (HealthVipPOJO healthVipPOJO : vip) {
+					if (healthVipPOJO.getVip_id().equals(vip_id)) {
+						// 如果有绑定,将Health id添加到集合
+						health_ids.add(healthPOJO.getId());
+					}
+				}
+			}
+			// 解除绑定
+			for (String health_id : health_ids) {
+				lbsService.vipUnBindHealth(userId, tenantId, vip_id, health_id);
+			}
+			// 删除VIP
+			lbsService.deleteVip(userId, tenantId, vip_id);
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		}
+		return "ok";
+	}
+
+	/**
+	 * 删除POOL
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param pool_id
+	 * @return
+	 */
+	@RequestMapping(value = "/g/lbs/pool/del/{user_id}/{tenant_id}/{pool_id}")
+	@ResponseBody
+	public String removePool(@PathVariable("user_id") String userId,
+			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("pool_id") String poolId) {
+		try {
+			// 删除POOL，要先删除与VIP的绑定
+			PoolPOJO poolPOJO = lbsService.getPool(userId, tenantId, poolId);
+			// 当前Pool下的VIP
+			List<String> vips = poolPOJO.getVips();
+			for (String vip_id : vips) {
+				VipPOJO vip = lbsService.getVip(userId, tenantId, vip_id);
+				List<String> health_ids = vip.getHealth_monitors();
+				for (String health_id : health_ids) {// 接触VIP与Health的绑定
+					lbsService.vipUnBindHealth(userId, tenantId, vip_id,
+							health_id);
+				}
+				// 删除VIP
+				lbsService.deleteVip(userId, tenantId, vip_id);
+			}
+			// 删除POOL
+			lbsService.deletePool(userId, tenantId, poolId);
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		}
+		return "ok";
+	}
+
+	/**
+	 * VIP绑定健康检查
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param vip_id
+	 * @param health_monitor_id
+	 * @return
+	 */
+	@RequestMapping(value = "/g/lbs/health/bind/{user_id}/{tenant_id}/{vip_id}")
+	@ResponseBody
+	public String bindHealth(@PathVariable("user_id") String userId,
+			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("vip_id") String vip_id,
+			@RequestParam("health_monitor_id") String health_monitor_id) {
+		try {
+			lbsService.vipBindHealth(userId, tenantId, vip_id,
+					health_monitor_id);
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		}
+		return "ok";
+	}
+
+	/**
+	 * VIP解除健康检查绑定
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param vip_id
+	 * @param health_monitor_id
+	 * @return
+	 */
+	@RequestMapping(value = "/g/lbs/health/unbind/{user_id}/{tenant_id}/{vip_id}/{health_monitor_id}")
+	@ResponseBody
+	public String unBindHealth(@PathVariable("user_id") String userId,
+			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("vip_id") String vip_id,
+			@PathVariable("health_monitor_id") String health_monitor_id) {
+		try {
+			lbsService.vipUnBindHealth(userId, tenantId, vip_id,
+					health_monitor_id);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -121,6 +121,25 @@ public class LBSService {
 	}
 
 	/**
+	 * 查询执行id的VIP
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param vipId
+	 * @return
+	 * @throws ErrorCodeException
+	 * @throws NoTokenException
+	 */
+	public VipPOJO getVip(String userId, String tenantId, String vipId)
+			throws NoTokenException, ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		VipPOJO pojo = jsonService.poGet(InitConst.KVM_LBS_VIP, null, null,
+				VipPOJO.class, vipId);
+		return pojo;
+	}
+
+	/**
 	 * 创建POOL
 	 * 
 	 * @param userId
@@ -209,4 +228,153 @@ public class LBSService {
 				requestBody);
 	}
 
+	/**
+	 * 添加健康检查
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param delay
+	 * @param max_retries
+	 * @param type
+	 * @param timeout
+	 * @param rise
+	 * @param fall
+	 * @param http_method
+	 * @param url_path
+	 * @throws ErrorCodeException
+	 * @throws NoTokenException
+	 */
+	public void addHealth(String userId, String tenantId, String delay,
+			String max_retries, String type, String timeout, String rise,
+			String fall, String http_method, String url_path)
+			throws NoTokenException, ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		Map<String, String> map = new HashMap<>();
+		// 健康检查的类型氛围TCP和HTTP，根据不同的类型，创建的时候会传递不同的参数
+		map.put("delay", delay);
+		map.put("max_retries", max_retries);
+		map.put("timeout", timeout);
+		map.put("rise", rise);
+		map.put("fall", fall);
+		if ("HTTP".equals(type)) {
+			map.put("http_method", http_method);
+			map.put("url_path", url_path);
+		}
+		map.put("type", type);
+		map.put("admin_state_up", "true");
+		map.put("is_req_body", "true");
+		String requestBody = JSONObject.toJSONString(map);
+		jsonService.poPost(InitConst.KVM_LBS_HEALTH_ADD, null, null, null,
+				requestBody);
+	}
+
+	/**
+	 * 删除健康检查
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param health_monitor_id
+	 * @throws NoTokenException
+	 * @throws ErrorCodeException
+	 */
+	public void deleteHealth(String userId, String tenantId,
+			String health_monitor_id) throws NoTokenException,
+			ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		jsonService.poDelete(InitConst.KVM_LBS_HEALTH_DELETE, null, null,
+				health_monitor_id);
+	}
+
+	/**
+	 * 删除负载主机
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param member_id
+	 * @throws ErrorCodeException
+	 * @throws NoTokenException
+	 */
+	public void deleteMember(String userId, String tenantId, String member_id)
+			throws NoTokenException, ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		jsonService.poDelete(InitConst.KVM_LBS_MEMEBER_DELETE, null, null,
+				member_id);
+	}
+
+	/**
+	 * 删除规则 vip
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param vip_id
+	 * @throws ErrorCodeException
+	 * @throws NoTokenException
+	 */
+	public void deleteVip(String userId, String tenantId, String vip_id)
+			throws NoTokenException, ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		jsonService.poDelete(InitConst.KVM_LBS_VIP_DELETE, null, null, vip_id);
+	}
+
+	/**
+	 * 删除Pool
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param pool_id
+	 * @throws ErrorCodeException
+	 * @throws NoTokenException
+	 */
+	public void deletePool(String userId, String tenantId, String pool_id)
+			throws NoTokenException, ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		jsonService
+				.poDelete(InitConst.KVM_LBS_POOL_DELETE, null, null, pool_id);
+	}
+
+	/**
+	 * 规则与健康检查绑定
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param vip_id
+	 * @param health_monitor_id
+	 * @throws ErrorCodeException
+	 * @throws NoTokenException
+	 */
+	public void vipBindHealth(String userId, String tenantId, String vip_id,
+			String health_monitor_id) throws NoTokenException,
+			ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		Map<String, Object> map = new HashMap<>();
+		map.put("health_monitor_id", health_monitor_id);
+		String requestBody = JSONObject.toJSONString(map);
+		jsonService.poPost(InitConst.KVM_LBS_HEALTH_BIND, null, null, null,
+				requestBody, vip_id);
+	}
+
+	/**
+	 * 规则与健康检查解除绑定
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param vip_id
+	 * @param health_monitor_id
+	 * @throws ErrorCodeException
+	 * @throws NoTokenException
+	 */
+	public void vipUnBindHealth(String userId, String tenantId, String vip_id,
+			String health_monitor_id) throws NoTokenException,
+			ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		jsonService.poDelete(InitConst.KVM_LBS_HEALTH_UNBIND, null, null,
+				vip_id, health_monitor_id);
+	}
 }

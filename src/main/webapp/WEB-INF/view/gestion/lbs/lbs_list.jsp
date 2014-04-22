@@ -90,7 +90,25 @@
 									class="ui-state-default ui-corner-all">查看</button></td>
 							<td><button class="ui-state-default ui-corner-all">修改</button>
 								|
-								<button class="ui-state-default ui-corner-all">删除</button></td>
+								<button
+									onclick="button_delete_pool('${user_id }','${tenant_id }','${dto.id }')"
+									class="ui-state-default ui-corner-all">删除</button></td>
+							<div id="dialog_delete_pool_${dto.id }" title="POOL_${dto.id }删除"
+								style="display:none">
+								<p>
+									确定删除负载均衡:<font color="red">${dto.id }</font>?
+								</p>
+								<p>
+									当前负载均衡关联的规则:<br />
+									<c:forEach var="delete_pool_vip" items="${dto.vips}">
+										${delete_pool_vip }<br />
+									</c:forEach>
+								</p>
+								<hr />
+								<p>
+									<font color="blue">负载均衡删除后，与其关联的规则，负载主机都将删除，请小心操作</font>
+								</p>
+							</div>
 							<div id="dialog_detail_pool_${dto.id }" title="POOL_${dto.id }详情"
 								style="display:none">
 								<p>status:${dto.status }</p>
@@ -131,8 +149,6 @@
 			</table>
 			<table class="table" cellpadding="0" cellspacing="0" width="100%"
 				border="0">
-				<colgroup>
-				</colgroup>
 				<thead class="tb-tit-bg">
 					<tr>
 						<th>
@@ -173,17 +189,56 @@
 									class="ui-state-default ui-corner-all">查看</button></td>
 							<td><button class="ui-state-default ui-corner-all">修改</button>
 								|
-								<button class="ui-state-default ui-corner-all">删除</button></td>
-							<td><button onclick=""
+								<button
+									onclick="button_vip_delete('${user_id }','${tenant_id }','${vip.id }')"
+									class="ui-state-default ui-corner-all">删除</button></td>
+							<td><button
+									onclick="dialog_vip_bind_health('${user_id }','${tenant_id }','${vip.id }')"
 									class="ui-state-default ui-corner-all">绑定</button> |
-								<button onclick="" class="ui-state-default ui-corner-all">解除</button></td>
+								<button
+									onclick="button_vip_unbind_health('${user_id }','${tenant_id }','${vip.id }')"
+									class="ui-state-default ui-corner-all">解除</button></td>
+							<div id="dialog_vip_delete_${vip.id }" title="VIP_${vip.id }删除"
+								style="display:none">
+								<p>
+									确定删除规则:<font color="red">${vip.id }</font>?
+								</p>
+								<p>
+									当前规则关联的健康检查:<br />
+									<c:forEach var="delete_vip_health_monitors_status"
+										items="${vip.health_monitors_status }">
+										${delete_vip_health_monitors_status.monitor_id }<br />
+									</c:forEach>
+								</p>
+								<p>
+									当前规则关联的负载主机:<br />
+									<c:forEach items="${vip.members }" var="delete_vip_members">
+											${delete_vip_members }<br />
+									</c:forEach>
+								</p>
+								<hr />
+								<p>
+									<font color="blue">规则删除后，健康检查也不再与该规则绑定，该规则下的负责主机将被删除，请小心操作</font>
+								</p>
+							</div>
+							<div id="dialog_vip_unbind_health_${vip.id }"
+								title="VIP_${vip.id }解除健康检查" style="display:none">
+								<font color="red">请选择要解除的健康检查</font>
+								<p>
+									健康检查ID: <select id="unbind_health_monitor_id_${vip.id }">
+										<c:forEach var="vip_health_monitors_status"
+											items="${vip.health_monitors_status }">
+											<option value="${vip_health_monitors_status.monitor_id }">${vip_health_monitors_status.monitor_id }</option>
+										</c:forEach>
+									</select>
+								</p>
+							</div>
 							<div id="dialog_detail_vip_${vip.id }" title="VIP_${vip.id }详情"
 								style="display:none">
 								<p>status:${vip.status }</p>
 								<p>lb_method:${vip.lb_method }</p>
 								<p>protocol:${vip.protocol }</p>
 								<p>description:${vip.description }</p>
-								<p>health_monitors:${vip.health_monitors }</p>
 								<p>subnet_id:${vip.subnet_id }</p>
 								<p>deleted_time:${vip.deleted_time }</p>
 								<p>admin_state_up:${vip.admin_state_up }</p>
@@ -209,7 +264,7 @@
 									health_monitors_status:{
 									<c:forEach items="${vip.health_monitors_status }"
 										var="monitors_status">
-											${monitors_status },
+											${monitors_status.monitor_id },
 										</c:forEach>
 									}
 								</p>
@@ -274,7 +329,22 @@
 									class="ui-state-default ui-corner-all">查看</button></td>
 							<td><button class="ui-state-default ui-corner-all">修改</button>
 								|
-								<button class="ui-state-default ui-corner-all">删除</button></td>
+								<button
+									onclick="button_delete_member('${user_id }','${tenant_id }','${member.id }')"
+									class="ui-state-default ui-corner-all">删除</button></td>
+							<div id="dialog_delete_member_${member.id }"
+								title="MEMBER_${member.id }删除" style="display:none">
+								<p>
+									确定删除负载主机:<font color="red">${member.id }</font>?
+								</p>
+								<p>
+									当前负载主机所关联的规则:<br /> ${member.vip_id }
+								</p>
+								<hr>
+								<p>
+									<font color="blue">负载主机删除后，规则也不再与该主机绑定，请小心操作</font>
+								</p>
+							</div>
 							<div id="dialog_detail_member_${member.id }"
 								title="MEMBER_${member.id }详情" style="display:none">
 								<p>status:${member.status }</p>
@@ -337,15 +407,34 @@
 							<td>${health.admin_state_up }</td>
 							<td><button onclick="button_details_health('${health.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
-							<td><button class="ui-state-default ui-corner-all">修改</button>
-								|
-								<button class="ui-state-default ui-corner-all">删除</button></td>
+							<td><button
+									onclick="button_update_health('${health.id }','${health.timeout }','${health.delay }','${health.fall }','${health.rise }','${health.max_retries }','${health.admin_state_up }')"
+									class="ui-state-default ui-corner-all">修改</button> |
+								<button
+									onclick="button_delete_health('${user_id }','${tenant_id }','${health.id }')"
+									class="ui-state-default ui-corner-all">删除</button></td>
+							<div id="dialog_delete_health_${health.id }"
+								title="HEALTH_${health.id }删除" style="display:none">
+								<p>
+									确定删除健康检查:<font color="red">${health.id }</font>?
+								</p>
+								<p>
+									当前健康检查所关联的规则列表:<br />
+									<c:forEach var="health_vip" items="${health.vips }">
+											${health_vip.vip_id }<br />
+									</c:forEach>
+								</p>
+								<hr>
+								<p>
+									<font color="blue">健康检查删除后，规则也不再与该检查绑定，请小心操作</font>
+								</p>
+							</div>
 							<div id="dialog_detail_health_${health.id }"
 								title="HEALTH_${health.id }详情" style="display:none">
 								<p>
 									vips:{
 									<c:forEach var="health_vip" items="${health.vips }">
-											${health_vip.id },
+											${health_vip.vip_id },
 										</c:forEach>
 									}
 								</p>
@@ -355,8 +444,10 @@
 								<p>delay:${health.delay }</p>
 								<p>max_retries:${health.max_retries }</p>
 								<p>create_time:${health.create_time }</p>
+								<p>http_method:${health.http_method }</p>
 								<p>timeout:${health.timeout }</p>
 								<p>fall:${health.fall }</p>
+								<p>url_path:${health.url_path }</p>
 								<p>type:${health.type }</p>
 								<p>id:${health.id }</p>
 							</div>
@@ -486,7 +577,7 @@
 			border="0">
 			<tr>
 				<td>响应超时时间(timeout):</td>
-				<td><input id="health_timeout" size="10">ms </td>
+				<td><input id="health_timeout" size="10">ms</td>
 			</tr>
 			<tr>
 				<td>健康检查时间(delay):</td>
@@ -506,16 +597,77 @@
 			</tr>
 			<tr>
 				<td>检查类型(type):</td>
-				<td id="health_type_td">
-				</td>
+				<td id="health_type_td"></td>
 			</tr>
-			<tr>
+			<tr id="health_url_path_td">
 				<td>HTTP请求连接(url_path):</td>
-				<td></td>
+				<td><input id="health_url_path" size="10"></td>
 			</tr>
-			<tr>
+			<tr id="http_method_td">
 				<td>HTTP请求方式(http_method):</td>
 				<td>HEAD</td>
+			</tr>
+		</table>
+	</div>
+
+	<div id="dialog_update_health" title="更新健康检查" style="display:none">
+		<table class="table" cellpadding="0" cellspacing="0" width="60%"
+			border="0">
+			<tr>
+				<td>ID:</td>
+				<td><span id="span_update_id"></span> <input type="hidden"
+					id="update_id"></td>
+			</tr>
+			<tr>
+				<td>开关(open):</td>
+				<td id="update_open_td"></td>
+			</tr>
+			<tr>
+				<td>响应超时时间(timeout):</td>
+				<td><input id="update_health_timeout" size="10">ms</td>
+			</tr>
+			<tr>
+				<td>健康检查时间(delay):</td>
+				<td><input id="update_health_delay" size="10">s</td>
+			</tr>
+			<tr>
+				<td>不健康阈值(fall):</td>
+				<td><input id="update_health_fall" size="10"></td>
+			</tr>
+			<tr>
+				<td>健康阈值(rise):</td>
+				<td><input id="update_health_rise" size="10"></td>
+			</tr>
+			<tr>
+				<td>max_retries:</td>
+				<td><input id="update_health_max_retries" size="10"></td>
+			</tr>
+			<tr>
+				<td>检查类型(type):</td>
+				<td id="update_health_type_td"></td>
+			</tr>
+			<tr id="update_health_url_path_td">
+				<td>HTTP请求连接(url_path):</td>
+				<td><input id="update_health_url_path" size="10"></td>
+			</tr>
+			<tr id="update_http_method_td">
+				<td>HTTP请求方式(http_method):</td>
+				<td>HEAD</td>
+			</tr>
+		</table>
+	</div>
+
+	<div id="dialog_vip_bind_health" title="绑定健康检查" style="display:none">
+		<font color="red">请选择健康检查</font>
+		<table class="table" cellpadding="0" cellspacing="0" width="60%"
+			border="0">
+			<tr>
+				<td>健康检查ID:</td>
+				<td width="75%"><select id="bind_health_monitor_id">
+						<c:forEach var="health" items="${health_list }">
+							<option value="${health.id }">${health.id }</option>
+						</c:forEach>
+				</select></td>
 			</tr>
 		</table>
 	</div>

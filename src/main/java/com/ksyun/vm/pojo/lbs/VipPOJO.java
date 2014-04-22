@@ -28,7 +28,7 @@ public class VipPOJO extends BasePo {
 	private String address;
 	private String port_id;
 	private String status_description;
-	private List<String> health_monitors_status;
+	private List<HealthMonitorsStatusPOJO> health_monitors_status;
 	private String id;
 	private String tenant_id;
 	private String name;
@@ -170,11 +170,12 @@ public class VipPOJO extends BasePo {
 		this.status_description = status_description;
 	}
 
-	public List<String> getHealth_monitors_status() {
+	public List<HealthMonitorsStatusPOJO> getHealth_monitors_status() {
 		return health_monitors_status;
 	}
 
-	public void setHealth_monitors_status(List<String> health_monitors_status) {
+	public void setHealth_monitors_status(
+			List<HealthMonitorsStatusPOJO> health_monitors_status) {
 		this.health_monitors_status = health_monitors_status;
 	}
 

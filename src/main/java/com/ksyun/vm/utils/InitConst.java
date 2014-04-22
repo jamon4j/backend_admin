@@ -77,10 +77,17 @@ public class InitConst {
 	public static final String KVM_LBS_POOL_ADD = "kvm.lbs.pool.add";
 	public static final String KVM_LBS_POOL_DELETE = "kvm.lbs.pool.delete";
 	public static final String KVM_LBS_VIP_LIST = "kvm.lbs.vip.list";
+	public static final String KVM_LBS_VIP = "kvm.lbs.vip";
 	public static final String KVM_LBS_VIP_ADD = "kvm.lbs.vip.add";
+	public static final String KVM_LBS_VIP_DELETE = "kvm.lbs.vip.delete";
 	public static final String KVM_LBS_MEMBER_LIST = "kvm.lbs.member.list";
 	public static final String KVM_LBS_MEMBER_ADD = "kvm.lbs.member.add";
+	public static final String KVM_LBS_MEMEBER_DELETE = "kvm.lbs.member.delete";
 	public static final String KVM_LBS_HEALTH_LIST = "kvm.lbs.health.list";
+	public static final String KVM_LBS_HEALTH_ADD = "kvm.lbs.health.add";
+	public static final String KVM_LBS_HEALTH_DELETE = "kvm.lbs.health.delete";
+	public static final String KVM_LBS_HEALTH_BIND = "kvm.lbs.health.bind";
+	public static final String KVM_LBS_HEALTH_UNBIND = "kvm.lbs.health.unbind";
 
 	public static final String MONITOR_HBASE_TABLE_STATUS = "vm_table_status";
 	public static final String MONITOR_HBASE_TABLE_NETWORK = "vm_table_network";
