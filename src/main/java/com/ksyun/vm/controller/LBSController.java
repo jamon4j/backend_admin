@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +43,8 @@ public class LBSController {
 	private UserService userService;
 	@Autowired
 	private VmService vmService;
+
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * 列出所有用户
@@ -182,11 +186,15 @@ public class LBSController {
 			lbsService.addPool(userId, tenantId, poolName, type, egress);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "creatPool",
+					e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "creatPool",
+					e.toString() });
 			return "fail";
 		}
 		return "ok";
@@ -228,11 +236,15 @@ public class LBSController {
 					lb_method, pool_id, persistencePOJO);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "createVip",
+					e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "createVip",
+					e.toString() });
 			return "fail";
 		}
 		return "ok";
@@ -264,11 +276,15 @@ public class LBSController {
 					vip_id, weight, vm_id);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"createMember", e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"createMember", e.toString() });
 			return "fail";
 		}
 		return "ok";
@@ -306,11 +322,15 @@ public class LBSController {
 					timeout, rise, fall, http_method, url_path);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"createHealth", e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"createHealth", e.toString() });
 			return "fail";
 		}
 		return "ok";
@@ -333,11 +353,15 @@ public class LBSController {
 			lbsService.deleteHealth(userId, tenantId, healthId);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"removeHealth", e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"removeHealth", e.toString() });
 			return "fail";
 		}
 		return "ok";
@@ -360,11 +384,15 @@ public class LBSController {
 			lbsService.deleteMember(userId, tenantId, memberId);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"removeMember", e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"removeMember", e.toString() });
 			return "fail";
 		}
 		return "ok";
@@ -406,11 +434,15 @@ public class LBSController {
 			lbsService.deleteVip(userId, tenantId, vip_id);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "removeVip",
+					e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "removeVip",
+					e.toString() });
 			return "fail";
 		}
 		return "ok";
@@ -448,11 +480,15 @@ public class LBSController {
 			lbsService.deletePool(userId, tenantId, poolId);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "removePool",
+					e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "removePool",
+					e.toString() });
 			return "fail";
 		}
 		return "ok";
@@ -478,11 +514,15 @@ public class LBSController {
 					health_monitor_id);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "bindHealth",
+					e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "bindHealth",
+					e.toString() });
 			return "fail";
 		}
 		return "ok";
@@ -508,11 +548,15 @@ public class LBSController {
 					health_monitor_id);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"unBindHealth", e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"unBindHealth", e.toString() });
 			return "fail";
 		}
 		return "ok";
@@ -558,11 +602,15 @@ public class LBSController {
 					http_method);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "setHealth",
+					e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "setHealth",
+					e.toString() });
 			return "fail";
 		}
 		return "ok";
@@ -590,11 +638,15 @@ public class LBSController {
 					admin_state_up);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "setMember",
+					e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] { "setMember",
+					e.toString() });
 			return "fail";
 		}
 		return "ok";
@@ -630,11 +682,15 @@ public class LBSController {
 					connection_limit, cookie_name, cookie_type, cookie_timeout);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]",
+					new Object[] { "setVip", e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]",
+					new Object[] { "setVip", e.toString() });
 			return "fail";
 		}
 		return "ok";
@@ -664,11 +720,15 @@ public class LBSController {
 					admin_state_up);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]",
+					new Object[] { "setPool", e.toString() });
 			return "fail";
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("operate=[{}] error[{}]",
+					new Object[] { "setPool", e.toString() });
 			return "fail";
 		}
 		return "ok";
