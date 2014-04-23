@@ -183,6 +183,9 @@ public class LBSController {
 			@RequestParam("net_type") String type,
 			@RequestParam("new_pool_egress") String egress) {
 		try {
+			if (egress.indexOf(".") > -1) {
+				egress = egress.substring(0, egress.indexOf("."));
+			}
 			lbsService.addPool(userId, tenantId, poolName, type, egress);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
@@ -227,11 +230,15 @@ public class LBSController {
 			@RequestParam("cookie_name") String cookie_name,
 			@RequestParam("cookie_type") String cookie_type,
 			@RequestParam("cookie_timeout") String cookie_timeout) {
-		SessionPersistencePOJO persistencePOJO = new SessionPersistencePOJO();
-		persistencePOJO.setCookie_name(cookie_name);
-		persistencePOJO.setTimeout(cookie_timeout);
-		persistencePOJO.setType(cookie_type);
 		try {
+			if (cookie_timeout.indexOf(".") > -1) {
+				cookie_timeout = cookie_timeout.substring(0,
+						cookie_timeout.indexOf("."));
+			}
+			SessionPersistencePOJO persistencePOJO = new SessionPersistencePOJO();
+			persistencePOJO.setCookie_name(cookie_name);
+			persistencePOJO.setTimeout(cookie_timeout);
+			persistencePOJO.setType(cookie_type);
 			lbsService.addVip(userId, tenantId, name, protocol, protocol_port,
 					lb_method, pool_id, persistencePOJO);
 		} catch (NoTokenException e) {
