@@ -3,6 +3,14 @@ var protocol_html = "<input type=\"radio\" name=\"vip_protocol\" id=\"vip_protoc
 var health_type_html = "<input type=\"radio\" name=\"health_type\" id=\"health_type1\" checked=\"checked\" value=\"HTTP\">HTTP"
 	+ " <input type=\"radio\" name=\"health_type\" id=\"health_type2\" value=\"TCP\">TCP";
 $(function() {
+	$.extend( $.tablesorter.defaults, {
+		theme: 'bootstrap',
+		widthFixed: true
+	});
+	$("#table_health").tablesorter();
+	$("#table_member").tablesorter();
+	$("#table_vip").tablesorter();
+	$("#table_pool").tablesorter();
 	$("#protocol_td").append(protocol_html);
 	$("#health_type_td").append(health_type_html);
 	$("#health_url_path_td").show();
@@ -111,11 +119,16 @@ function dialog_add_pool(userId, tenantId) {
 						new_pool_egress : $("#new_pool_egress").val()
 					},
 					success : function(data) {
-						alert("创建负载均衡:" + $("#new_pool_name").val() + "成功!");
-						window.location.reload();
+						if(data == "ok") {
+							alert("负载均衡:" + $("#new_pool_name").val() + " 创建成功");
+							window.location.reload();
+						} else {
+							alert("负载均衡:" + $("#new_pool_name").val() + " 创建失败");
+							window.location.reload();
+						}
 					},
 					error : function(a, b, c) {
-						alert("创建负载均衡失败！");
+						alert("创建负载均衡失败!" + a + "|" + b + "|" +c);
 						window.location.reload();
 					}
 				});
@@ -162,12 +175,12 @@ function dialog_add_vip(userId, tenantId) {
 							alert("规则:" + $("#vip_name").val()+" 创建成功");
 							window.location.reload();
 						} else {
-							alert("规则创建失败，请检查输入内容");
+							alert("规则:" + $("#vip_name").val()+" 创建失败");
 							window.location.reload();
 						}
 					},
 					error : function(a, b, c) {
-						alert("规则创建失败!"+a +"|"+b+"|"+c);
+						alert("规则创建失败!"+ a + "|" + b + "|" + c);
 						window.location.reload();
 					}
 				});
@@ -204,12 +217,12 @@ function dialog_add_member(userId, tenantId) {
 							alert("负载主机创建成功");
 							window.location.reload();
 						} else {
-							alert("负载主机创建失败，请检查内容");
+							alert("负载主机创建失败");
 							window.location.reload();
 						}
 					},
 					error : function(a,b,c) {
-						alert("负载主机创建失败! " + a + " " + b + " " + c);
+						alert("负载主机创建失败! " + a + "|" + b + "|" + c);
 						window.location.reload();
 					}
 				});

@@ -8,10 +8,9 @@
 <head>
 <%@include file="../inc/meta.jspf"%>
 <%@include file="../inc/jsCssIncludeHeader.jspf"%>
-<link rel="stylesheet"
-	href="/js/jquery/plugins/jquery_ui/themes/base/chosen.min.css" />
-<script type="text/javascript"
-	src="/js/jquery/plugins/jquery_ui/chosen.jquery.min.js"></script>
+<link rel="stylesheet" href="/js/jquery/plugins/tablesorter/css/theme.bootstrap.css" />
+<script type="text/javascript" src="/js/jquery/plugins/tablesorter/jquery.tablesorter.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/tablesorter/jquery.tablesorter.widgets.js"></script>
 <script type="text/javascript" src="/js/custome/lbs_list.js"></script>
 </head>
 
@@ -27,17 +26,16 @@
 			<button onclick="window.location.reload();"
 				class="ui-state-default ui-corner-all">刷新</button>
 		</h3>
-		<%-- <table cellpadding="0" cellspacing="0" width="100%" border="0">
-			<tr>
-				<td>
-					<form style="margin-left: 2%" action="/g/lbs/pool/${user_id}/${tenant_id}/${pool_username}">
-						id：<input type="text" name="pool_id" id="pool_id" value="" /> <input
-							type="submit" name="submit"
-							class="ui-state-default ui-corner-all" value="查  找" />
-					</form>
-				</td>
-			</tr>
-		</table> --%>
+		<%-- <form style="margin-left: 1.3%;display:inline-block;"
+			action="/g/lbs/pool/${user_id}/${tenant_id}/${pool_username}">
+			ID：<input type="text" name="pool_id" id="pool_id" value="" /> 类型：<select>
+				<option>负载均衡</option>
+				<option>规则</option>
+				<option>负载主机</option>
+				<option>健康检查</option>
+			</select> <input type="submit" name="submit"
+				class="ui-state-default ui-corner-all" value="查  找" />
+		</form> --%>
 		<div class="set-area">
 			<h3>负载均衡</h3>
 			<table cellpadding="0" cellspacing="0" width="90%" border="0">
@@ -48,7 +46,7 @@
 					</span></td>
 				</tr>
 			</table>
-			<table class="table" cellpadding="0" cellspacing="0" width="100%"
+			<table class="table" cellpadding="0" cellspacing="0" width="100%" id="table_pool"
 				border="0">
 				<colgroup>
 				</colgroup>
@@ -60,7 +58,7 @@
 						<th>
 							<div class="th-gap">name</div>
 						</th>
-						<th>
+						<th width="11%">
 							<div class="th-gap">ip</div>
 						</th>
 						<th width="12%">
@@ -68,6 +66,9 @@
 						</th>
 						<th width="12%">
 							<div class="th-gap">admin_state_up</div>
+						</th>
+						<th width="12%">
+							<div class="th-gap">create_time</div>
 						</th>
 						<th width="5%">
 							<div class="th-gap">详情</div>
@@ -85,6 +86,7 @@
 							<td>${dto.ip_address }</td>
 							<td>${dto.status }</td>
 							<td>${dto.admin_state_up }</td>
+							<td>${dto.create_time }</td>
 							<td><button id="button_details_pool"
 									onclick="button_details_pool('${dto.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
@@ -148,26 +150,29 @@
 					</span></td>
 				</tr>
 			</table>
-			<table class="table" cellpadding="0" cellspacing="0" width="100%"
+			<table class="table" cellpadding="0" cellspacing="0" width="100%" id="table_vip"
 				border="0">
 				<thead class="tb-tit-bg">
 					<tr>
 						<th>
 							<div class="th-gap">id</div>
 						</th>
-						<th>
+						<th width="12%">
 							<div class="th-gap">name</div>
 						</th>
-						<th>
+						<th width="10%">
 							<div class="th-gap">ip</div>
 						</th>
-						<th width="12%">
+						<th width="8%">
 							<div class="th-gap">status</div>
 						</th>
-						<th width="12%">
+						<th width="10%">
 							<div class="th-gap">admin_state_up</div>
 						</th>
-						<th width="5%">
+						<th width="12%">
+							<div class="th-gap">create_time</div>
+						</th>
+						<th width="7%">
 							<div class="th-gap">详情</div>
 						</th>
 						<th width="10%">
@@ -186,6 +191,7 @@
 							<td>${vip.address }</td>
 							<td>${vip.status }</td>
 							<td>${vip.admin_state_up }</td>
+							<td>${vip.create_time }</td>
 							<td><button onclick="button_details_vip('${vip.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
 							<td><button
@@ -223,7 +229,7 @@
 								</p>
 								<hr />
 								<p>
-									<font color="blue">规则删除后，健康检查也不再与该规则绑定，该规则下的负责主机将被删除，请小心操作</font>
+									<font color="blue">规则删除后，健康检查也不再与该规则绑定，该规则下的负载主机将被删除，请小心操作</font>
 								</p>
 							</div>
 							<div id="dialog_vip_unbind_health_${vip.id }"
@@ -293,19 +299,19 @@
 					</span></td>
 				</tr>
 			</table>
-			<table class="table" cellpadding="0" cellspacing="0" width="100%"
+			<table class="table" cellpadding="0" cellspacing="0" width="100%" id="table_member"
 				border="0">
 				<colgroup>
 				</colgroup>
 				<thead class="tb-tit-bg">
 					<tr>
-						<th>
+						<th width="17%">
 							<div class="th-gap">id</div>
 						</th>
-						<th>
+						<th width="17%">
 							<div class="th-gap">vm_id</div>
 						</th>
-						<th>
+						<th width="12%">
 							<div class="th-gap">ip</div>
 						</th>
 						<th width="12%">
@@ -313,6 +319,9 @@
 						</th>
 						<th width="12%">
 							<div class="th-gap">admin_state_up</div>
+						</th>
+						<th width="12%">
+							<div class="th-gap">create_time</div>
 						</th>
 						<th width="5%">
 							<div class="th-gap">详情</div>
@@ -330,6 +339,7 @@
 							<td>${member.address }</td>
 							<td>${member.status }</td>
 							<td>${member.admin_state_up }</td>
+							<td>${member.create_time }</td>
 							<td><button onclick="button_details_member('${member.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
 							<td><button
@@ -382,7 +392,7 @@
 					</span></td>
 				</tr>
 			</table>
-			<table class="table" cellpadding="0" cellspacing="0" width="100%"
+			<table class="table" cellpadding="0" cellspacing="0" width="100%" id="table_health"
 				border="0">
 				<colgroup>
 				</colgroup>
@@ -396,6 +406,9 @@
 						</th>
 						<th width="12%">
 							<div class="th-gap">admin_state_up</div>
+						</th>
+						<th width="12%">
+							<div class="th-gap">create_time</div>
 						</th>
 						<th width="5%">
 							<div class="th-gap">详情</div>
@@ -411,6 +424,7 @@
 							<td>${health.id }</td>
 							<td>${health.type }</td>
 							<td>${health.admin_state_up }</td>
+							<td>${health.create_time }</td>
 							<td><button onclick="button_details_health('${health.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
 							<td><button

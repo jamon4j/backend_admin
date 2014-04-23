@@ -716,6 +716,9 @@ public class LBSController {
 			@RequestParam("egress") String egress,
 			@RequestParam("admin_state_up") String admin_state_up) {
 		try {
+			if (egress.indexOf(".") > -1) {
+				egress = egress.substring(0, egress.indexOf("."));
+			}
 			lbsService.updatePool(userId, tenantId, poolId, name, egress,
 					admin_state_up);
 		} catch (NoTokenException e) {
