@@ -140,6 +140,44 @@ public class LBSService {
 	}
 
 	/**
+	 * 查询指定id的member
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param memberId
+	 * @return
+	 * @throws NoTokenException
+	 * @throws ErrorCodeException
+	 */
+	public MemberPOJO getMember(String userId, String tenantId, String memberId)
+			throws NoTokenException, ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		MemberPOJO pojo = jsonService.poGet(InitConst.KVM_LBS_MEMBER, null,
+				null, MemberPOJO.class, memberId);
+		return pojo;
+	}
+
+	/**
+	 * 查询指定id的Health
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param healthId
+	 * @return
+	 * @throws NoTokenException
+	 * @throws ErrorCodeException
+	 */
+	public HealthPOJO getHealth(String userId, String tenantId, String healthId)
+			throws NoTokenException, ErrorCodeException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		HealthPOJO pojo = jsonService.poGet(InitConst.KVM_LBS_HEALTH, null,
+				null, HealthPOJO.class, healthId);
+		return pojo;
+	}
+
+	/**
 	 * 创建POOL
 	 * 
 	 * @param userId

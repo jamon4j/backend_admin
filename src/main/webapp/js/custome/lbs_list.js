@@ -356,22 +356,22 @@ function dialog_vip_bind_health(userId, tenantId, vipId) {
 		autoOpen : false,
 		postion : "center",
 		modal : true,
-		height : 180,
-		width : 500,
+		height : 600,
+		width : 800,
 		buttons : {
 			"绑定" : function() {
 				$.ajax({
 					url : "/g/lbs/health/bind/" + userId + "/" + tenantId + "/" + vipId,
 					cache : false ,
 					data : {
-						health_monitor_id : $("#bind_health_monitor_id").val()
+						health_monitor_id : $('input[name="bind_health_monitor_id"]:checked').val()//单选框
 					},
 					success : function(data) {
 						if(data == "ok") {
-							alert("规则:"+vipId+" 绑定:"+$("#bind_health_monitor_id").val()+" 成功");
+							alert("规则:"+vipId+" 绑定:"+$('input[name="bind_health_monitor_id"]:checked').val()+" 成功");
 							window.location.reload();
 						} else {
-							alert("规则:"+vipId+" 绑定:"+$("#bind_health_monitor_id").val()+" 失败");
+							alert("规则:"+vipId+" 绑定:"+$('input[name="bind_health_monitor_id"]:checked').val()+" 失败");
 							window.location.reload();
 						}
 					},

@@ -88,11 +88,13 @@ public class InitConst {
 	public static final String KVM_LBS_VIP_UPDATE_CONNECTION_LIMIT = "kvm.lbs.vip.update.connection_limit";
 	public static final String KVM_LBS_VIP_UPDATE_SESSION_PERSISTENCE = "kvm.lbs.vip.update.session_persistence";
 	public static final String KVM_LBS_MEMBER_LIST = "kvm.lbs.member.list";
+	public static final String KVM_LBS_MEMBER = "kvm.lbs.member";
 	public static final String KVM_LBS_MEMBER_ADD = "kvm.lbs.member.add";
 	public static final String KVM_LBS_MEMEBER_DELETE = "kvm.lbs.member.delete";
 	public static final String KVM_LBS_MEMBER_UPDATE_WEIGHT = "kvm.lbs.member.update.weight";
 	public static final String KVM_LBS_MEMBER_UPDATE_OPEN = "kvm.lbs.member.update.open";
 	public static final String KVM_LBS_HEALTH_LIST = "kvm.lbs.health.list";
+	public static final String KVM_LBS_HEALTH = "kvm.lbs.health";
 	public static final String KVM_LBS_HEALTH_ADD = "kvm.lbs.health.add";
 	public static final String KVM_LBS_HEALTH_DELETE = "kvm.lbs.health.delete";
 	public static final String KVM_LBS_HEALTH_BIND = "kvm.lbs.health.bind";

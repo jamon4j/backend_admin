@@ -129,4 +129,20 @@ public class HealthPOJO extends BasePo {
 		this.url_path = url_path;
 	}
 
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return this.getId().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		HealthPOJO pojo = (HealthPOJO) obj;
+		if (this.getId().equals(pojo.getId())) {
+			return true;
+		}
+		return false;
+	}
+
 }

@@ -1,7 +1,9 @@
 package com.ksyun.vm.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -131,6 +133,146 @@ public class LBSController {
 		mav.addObject("tenant_id", tenantId);
 		mav.addObject("pool_username", username);
 		mav.setViewName("/gestion/lbs/lbs_list");
+		return mav;
+	}
+
+	/**
+	 * 根据pool ID查询该POOL下的所有LBS信息
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param username
+	 * @param poolId
+	 * @param mav
+	 * @return
+	 */
+	@RequestMapping(value = "/g/lbs/details/{user_id}/{tenant_id}/{username}/{pool_id}")
+	public ModelAndView getAllLbsDetailsByPool(
+			@PathVariable("user_id") String userId,
+			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("username") String username,
+			@PathVariable("pool_id") String poolId, ModelAndView mav) {
+		// 获取POOL
+		try {
+			List<VmPojo> vm_list = vmService.getVms(userId, tenantId);
+			PoolPOJO poolPOJO = lbsService.getPool(userId, tenantId, poolId);
+			List<PoolPOJO> list = new ArrayList<>();
+			list.add(poolPOJO);
+			// 获取所有规则
+			List<String> vips = poolPOJO.getVips();
+			List<VipPOJO> vip_list = new ArrayList<>();
+			List<MemberPOJO> member_list = new ArrayList<>();
+			List<HealthPOJO> health_list = new ArrayList<>();
+			Set<HealthPOJO> health_set = new HashSet<>();
+			for (String vipId : vips) {
+				VipPOJO vipPOJO = lbsService.getVip(userId, tenantId, vipId);
+				vip_list.add(vipPOJO);
+				// 获取所有Member
+				List<String> members = vipPOJO.getMembers();
+				for (String memberId : members) {
+					MemberPOJO memberPOJO = lbsService.getMember(userId,
+							tenantId, memberId);
+					member_list.add(memberPOJO);
+				}
+				// 获取所有Health
+				List<String> healths = vipPOJO.getHealth_monitors();
+				for (String healthId : healths) {
+					HealthPOJO healthPOJO = lbsService.getHealth(userId,
+							tenantId, healthId);
+					health_set.add(healthPOJO);
+				}
+			}
+			List<HealthPOJO> health_all_list = lbsService.getHealths(userId, tenantId);
+			mav.addObject("list", list);
+			mav.addObject("vip_list", vip_list);
+			mav.addObject("member_list", member_list);
+			mav.addObject("health_list", health_set);
+			mav.addObject("health_all_list", health_all_list);
+			mav.addObject("vm_list", vm_list);
+			mav.addObject("user_id", userId);
+			mav.addObject("tenant_id", tenantId);
+			mav.addObject("pool_username", username);
+			mav.addObject("pool_id", poolId);
+			mav.setViewName("/gestion/lbs/detail_lbs_list");
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"getAllLbsDetailsByPool", e.toString() });
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"getAllLbsDetailsByPool", e.toString() });
+		}
+		return mav;
+	}
+
+	/**
+	 * 查询Pool下VIP的所有信息
+	 * 
+	 * @param userId
+	 * @param tenantId
+	 * @param username
+	 * @param poolId
+	 * @param vipId
+	 * @param mav
+	 * @return
+	 */
+	@RequestMapping(value = "/g/lbs/vip/details/{user_id}/{tenant_id}/{username}/{pool_id}/{vip_id}")
+	public ModelAndView getAllVipDetail(@PathVariable("user_id") String userId,
+			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("username") String username,
+			@PathVariable("pool_id") String poolId,
+			@PathVariable("vip_id") String vipId, ModelAndView mav) {
+		try {
+			List<VmPojo> vm_list = vmService.getVms(userId, tenantId);
+			PoolPOJO poolPOJO = lbsService.getPool(userId, tenantId, poolId);
+			List<PoolPOJO> list = new ArrayList<>();
+			list.add(poolPOJO);
+			List<VipPOJO> vip_list = new ArrayList<>();
+			VipPOJO vipPOJO = lbsService.getVip(userId, tenantId, vipId);
+			vip_list.add(vipPOJO);
+			List<MemberPOJO> member_list = new ArrayList<>();
+			List<HealthPOJO> health_list = new ArrayList<>();
+			// 获取所有Member
+			List<String> members = vipPOJO.getMembers();
+			for (String memberId : members) {
+				MemberPOJO memberPOJO = lbsService.getMember(userId, tenantId,
+						memberId);
+				member_list.add(memberPOJO);
+			}
+			// 获取所有Health
+			List<String> healths = vipPOJO.getHealth_monitors();
+			for (String healthId : healths) {
+				HealthPOJO healthPOJO = lbsService.getHealth(userId, tenantId,
+						healthId);
+				health_list.add(healthPOJO);
+			}
+			List<HealthPOJO> health_all_list = lbsService.getHealths(userId, tenantId);
+			mav.addObject("list", list);
+			mav.addObject("vip_list", vip_list);
+			mav.addObject("member_list", member_list);
+			mav.addObject("health_list", health_list);
+			mav.addObject("health_all_list", health_all_list);
+			mav.addObject("vm_list", vm_list);
+			mav.addObject("user_id", userId);
+			mav.addObject("tenant_id", tenantId);
+			mav.addObject("pool_username", username);
+			mav.addObject("pool_id", poolId);
+			mav.addObject("vip_id", vipId);
+			mav.setViewName("/gestion/lbs/detail_vip_list");
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"getAllVipDetail", e.toString() });
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error("operate=[{}] error[{}]", new Object[] {
+					"getAllVipDetail", e.toString() });
+		}
 		return mav;
 	}
 

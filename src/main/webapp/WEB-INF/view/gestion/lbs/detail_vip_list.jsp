@@ -20,7 +20,9 @@
 <body class="main-body">
 	<div class="path">
 		<p>
-			当前位置：LBS管理<span>&gt;</span><a href="/g/lbs/user/list?t=1">LBS设置</a><span>&gt;</span>用户LBS设置
+			当前位置：LBS管理<span>&gt;</span><a href="/g/lbs/user/list?t=1">LBS设置</a><span>&gt;</span><a
+				href="/g/lbs/list/${user_id }/${tenant_id }/${pool_username}">用户LBS设置</a><span>&gt;</span><a
+				href="/g/lbs/details/${user_id}/${tenant_id}/${ pool_username}/${pool_id }">pool:${pool_id }</a><span>&gt;</span>vip:${vip_id }
 		</p>
 	</div>
 	<div class="main-cont">
@@ -40,28 +42,255 @@
 				class="ui-state-default ui-corner-all" value="查  找" />
 		</form> --%>
 		<div class="set-area">
-			<h3>负载均衡</h3>
-			<table cellpadding="0" cellspacing="0" width="90%" border="0">
-				<tr>
-					<td style="margin-left: 10%"><span>
-							<button onclick="button_add_pool('${user_id }','${tenant_id }')"
-								class="ui-state-default ui-corner-all">创建 负载均衡</button>
-					</span></td>
-				</tr>
-			</table>
+			<div style="display: none;">
+				<h3>负载均衡</h3>
+				<table class="table" cellpadding="0" cellspacing="0" width="100%"
+					id="table_pool" border="0">
+					<colgroup>
+					</colgroup>
+					<thead class="tb-tit-bg">
+						<tr>
+							<th>
+								<div class="th-gap">id</div>
+							</th>
+							<th>
+								<div class="th-gap">name</div>
+							</th>
+							<th width="11%">
+								<div class="th-gap">ip</div>
+							</th>
+							<th width="12%">
+								<div class="th-gap">status</div>
+							</th>
+							<th width="12%">
+								<div class="th-gap">admin_state_up</div>
+							</th>
+							<th width="12%">
+								<div class="th-gap">create_time</div>
+							</th>
+							<th width="5%">
+								<div class="th-gap">详情</div>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach var="dto" items="${list}" varStatus="status">
+							<tr>
+								<td>${dto.id }</td>
+								<td>${dto.name }</td>
+								<td>${dto.ip_address }</td>
+								<td>${dto.status }</td>
+								<td>${dto.admin_state_up }</td>
+								<td>${dto.create_time }</td>
+								<td><button id="button_details_pool"
+										onclick="button_details_pool('${dto.id }')"
+										class="ui-state-default ui-corner-all">查看</button></td>
+								<div id="dialog_delete_pool_${dto.id }"
+									title="POOL_${dto.id }删除" style="display:none">
+									<p>
+										确定删除负载均衡:<font color="red">${dto.id }</font>?
+									</p>
+									<p>
+										当前负载均衡关联的规则:<br />
+										<c:forEach var="delete_pool_vip" items="${dto.vips}">
+										${delete_pool_vip }<br />
+										</c:forEach>
+									</p>
+									<hr />
+									<p>
+										<font color="blue">负载均衡删除后，与其关联的规则，负载主机都将删除，请小心操作</font>
+									</p>
+								</div>
+								<div id="dialog_detail_pool_${dto.id }"
+									title="POOL_${dto.id }详情" style="display:none">
+									<p>status:${dto.status }</p>
+									<p>
+										vips:{
+										<c:forEach var="pool_vips" items="${dto.vips}"
+											varStatus="status">
+											<a>${pool_vips}</a>,
+									 </c:forEach>
+										}
+									</p>
+									<p>name:${dto.name }</p>
+									<p>admin_state_up:${dto.admin_state_up }</p>
+									<p>subnet_id:${dto.subnet_id }</p>
+									<p>provider:${dto.provider }</p>
+									<p>egress:${dto.egress }</p>
+									<p>create_time:${dto.create_time }</p>
+									<p>tenant_id:${dto.tenant_id }</p>
+									<p>status_description:${dto.status_description }</p>
+									<p>ip_address:${dto.ip_address }</p>
+									<p>id:${dto.id }</p>
+									<p>description:${dto.description }</p>
+								</div>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+				<br />
+				<hr />
+			</div>
+			<h3>规则</h3>
 			<table class="table" cellpadding="0" cellspacing="0" width="100%"
-				id="table_pool" border="0">
-				<colgroup>
-				</colgroup>
+				id="table_vip" border="0">
 				<thead class="tb-tit-bg">
 					<tr>
 						<th>
 							<div class="th-gap">id</div>
 						</th>
-						<th>
+						<th width="12%">
 							<div class="th-gap">name</div>
 						</th>
-						<th width="11%">
+						<th width="10%">
+							<div class="th-gap">ip</div>
+						</th>
+						<th width="8%">
+							<div class="th-gap">status</div>
+						</th>
+						<th width="10%">
+							<div class="th-gap">admin_state_up</div>
+						</th>
+						<th width="12%">
+							<div class="th-gap">create_time</div>
+						</th>
+						<th width="7%">
+							<div class="th-gap">详情</div>
+						</th>
+						<th width="10%">
+							<div class="th-gap">健康检查</div>
+						</th>
+						<th width="10%">
+							<div class="th-gap">操作</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach var="vip" items="${vip_list}" varStatus="status">
+						<tr>
+							<td>${vip.id }</td>
+							<td>${vip.name }</td>
+							<td>${vip.address }</td>
+							<td>${vip.status }</td>
+							<td>${vip.admin_state_up }</td>
+							<td>${vip.create_time }</td>
+							<td><button onclick="button_details_vip('${vip.id }')"
+									class="ui-state-default ui-corner-all">查看</button></td>
+							<td><button
+									onclick="dialog_vip_bind_health('${user_id }','${tenant_id }','${vip.id }')"
+									class="ui-state-default ui-corner-all">绑定</button> |
+								<button
+									onclick="button_vip_unbind_health('${user_id }','${tenant_id }','${vip.id }')"
+									class="ui-state-default ui-corner-all">解除</button></td>
+							<td><button
+									onclick="button_update_vip('${user_id }','${tenant_id }','${vip.id }','${vip.name }','${vip.admin_state_up }','${vip.connection_limit }','${vip.session_persistence.cookie_name}','${vip.session_persistence.type}','${vip.session_persistence.timeout}','${vip.protocol }')"
+									class="ui-state-default ui-corner-all">修改</button></td>
+							<div id="dialog_vip_delete_${vip.id }" title="VIP_${vip.id }删除"
+								style="display:none">
+								<p>
+									确定删除规则:<font color="red">${vip.id }</font>?
+								</p>
+								<p>
+									当前规则关联的健康检查:<br />
+									<c:forEach var="delete_vip_health_monitors_status"
+										items="${vip.health_monitors_status }">
+										${delete_vip_health_monitors_status.monitor_id }<br />
+									</c:forEach>
+								</p>
+								<p>
+									当前规则关联的负载主机:<br />
+									<c:forEach items="${vip.members }" var="delete_vip_members">
+											${delete_vip_members }<br />
+									</c:forEach>
+								</p>
+								<p>
+									当前规则关联的负载均衡:<br /> ${vip.pool_id }<br />
+								</p>
+								<hr />
+								<p>
+									<font color="blue">规则删除后，健康检查也不再与该规则绑定，该规则下的负载主机将被删除，请小心操作</font>
+								</p>
+							</div>
+							<div id="dialog_vip_unbind_health_${vip.id }"
+								title="VIP_${vip.id }解除健康检查" style="display:none">
+								<font color="red">请选择要解除的健康检查</font>
+								<p>
+									健康检查ID: <select id="unbind_health_monitor_id_${vip.id }">
+										<c:forEach var="vip_health_monitors_status"
+											items="${vip.health_monitors_status }">
+											<option value="${vip_health_monitors_status.monitor_id }">${vip_health_monitors_status.monitor_id }</option>
+										</c:forEach>
+									</select>
+								</p>
+							</div>
+							<div id="dialog_detail_vip_${vip.id }" title="VIP_${vip.id }详情"
+								style="display:none">
+								<p>status:${vip.status }</p>
+								<p>lb_method:${vip.lb_method }</p>
+								<p>protocol:${vip.protocol }</p>
+								<p>description:${vip.description }</p>
+								<p>subnet_id:${vip.subnet_id }</p>
+								<p>deleted_time:${vip.deleted_time }</p>
+								<p>admin_state_up:${vip.admin_state_up }</p>
+								<p>connection_limit:${vip.connection_limit }</p>
+								<p>pool_id:${vip.pool_id }</p>
+								<p>session_persistence:{
+									"cookie_name":${vip.session_persistence.cookie_name},
+									"type":${vip.session_persistence.type},
+									"timeout":${vip.session_persistence.timeout} }</p>
+								<p>protocol_port:${vip.protocol_port }</p>
+								<p>create_time:${vip.create_time }</p>
+								<p>
+									members:{
+									<c:forEach items="${vip.members }" var="v_members">
+											${v_members },
+										</c:forEach>
+									}
+								</p>
+								<p>address:${vip.address }</p>
+								<p>port_id:${vip.port_id }</p>
+								<p>status_description:${vip.status_description }</p>
+								<p>
+									health_monitors_status:{
+									<c:forEach items="${vip.health_monitors_status }"
+										var="monitors_status">
+											${monitors_status.monitor_id },
+										</c:forEach>
+									}
+								</p>
+								<p>id:${vip.id }</p>
+								<p>tenant_id:${vip.tenant_id }</p>
+								<p>name:${vip.name }</p>
+							</div>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+			<br />
+			<hr />
+			<h3>负载主机</h3>
+			<table cellpadding="0" cellspacing="0" width="90%" border="0">
+				<tr>
+					<td style="margin-left: 10%"><span>
+							<button
+								onclick="button_add_member('${user_id }','${tenant_id }')"
+								class="ui-state-default ui-corner-all">创建 负载主机</button>
+					</span></td>
+				</tr>
+			</table>
+			<table class="table" cellpadding="0" cellspacing="0" width="100%"
+				id="table_member" border="0">
+				<colgroup>
+				</colgroup>
+				<thead class="tb-tit-bg">
+					<tr>
+						<th width="17%">
+							<div class="th-gap">id</div>
+						</th>
+						<th width="17%">
+							<div class="th-gap">vm_id</div>
+						</th>
+						<th width="12%">
 							<div class="th-gap">ip</div>
 						</th>
 						<th width="12%">
@@ -82,323 +311,57 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="dto" items="${list}" varStatus="status">
+					<c:forEach var="member" items="${member_list}" varStatus="status">
 						<tr>
-							<td><a
-								href="/g/lbs/details/${user_id}/${tenant_id}/${ pool_username}/${dto.id }">${dto.id }</a></td>
-							<td>${dto.name }</td>
-							<td>${dto.ip_address }</td>
-							<td>${dto.status }</td>
-							<td>${dto.admin_state_up }</td>
-							<td>${dto.create_time }</td>
-							<td><button id="button_details_pool"
-									onclick="button_details_pool('${dto.id }')"
+							<td>${member.id }</td>
+							<td>${member.vm_id }</td>
+							<td>${member.address }</td>
+							<td>${member.status }</td>
+							<td>${member.admin_state_up }</td>
+							<td>${member.create_time }</td>
+							<td><button onclick="button_details_member('${member.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
 							<td><button
-									onclick="button_update_pool('${user_id }','${tenant_id }','${dto.id }','${dto.name }','${dto.egress }','${dto.admin_state_up }')"
+									onclick="button_update_member('${user_id }','${tenant_id }','${member.id }','${member.weight }','${member.admin_state_up }')"
 									class="ui-state-default ui-corner-all">修改</button> |
 								<button
-									onclick="button_delete_pool('${user_id }','${tenant_id }','${dto.id }')"
+									onclick="button_delete_member('${user_id }','${tenant_id }','${member.id }')"
 									class="ui-state-default ui-corner-all">删除</button></td>
-							<div id="dialog_delete_pool_${dto.id }" title="POOL_${dto.id }删除"
-								style="display:none">
+							<div id="dialog_delete_member_${member.id }"
+								title="MEMBER_${member.id }删除" style="display:none">
 								<p>
-									确定删除负载均衡:<font color="red">${dto.id }</font>?
+									确定删除负载主机:<font color="red">${member.id }</font>?
 								</p>
 								<p>
-									当前负载均衡关联的规则:<br />
-									<c:forEach var="delete_pool_vip" items="${dto.vips}">
-										${delete_pool_vip }<br />
-									</c:forEach>
+									当前负载主机所关联的规则:<br /> ${member.vip_id }
 								</p>
-								<hr />
+								<hr>
 								<p>
-									<font color="blue">负载均衡删除后，与其关联的规则，负载主机都将删除，请小心操作</font>
+									<font color="blue">负载主机删除后，规则也不再与该主机绑定，请小心操作</font>
 								</p>
 							</div>
-							<div id="dialog_detail_pool_${dto.id }" title="POOL_${dto.id }详情"
-								style="display:none">
-								<p>status:${dto.status }</p>
-								<p>
-									vips:{
-									<c:forEach var="pool_vips" items="${dto.vips}"
-										varStatus="status">
-									 	${pool_vips},
-									 </c:forEach>
-									}
-								</p>
-								<p>name:${dto.name }</p>
-								<p>admin_state_up:${dto.admin_state_up }</p>
-								<p>subnet_id:${dto.subnet_id }</p>
-								<p>provider:${dto.provider }</p>
-								<p>egress:${dto.egress }</p>
-								<p>create_time:${dto.create_time }</p>
-								<p>tenant_id:${dto.tenant_id }</p>
-								<p>status_description:${dto.status_description }</p>
-								<p>ip_address:${dto.ip_address }</p>
-								<p>id:${dto.id }</p>
-								<p>description:${dto.description }</p>
+							<div id="dialog_detail_member_${member.id }"
+								title="MEMBER_${member.id }详情" style="display:none">
+								<p>status:${member.status }</p>
+								<p>protocol_port:${member.protocol_port }</p>
+								<p>vip_id:${member.vip_id }</p>
+								<p>weight:${member.weight }</p>
+								<p>admin_state_up:${member.admin_state_up }</p>
+								<p>tenant_id:${member.tenant_id }</p>
+								<p>create_time:${member.create_time }</p>
+								<p>address:${member.address }</p>
+								<p>deleted_time:${member.deleted_time }</p>
+								<p>status_description:${member.status_description }</p>
+								<p>vm_id:${member.vm_id }</p>
+								<p>id:${member.id }</p>
 							</div>
 						</tr>
 					</c:forEach>
 				</tbody>
 			</table>
-			<div style="display: none;">
-				<br />
-				<hr />
-				<h3>规则</h3>
-				<table cellpadding="0" cellspacing="0" width="90%" border="0">
-					<tr>
-						<td style="margin-left: 10%"><span>
-								<button onclick="button_add_vip('${user_id }','${tenant_id }')"
-									class="ui-state-default ui-corner-all">创建 规则</button>
-						</span></td>
-					</tr>
-				</table>
-				<table class="table" cellpadding="0" cellspacing="0" width="100%"
-					id="table_vip" border="0">
-					<thead class="tb-tit-bg">
-						<tr>
-							<th>
-								<div class="th-gap">id</div>
-							</th>
-							<th width="12%">
-								<div class="th-gap">name</div>
-							</th>
-							<th width="10%">
-								<div class="th-gap">ip</div>
-							</th>
-							<th width="8%">
-								<div class="th-gap">status</div>
-							</th>
-							<th width="10%">
-								<div class="th-gap">admin_state_up</div>
-							</th>
-							<th width="12%">
-								<div class="th-gap">create_time</div>
-							</th>
-							<th width="7%">
-								<div class="th-gap">详情</div>
-							</th>
-							<th width="10%">
-								<div class="th-gap">健康检查</div>
-							</th>
-							<th width="10%">
-								<div class="th-gap">操作</div>
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<c:forEach var="vip" items="${vip_list}" varStatus="status">
-							<tr>
-								<td>${vip.id }</td>
-								<td>${vip.name }</td>
-								<td>${vip.address }</td>
-								<td>${vip.status }</td>
-								<td>${vip.admin_state_up }</td>
-								<td>${vip.create_time }</td>
-								<td><button onclick="button_details_vip('${vip.id }')"
-										class="ui-state-default ui-corner-all">查看</button></td>
-								<td><button
-										onclick="dialog_vip_bind_health('${user_id }','${tenant_id }','${vip.id }')"
-										class="ui-state-default ui-corner-all">绑定</button> |
-									<button
-										onclick="button_vip_unbind_health('${user_id }','${tenant_id }','${vip.id }')"
-										class="ui-state-default ui-corner-all">解除</button></td>
-								<td><button
-										onclick="button_update_vip('${user_id }','${tenant_id }','${vip.id }','${vip.name }','${vip.admin_state_up }','${vip.connection_limit }','${vip.session_persistence.cookie_name}','${vip.session_persistence.type}','${vip.session_persistence.timeout}','${vip.protocol }')"
-										class="ui-state-default ui-corner-all">修改</button> |
-									<button
-										onclick="button_vip_delete('${user_id }','${tenant_id }','${vip.id }')"
-										class="ui-state-default ui-corner-all">删除</button></td>
-								<div id="dialog_vip_delete_${vip.id }" title="VIP_${vip.id }删除"
-									style="display:none">
-									<p>
-										确定删除规则:<font color="red">${vip.id }</font>?
-									</p>
-									<p>
-										当前规则关联的健康检查:<br />
-										<c:forEach var="delete_vip_health_monitors_status"
-											items="${vip.health_monitors_status }">
-										${delete_vip_health_monitors_status.monitor_id }<br />
-										</c:forEach>
-									</p>
-									<p>
-										当前规则关联的负载主机:<br />
-										<c:forEach items="${vip.members }" var="delete_vip_members">
-											${delete_vip_members }<br />
-										</c:forEach>
-									</p>
-									<p>
-										当前规则关联的负载均衡:<br /> ${vip.pool_id }<br />
-									</p>
-									<hr />
-									<p>
-										<font color="blue">规则删除后，健康检查也不再与该规则绑定，该规则下的负载主机将被删除，请小心操作</font>
-									</p>
-								</div>
-								<div id="dialog_vip_unbind_health_${vip.id }"
-									title="VIP_${vip.id }解除健康检查" style="display:none">
-									<font color="red">请选择要解除的健康检查</font>
-									<p>
-										健康检查ID: <select id="unbind_health_monitor_id_${vip.id }">
-											<c:forEach var="vip_health_monitors_status"
-												items="${vip.health_monitors_status }">
-												<option value="${vip_health_monitors_status.monitor_id }">${vip_health_monitors_status.monitor_id }</option>
-											</c:forEach>
-										</select>
-									</p>
-								</div>
-								<div id="dialog_detail_vip_${vip.id }" title="VIP_${vip.id }详情"
-									style="display:none">
-									<p>status:${vip.status }</p>
-									<p>lb_method:${vip.lb_method }</p>
-									<p>protocol:${vip.protocol }</p>
-									<p>description:${vip.description }</p>
-									<p>subnet_id:${vip.subnet_id }</p>
-									<p>deleted_time:${vip.deleted_time }</p>
-									<p>admin_state_up:${vip.admin_state_up }</p>
-									<p>connection_limit:${vip.connection_limit }</p>
-									<p>pool_id:${vip.pool_id }</p>
-									<p>session_persistence:{
-										"cookie_name":${vip.session_persistence.cookie_name},
-										"type":${vip.session_persistence.type},
-										"timeout":${vip.session_persistence.timeout} }</p>
-									<p>protocol_port:${vip.protocol_port }</p>
-									<p>create_time:${vip.create_time }</p>
-									<p>
-										members:{
-										<c:forEach items="${vip.members }" var="v_members">
-											${v_members },
-										</c:forEach>
-										}
-									</p>
-									<p>address:${vip.address }</p>
-									<p>port_id:${vip.port_id }</p>
-									<p>status_description:${vip.status_description }</p>
-									<p>
-										health_monitors_status:{
-										<c:forEach items="${vip.health_monitors_status }"
-											var="monitors_status">
-											${monitors_status.monitor_id },
-										</c:forEach>
-										}
-									</p>
-									<p>id:${vip.id }</p>
-									<p>tenant_id:${vip.tenant_id }</p>
-									<p>name:${vip.name }</p>
-								</div>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
-				<br />
-				<hr />
-				<h3>负载主机</h3>
-				<table cellpadding="0" cellspacing="0" width="90%" border="0">
-					<tr>
-						<td style="margin-left: 10%"><span>
-								<button
-									onclick="button_add_member('${user_id }','${tenant_id }')"
-									class="ui-state-default ui-corner-all">创建 负载主机</button>
-						</span></td>
-					</tr>
-				</table>
-				<table class="table" cellpadding="0" cellspacing="0" width="100%"
-					id="table_member" border="0">
-					<colgroup>
-					</colgroup>
-					<thead class="tb-tit-bg">
-						<tr>
-							<th width="17%">
-								<div class="th-gap">id</div>
-							</th>
-							<th width="17%">
-								<div class="th-gap">vm_id</div>
-							</th>
-							<th width="12%">
-								<div class="th-gap">ip</div>
-							</th>
-							<th width="12%">
-								<div class="th-gap">status</div>
-							</th>
-							<th width="12%">
-								<div class="th-gap">admin_state_up</div>
-							</th>
-							<th width="12%">
-								<div class="th-gap">create_time</div>
-							</th>
-							<th width="5%">
-								<div class="th-gap">详情</div>
-							</th>
-							<th width="10%">
-								<div class="th-gap">操作</div>
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<c:forEach var="member" items="${member_list}" varStatus="status">
-							<tr>
-								<td>${member.id }</td>
-								<td>${member.vm_id }</td>
-								<td>${member.address }</td>
-								<td>${member.status }</td>
-								<td>${member.admin_state_up }</td>
-								<td>${member.create_time }</td>
-								<td><button
-										onclick="button_details_member('${member.id }')"
-										class="ui-state-default ui-corner-all">查看</button></td>
-								<td><button
-										onclick="button_update_member('${user_id }','${tenant_id }','${member.id }','${member.weight }','${member.admin_state_up }')"
-										class="ui-state-default ui-corner-all">修改</button> |
-									<button
-										onclick="button_delete_member('${user_id }','${tenant_id }','${member.id }')"
-										class="ui-state-default ui-corner-all">删除</button></td>
-								<div id="dialog_delete_member_${member.id }"
-									title="MEMBER_${member.id }删除" style="display:none">
-									<p>
-										确定删除负载主机:<font color="red">${member.id }</font>?
-									</p>
-									<p>
-										当前负载主机所关联的规则:<br /> ${member.vip_id }
-									</p>
-									<hr>
-									<p>
-										<font color="blue">负载主机删除后，规则也不再与该主机绑定，请小心操作</font>
-									</p>
-								</div>
-								<div id="dialog_detail_member_${member.id }"
-									title="MEMBER_${member.id }详情" style="display:none">
-									<p>status:${member.status }</p>
-									<p>protocol_port:${member.protocol_port }</p>
-									<p>vip_id:${member.vip_id }</p>
-									<p>weight:${member.weight }</p>
-									<p>admin_state_up:${member.admin_state_up }</p>
-									<p>tenant_id:${member.tenant_id }</p>
-									<p>create_time:${member.create_time }</p>
-									<p>address:${member.address }</p>
-									<p>deleted_time:${member.deleted_time }</p>
-									<p>status_description:${member.status_description }</p>
-									<p>vm_id:${member.vm_id }</p>
-									<p>id:${member.id }</p>
-								</div>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
-			</div>
 			<br />
 			<hr />
 			<h3>健康检查</h3>
-			<table cellpadding="0" cellspacing="0" width="90%" border="0">
-				<tr>
-					<td style="margin-left: 10%"><span>
-							<button
-								onclick="button_add_health('${user_id }','${tenant_id }')"
-								class="ui-state-default ui-corner-all">创建 健康检查</button>
-					</span></td>
-				</tr>
-			</table>
 			<table class="table" cellpadding="0" cellspacing="0" width="100%"
 				id="table_health" border="0">
 				<colgroup>
@@ -420,7 +383,7 @@
 						<th width="5%">
 							<div class="th-gap">详情</div>
 						</th>
-						<th width="10%">
+						<th width="10%" style="display: none;">
 							<div class="th-gap">操作</div>
 						</th>
 					</tr>
@@ -434,7 +397,7 @@
 							<td>${health.create_time }</td>
 							<td><button onclick="button_details_health('${health.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
-							<td><button
+							<td style="display: none;"><button
 									onclick="button_update_health('${user_id }','${tenant_id }','${health.id }','${health.timeout }','${health.delay }','${health.fall }','${health.rise }','${health.max_retries }','${health.admin_state_up }','${health.type }','${health.url_path }','${health.http_method }')"
 									class="ui-state-default ui-corner-all">修改</button> |
 								<button
@@ -688,16 +651,45 @@
 
 	<div id="dialog_vip_bind_health" title="绑定健康检查" style="display:none">
 		<font color="red">请选择健康检查</font>
-		<table class="table" cellpadding="0" cellspacing="0" width="60%"
-			border="0">
-			<tr>
-				<td>健康检查ID:</td>
-				<td width="75%"><select id="bind_health_monitor_id">
-						<c:forEach var="health" items="${health_list }">
+		<%-- <select id="bind_health_monitor_id">
+						<c:forEach var="health" items="${health_all_list }">
 							<option value="${health.id }">${health.id }</option>
 						</c:forEach>
-				</select></td>
-			</tr>
+				</select> --%>
+		<table class="table" cellpadding="0" cellspacing="0" width="60%"
+			border="0">
+			<thead>
+				<th width="10%">选择</th>
+				<th>详情</th>
+			</thead>
+			<tbody>
+				<c:forEach var="health" items="${health_all_list }">
+					<tr>
+						<td><input type="radio" name="bind_health_monitor_id"
+							id="bind_health_monitor_id_${health.id }" value="${health.id }">
+						</td>
+						<td>
+							<p>
+								id:<font color="red">${health.id }</font> | 开关(admin_state_up):<font
+									color="red">${health.admin_state_up }</font> | 创建(create_time):<font
+									color="red">${health.create_time }</font>
+							</p>
+							<p>
+								类型(type):<font color="blue">${health.type }</font> | 健康阈值(rise):<font
+									color="blue">${health.rise }</font> | 不健康阈值(fall):<font
+									color="blue">${health.fall }</font> | 健康检查时间(delay):<font
+									color="blue">${health.delay }</font> | max_retries:<font
+									color="blue">${health.max_retries }</font>
+							</p>
+							<p>
+								超时(timeout):<font color="blue">${health.timeout }</font> |
+								http_method:<font color="blue">${health.http_method }</font> |
+								url_path:<font color="blue">${health.url_path }</font>
+							</p>
+						</td>
+					</tr>
+				</c:forEach>
+			</tbody>
 		</table>
 	</div>
 
