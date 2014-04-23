@@ -19,7 +19,9 @@
 			<!-- 添加iConsole标签 -->
 			<li><a href="<%=webRootPath%>/iconsole_page/home.jsp">iConsole</a></li>
 			<li><a href="<%=webRootPath%>/acl/role_list.jsp">ACL管理</a></li>
-			<li><a href="<%=webRootPath%>/iconsole_page/lbs_home.jsp">LBS管理</a></li>
+			<c:if test="${sessionScope.type=='public'}">
+				<li><a href="<%=webRootPath%>/iconsole_page/lbs_home.jsp">LBS管理</a></li>
+			</c:if>
 			<!--
         <li><a href="#">用户管理</a></li>
         <li><a href="#">虚拟机管理</a></li>
@@ -105,8 +107,8 @@
 		<div class="menu-group">
 			<h2 class="first">iConsole</h2>
 			<ul>
-				<li><a href="/iconsole_page/home.jsp?t=1" router="home/3/0" id="order_li"
-					target="mainframe">订单账单</a></li>
+				<li><a href="/iconsole_page/home.jsp?t=1" router="home/3/0"
+					id="order_li" target="mainframe">订单账单</a></li>
 				<li id="order_div">
 					<ul>
 						<li><a href="/admin/order/order_index?p=user">&nbsp;&nbsp;|-订单列表</a></li>
@@ -123,8 +125,8 @@
 						<li><a href="/admin/mt/mt_index?p=user">&nbsp;&nbsp;|-配置列表</a></li>
 					</ul>
 				</li>
-				<li><a href="/iconsole_page/home.jsp?t=1" router="home/3/2" id="user_li"
-					target="mainframe">用户与KVM</a></li>
+				<li><a href="/iconsole_page/home.jsp?t=1" router="home/3/2"
+					id="user_li" target="mainframe">用户与KVM</a></li>
 				<li id="user_div">
 					<ul>
 						<li><a href="/admin/user/user_index?p=user">&nbsp;&nbsp;|-用户列表</a></li>
@@ -132,8 +134,8 @@
 						<li><a href="/admin/kvm/application_index?p=user">&nbsp;&nbsp;|-KVM试用申请</a></li>
 					</ul>
 				</li>
-				<li><a href="/iconsole_page/home.jsp?t=1" router="home/3/3" id="brand_li"
-					target="mainframe">带宽更新</a></li>
+				<li><a href="/iconsole_page/home.jsp?t=1" router="home/3/3"
+					id="brand_li" target="mainframe">带宽更新</a></li>
 			</ul>
 		</div>
 
@@ -148,7 +150,7 @@
 					target="mainframe">权限uri对应表</a></li>
 			</ul>
 		</div>
-		
+
 		<div class="menu-group">
 			<h2 class="first">LBS管理</h2>
 			<ul>
@@ -237,7 +239,7 @@
 		$("#config_div").hide();
 		$("#user_div").hide();
 		//带宽升级
-		$("#brand_li").click(function(){
+		$("#brand_li").click(function() {
 			$("#order_div").slideUp(800);
 			$("#user_div").slideUp(800);
 			$("#config_div").slideUp(800);
