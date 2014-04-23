@@ -411,4 +411,9 @@
 			</form>
 		</div>
 </body>
+<script>
+	$(function(){
+		$("button").attr("class","ui-state-default ui-corner-all");
+	});
+</script>
 </html>

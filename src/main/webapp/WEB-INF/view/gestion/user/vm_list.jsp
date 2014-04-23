@@ -602,16 +602,16 @@
                         <td>${vm.status} </td>
                         <td>${vm.name} </td>
                         <td>${vm.host} </td>
-						<td><button onclick="detail('${vm.id}')">详情</button></td>
-						<td><button onclick="createsnapshot('<%=tenantId %>','<%=userId %>','${vm.id}')">创建</button></td>
-						<td><button onclick="ebslist('${vm.tenant_id}','${vm.id}')">查看ebs列表</button><button onclick="setEBS('${vm.tenant_id}','${vm.id}')">关联ebs</button></td>
-                        <td><button onclick="reset_system('${vm.id}')">重装</button></td>
-                        <td><button onclick="update_brand('<%=tenantId %>','<%=userId %>','${vm.id}','${vm.instance_type.network_bandwidth }')">更新</button></td>
-						<td><button onclick="chart_load('${vm.id}')">查看cpu及内存</button>
-                            <button onclick="chart_network('${vm.id}')">查看网络</button>
-                            <button onclick="chart_status('${vm.id}')">查看状态</button>
-                            <button onclick="chart_disk('${vm.id}')">查看硬盘</button>
-                            <button onclick="vnc('${vm.id}')">登陆机器</button>
+						<td><button class="ui-state-default ui-corner-all" onclick="detail('${vm.id}')">详情</button></td>
+						<td><button class="ui-state-default ui-corner-all" onclick="createsnapshot('<%=tenantId %>','<%=userId %>','${vm.id}')">创建</button></td>
+						<td><button class="ui-state-default ui-corner-all" onclick="ebslist('${vm.tenant_id}','${vm.id}')">查看ebs列表</button><button class="ui-state-default ui-corner-all" onclick="setEBS('${vm.tenant_id}','${vm.id}')">关联ebs</button></td>
+                        <td><button class="ui-state-default ui-corner-all" onclick="reset_system('${vm.id}')">重装</button></td>
+                        <td><button class="ui-state-default ui-corner-all" onclick="update_brand('<%=tenantId %>','<%=userId %>','${vm.id}','${vm.instance_type.network_bandwidth }')">更新</button></td>
+						<td><button class="ui-state-default ui-corner-all" onclick="chart_load('${vm.id}')">查看cpu及内存</button>
+                            <button class="ui-state-default ui-corner-all" onclick="chart_network('${vm.id}')">查看网络</button>
+                            <button class="ui-state-default ui-corner-all" onclick="chart_status('${vm.id}')">查看状态</button>
+                            <button class="ui-state-default ui-corner-all" onclick="chart_disk('${vm.id}')">查看硬盘</button>
+                            <button class="ui-state-default ui-corner-all" onclick="vnc('${vm.id}')">登陆机器</button>
                         </td>
                         <div id="vm_dialog_${vm.id}" title="vm_${vm.id}详情" style="display:none">
                             <p>status: ${vm.status}</p>

@@ -122,10 +122,10 @@
             id：<input type="text" name="userid" value=""/>
             email：<input type="text" name="email" value=""/>
             name：<input type="text" name="name" value=""/>
-    		<input type="submit" name="submit" value="查  找"  />
+    		<input class="ui-state-default ui-corner-all" type="submit" name="submit" value="查  找"  />
     	</form>
         <form action="/g/user/list/1" style="margin-left: 5px;display: inline-block;">
-            <input type="submit" name="submit" value="查看所有" />
+            <input class="ui-state-default ui-corner-all" type="submit" name="submit" value="查看所有" />
         </form>
     <div class="set-area">
 
@@ -168,9 +168,9 @@
 						<td>${dto.enabled}</td>
 						<td>${dto.email}</td>
 						<td>${dto.tenant_id}</td>
-						<td><button onclick="security_groups('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
-						<td><button onclick="ebs_snapshot_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
-						<td><button onclick="vm_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
+						<td><button class="ui-state-default ui-corner-all" onclick="security_groups('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
+						<td><button class="ui-state-default ui-corner-all" onclick="ebs_snapshot_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
+						<td><button class="ui-state-default ui-corner-all" onclick="vm_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
 					</tr>
 				</c:forEach>
             </tbody>
