@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -15,6 +16,10 @@ import com.ksyun.payment.common.KvmHttpUtil;
 import com.ksyun.payment.dao.IKvmApplicationDao;
 import com.ksyun.payment.dto.KvmApplicationDto;
 import com.ksyun.payment.service.IKvmApplicationService;
+import com.ksyun.vm.exception.ErrorCodeException;
+import com.ksyun.vm.exception.NoTokenException;
+import com.ksyun.vm.pojo.vm.ImagePojo;
+import com.ksyun.vm.service.VmService;
 
 /**
  * 试用申请实现类
@@ -26,6 +31,9 @@ public class KvmApplicationService implements IKvmApplicationService {
 	
 	@Resource
 	private IKvmApplicationDao<KvmApplicationDto> kvmApplicationDao;
+	
+	@Autowired
+	private VmService vmService; 
 	
 	@Override
 	public void saveApplication(KvmApplicationDto application) {
@@ -44,7 +52,22 @@ public class KvmApplicationService implements IKvmApplicationService {
 		List<KvmApplicationDto> list = kvmApplicationDao.getAllApplications(params);
 		
 		KvmHttpUtil kvmHttpUtil = new KvmHttpUtil();
-		Map<String,String> opsMap = kvmHttpUtil.getRawImageList();
+		//Map<String,String> opsMap = kvmHttpUtil.getRawImageList();
+		
+		Map<String,String> opsMap = new HashMap<>();
+		try {
+			List<ImagePojo> imagePojos = vmService.getImages("49e049ab04f846a48e5f0fd152a729fc", "191532849a034f2cb555d8d8fa08027a");
+			for (ImagePojo imagePojo : imagePojos) {
+				opsMap.put(imagePojo.getId(), imagePojo.getName());
+			}
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoTokenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		for(KvmApplicationDto kvmDto :list){
 			String opsName = opsMap.get(kvmDto.getOps());
 			if(opsName==null) opsName = "非法数据";

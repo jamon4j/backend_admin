@@ -154,7 +154,7 @@
 		<div class="menu-group">
 			<h2 class="first">LBS管理</h2>
 			<ul>
-				<li><a href="/g/lbs/user/list?t=1" router="home/5/1"
+				<li><a href="/g/lbs/init?t=1" router="home/5/1"
 					target="mainframe">LBS设置</a></li>
 			</ul>
 		</div>

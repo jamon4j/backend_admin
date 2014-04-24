@@ -18,7 +18,7 @@ public class LoginService {
 	private LoginDao loginDao;
 
 	public List<User> getUser(String username, String password) {
-		password = MD5Utils.MD5Encoding(password);
+		//password = MD5Utils.MD5Encoding(password);
 		return loginDao.getUser(username, password);
 	}
 
@@ -27,7 +27,7 @@ public class LoginService {
 	}
 
 	public void addUser(String email, String passwd, String roles) {
-		passwd = MD5Utils.MD5Encoding(passwd);
+		//passwd = MD5Utils.MD5Encoding(passwd);
 		User dto = new User();
 		dto.setPassword(passwd);
 		dto.setRoles(roles);

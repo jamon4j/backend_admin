@@ -48,6 +48,12 @@ public class LBSController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
+	@RequestMapping(value = "/g/lbs/init")
+	public ModelAndView initLBS(ModelAndView mav) {
+		mav.setViewName("/gestion/lbs/user_list");
+		return mav;
+	}
+	
 	/**
 	 * 列出所有用户
 	 * 
