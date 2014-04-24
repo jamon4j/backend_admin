@@ -23,6 +23,17 @@ $(function() {
 	});
 });
 // Dialog方法区
+function dialog_loading() {
+	$("#dialog_loading").dialog({
+		autoOpen : false,
+		postion : "center",
+		modal : true,
+		height : "100",
+		width : "200"
+	});
+	$("#dialog_loading").dialog("open");
+}
+
 function dialog_detail_pool(id) {
 	$("#dialog_detail_pool_" + id).dialog({
 		autoOpen : false,
@@ -110,6 +121,7 @@ function dialog_add_pool(userId, tenantId) {
 		width : 500,
 		buttons : {
 			'创建' : function() {
+				dialog_loading();
 				$.ajax({
 					url : "/g/lbs/pool/add/" + userId + "/" + tenantId,
 					cache : false,
@@ -157,6 +169,7 @@ function dialog_add_vip(userId, tenantId) {
 		width : 550,
 		buttons : {
 			'创建' : function() {
+				dialog_loading();
 				$.ajax({
 					url : "/g/lbs/vip/add/" + userId + "/" + tenantId,
 					cache : false,
@@ -202,6 +215,7 @@ function dialog_add_member(userId, tenantId) {
 		width : 550,
 		buttons : {
 			'创建' : function() {
+				dialog_loading();
 				$.ajax({
 					url:"/g/lbs/member/add/" + userId + "/" + tenantId,
 					cache : false,
@@ -254,6 +268,7 @@ function dialog_add_health(userId, tenantId) {
 		width : 550,
 		buttons : {
 			'创建' : function() {
+				dialog_loading();
 				$.ajax({
 					url : "/g/lbs/health/add/" + userId + "/" + tenantId,
 					cache : false,
@@ -296,6 +311,7 @@ function dialog_delete_health(userId, tenantId, healthId) {
 		width : 500,
 		buttons : {
 			"确认":function() {
+				dialog_loading();
 				$.ajax({
 					url : "/g/lbs/health/del/" + userId + "/" + tenantId + "/" + healthId,
 					cache : false,
@@ -328,6 +344,7 @@ function dialog_delete_member(userId, tenantId, memberId) {
 		width : 500,
 		buttons : {
 			"确认" : function() {
+				dialog_loading();
 				$.ajax({
 					url : "/g/lbs/member/del/" + userId + "/" + tenantId + "/" + memberId,
 					cache : false,
@@ -360,6 +377,7 @@ function dialog_vip_bind_health(userId, tenantId, vipId) {
 		width : 800,
 		buttons : {
 			"绑定" : function() {
+				dialog_loading();
 				$.ajax({
 					url : "/g/lbs/health/bind/" + userId + "/" + tenantId + "/" + vipId,
 					cache : false ,
@@ -395,6 +413,7 @@ function dialog_vip_unbind_health(userId, tenantId, vipId) {
 		width : 500,
 		buttons : {
 			"解绑" : function() {
+				dialog_loading();
 				var health_monitor_id = $("#unbind_health_monitor_id_"+vipId).val();
 				$.ajax({
 					url : "/g/lbs/health/unbind/" + userId + "/" + tenantId + "/" + vipId + "/" + health_monitor_id,
@@ -428,6 +447,7 @@ function dialog_vip_delete(userId, tenantId, vipId) {
 		width : 550,
 		buttons : {
 			"删除" : function() {
+				dialog_loading();
 				$.ajax({
 					url : "/g/lbs/vip/del/" + userId + "/" + tenantId + "/" + vipId,
 					cache : false,
@@ -460,6 +480,7 @@ function dialog_delete_pool(userId, tenantId, poolId) {
 		width : 550,
 		buttons : {
 			"删除" : function() {
+				dialog_loading();
 				$.ajax({
 					url : "/g/lbs/pool/del/" + userId + "/" + tenantId + "/" + poolId,
 					cache : false,
@@ -520,6 +541,7 @@ function dialog_update_health(userId, tenantId, healthId,timeout,delay,fall,rise
 		width : 550,
 		buttons : {
 			'修改' : function() {
+				dialog_loading();
 				$.ajax({
 					url :"/g/lbs/health/update/" + userId + "/" + tenantId + "/" + healthId,
 					cache : false,
@@ -575,6 +597,7 @@ function dialog_update_member(userId, tenantId, memberId, weight, admin_state_up
 		width : 550,
 		buttons : {
 			'修改' : function() {
+				dialog_loading();
 				$.ajax({
 					url : "/g/lbs/member/update/" + userId + "/" + tenantId + "/" + memberId,
 					cache : false,
@@ -630,6 +653,7 @@ function dialog_update_vip(userId, tenantId, vipId, name, admin_state_up, connec
 		width : 550,
 		buttons : {
 			'修改' : function() {
+				dialog_loading();
 				$.ajax({
 					url : "/g/lbs/vip/update/" + userId + "/" + tenantId + "/" + vipId,
 					cache:false,
@@ -683,6 +707,7 @@ function dialog_update_pool(userId, tenantId, poolId, name, egress, admin_state_
 		width : 550,
 		buttons : {
 			'修改' : function() {
+				dialog_loading();
 				$.ajax({
 					url : "/g/lbs/pool/update/" + userId + "/" + tenantId + "/" + poolId,
 					cache : false,

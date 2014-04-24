@@ -793,5 +793,13 @@
 			</tr>
 		</table>
 	</div>
+
+	<div id="dialog_loading" style="display: none;" title="请稍后">
+		<table border="0" align="center">
+			<tr>
+				<td>正在处理，请稍后...</td>
+			</tr>
+		</table>
+	</div>
 </body>
 </html>
