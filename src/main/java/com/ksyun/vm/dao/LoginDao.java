@@ -27,4 +27,11 @@ public class LoginDao<User> extends BaseDao<User,Integer>{
         List<User> list = sqlSession.selectList(nameSpace + ".findUser", map);
         return list;
     }
+	
+	public User queryUserById(Integer userId) {
+		Map<String, Integer> map = new HashMap<>();
+		map.put("id", userId);
+		User user = sqlSession.selectOne(nameSpace + ".selectByPrimaryKey",map);
+		return user;
+	}
 }

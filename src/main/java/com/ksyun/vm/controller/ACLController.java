@@ -145,6 +145,14 @@ public class ACLController {
 	@RequestMapping(value = "/g/acl/user_role_input")
 	public ModelAndView user_role_input(@RequestParam("userId") int userId,
 			String roles, ModelAndView mav) {
+		// 获取所有角色列表
+		List<RolePo> roleList = roleService.getAll();
+		User now_user = loginService.getUserById(userId);
+		String now_role = now_user.getRoles();
+		String[] now_role_list = now_role.split(",");
+		mav.addObject("list", roleList);
+		mav.addObject("now_role_list", now_role_list);
+		mav.addObject("now_role", now_role);
 		mav.addObject("userId", userId);
 		mav.setViewName("/gestion/acl/user_role_edit");
 		return mav;

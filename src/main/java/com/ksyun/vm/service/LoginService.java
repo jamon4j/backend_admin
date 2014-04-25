@@ -45,4 +45,9 @@ public class LoginService {
 		dto.setRoles(roles);
 		loginDao.updateIfNecessary(dto);
 	}
+	
+	public User getUserById(Integer userId) {
+		User user = (User) loginDao.queryUserById(userId);
+		return user;
+	}
 }
