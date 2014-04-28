@@ -72,6 +72,14 @@
 			alert("请输入角色ID");
 			return false;
 		}
+		if ($("#email").val() == "" || $("#email").val() == null) {
+			alert("请输入邮箱");
+			return false;
+		}
+		if ($("#password").val() == "" || $("#password").val() == null) {
+			alert("请输入密码");
+			return false;
+		}
 	}
 </script>
 </head>
