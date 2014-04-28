@@ -1,22 +1,22 @@
 package com.ksyun.vm.interceptor;
 
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
 import com.ksyun.vm.pojo.acl.RolePo;
 import com.ksyun.vm.routedatasource.DataSourceInstances;
 import com.ksyun.vm.service.DataSwitchService;
 import com.ksyun.vm.service.RoleService;
 import com.ksyun.vm.utils.Constants;
 import com.ksyun.vm.utils.InitConst;
-
-import org.apache.log4j.Logger;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 登陆、鉴权系统拦截器 User: Norton Chen(cjx) Date: 2013-07-17
@@ -45,8 +45,10 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		if (uri.indexOf("/login") > -1 || uri.indexOf("/html") > -1
 				|| uri.indexOf("/js") > -1 || uri.indexOf("/img") > -1
 				|| uri.indexOf("/getvmsum") > -1 || uri.indexOf("/change") > -1
-				|| uri.indexOf("/logout") > -1) {
+				|| uri.indexOf("/logout") > -1
+				|| uri.indexOf("/g/user/image_public_id_list/") > -1) {
 			// 过滤对change连接的权限控制
+			// 过滤运营需要的连接/g/user/image_public_id_list/
 			return true;
 		}
 		if (cookie != null) {

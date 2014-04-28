@@ -63,7 +63,9 @@ public class ACLController {
 			}
 			user.setRoles(roles_name);
 		}
+		List<RolePo> roleList = roleService.getAll();
 		mav.addObject("list", userList);
+		mav.addObject("role_list", roleList);
 		mav.setViewName("/gestion/acl/user_list");
 		return mav;
 	}
