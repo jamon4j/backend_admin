@@ -22,6 +22,7 @@
 			<c:if test="${sessionScope.type=='public'}">
 				<li><a href="<%=webRootPath%>/iconsole_page/lbs_home.jsp">LBS管理</a></li>
 			</c:if>
+			<li><a href="<%=webRootPath%>/iconsole_page/warn_home.jsp">运营配置</a></li>
 			<!--
         <li><a href="#">用户管理</a></li>
         <li><a href="#">虚拟机管理</a></li>
@@ -134,7 +135,7 @@
 						<li><a href="/admin/kvm/application_index?p=user">&nbsp;&nbsp;|-KVM试用申请</a></li>
 					</ul>
 				</li>
-				<li><a href="/iconsole_page/home.jsp?t=1" router="home/3/3"
+				<li><a href="/egress/index?t=1" router="home/3/3"
 					id="brand_li" target="mainframe">带宽更新</a></li>
 			</ul>
 		</div>
@@ -151,13 +152,43 @@
 			</ul>
 		</div>
 
-		<div class="menu-group">
-			<h2 class="first">LBS管理</h2>
-			<ul>
-				<li><a href="/g/lbs/init?t=1" router="home/5/1"
-					target="mainframe">LBS设置</a></li>
-			</ul>
-		</div>
+		<c:if test="${sessionScope.type=='public'}">
+			<div class="menu-group">
+				<h2 class="first">LBS管理</h2>
+				<ul>
+					<li><a href="/g/lbs/init?t=1" router="home/5/1"
+						target="mainframe">LBS设置</a></li>
+				</ul>
+			</div>
+			<div class="menu-group">
+				<h2 class="first">运营配置</h2>
+				<ul>
+					<li><a href="/warn/set?t=1" router="home/6/1"
+						target="mainframe">告警设置</a></li>
+					<li><a href="/warn/detail?t=1" router="home/6/2"
+						target="mainframe">告警详情</a></li>
+					<li><a href="/warn/logs?t=1" router="home/6/3"
+						target="mainframe">告警日志</a></li>
+					<li><a href="/warn/money?t=1" router="home/6/3"
+						target="mainframe">计费系统</a></li>
+				</ul>
+			</div>
+		</c:if>
+		<c:if test="${sessionScope.type=='private'}">
+			<div class="menu-group">
+				<h2 class="first">运营配置</h2>
+				<ul>
+					<li><a href="/warn/set?t=1" router="home/5/1"
+						target="mainframe">告警设置</a></li>
+					<li><a href="/warn/detail?t=1" router="home/5/2"
+						target="mainframe">告警详情</a></li>
+					<li><a href="/warn/logs?t=1" router="home/5/3"
+						target="mainframe">告警日志</a></li>
+					<li><a href="/warn/money?t=1" router="home/6/3"
+						target="mainframe">计费系统</a></li>
+				</ul>
+			</div>
+		</c:if>
 
 		<div class="menu-group">
 			<h2 class="first">用户管理</h2>
