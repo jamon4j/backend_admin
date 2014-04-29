@@ -1,0 +1,41 @@
+#set($ctx=$rc.contextPath)
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	background-color: #F8F9FA;
+}
+-->
+</style>
+<link href="${ctx}/css/images/skin.css" rel="stylesheet" type="text/css" />
+<link type="text/css" rel="stylesheet" href="/js/frame/admin.css"
+	media="screen" />
+</head>
+
+<body>
+	<div class="path">
+		<p>
+			当前位置:iConsole<span>&gt;</span>带宽升级<span>&gt;</span>查看虚拟机
+		</p>
+	</div>
+	<div class="set-area">
+		<h3 class="title">$user_email | 虚拟机列表</h3>
+		<br> #if($!type == "private")
+		<h4>
+			当前用户在 <font color="red">私有云</font> 环境中，没有配置虚拟机
+		</h4>
+		#end #if($!type == "public")
+		<h4>
+			当前用户在 <font color="red">公有云</font> 环境中，没有配置虚拟机
+		</h4>
+		#end
+	</div>
+</body>
+</html>
+
