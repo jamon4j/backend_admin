@@ -92,14 +92,6 @@
 	<div class="main-cont">
 		<h3 class="title">用户列表</h3>
 		<div class="set-area">
-			<table cellpadding="0" cellspacing="0" width="90%" border="0">
-				<tr>
-					<td style="margin-left: 10%"><span>
-							<button onclick="" class="ui-state-default ui-corner-all">创建
-								用户</button>
-					</span></td>
-				</tr>
-			</table>
 			<table class="table" cellpadding="0" cellspacing="0" width="100%"
 				border="0">
 				<colgroup>

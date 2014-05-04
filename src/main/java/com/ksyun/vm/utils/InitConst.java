@@ -15,6 +15,9 @@ public class InitConst {
 	public static final String HTTP_HOST_PRIVATE = "http.host.private";
 	public static final String HTTP_PORT_PRIVATE = "http.port.private";
 
+	public static final String HTTP_HOST_ICONSOLE = "http.host.iconsole";
+	public static final String HTTP_PORT_ICONSOLE = "http.port.iconsole";
+
 	public static final String KVM_ZONE_LIST = "kvm.zone.list";
 	public static final String KVM_ZONE_HOST = "kvm.zone.host";
 	public static final String KVM_ZONE_HOST_LIST = "kvm.zone.host.list";
@@ -112,6 +115,8 @@ public class InitConst {
 	public static final String MONITOR_HBASE_TABLE_NETWORK = "vm_table_network";
 	public static final String MONITOR_HBASE_TABLE_LOAD = "vm_table_load";
 	public static final String MONITOR_HBASE_TABLE_DISK = "vm_table_disk";
+
+	public static final String ICONSOLE_UPDATE_EGRESS = "iconsole.update.egress";
 
 	public static final String COOKIE_NOW_NAME = "now";
 	public static final String COOKIE_PUBLIC_NAME = "allow_public";

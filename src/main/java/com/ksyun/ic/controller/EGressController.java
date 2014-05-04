@@ -1,15 +1,26 @@
 package com.ksyun.ic.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.POST;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ksyun.payment.common.PaymentCommonUtils;
+import com.ksyun.payment.dict.NetUpdateDict;
+import com.ksyun.payment.dict.NetUpdateMessageDict;
 import com.ksyun.payment.dto.UserInfoDto;
 import com.ksyun.tools.net.ServletUtil;
 import com.ksyun.vm.exception.ErrorCodeException;
@@ -81,6 +92,15 @@ public class EGressController {
 			List<VmPojo> vm_list = vmService.getVms(user.getUser_id(),
 					user.getTenant_id());
 			request.setAttribute("vm_list", vm_list);
+			// 获得用户的id
+			List<UserInfoDto> user_list = userService
+					.findUserInfoByEmailAndMobile(0, email, "");
+			if (user_list.size() > 0) {
+				Map<String, Object> map = (Map<String, Object>) user_list
+						.get(0);
+				Long user_id = (Long) map.get("user_id");
+				request.setAttribute("user_id", user_id);
+			}
 		} catch (ErrorCodeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -99,11 +119,42 @@ public class EGressController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws NoTokenException
+	 * @throws ErrorCodeException
+	 * @throws UnsupportedEncodingException
 	 */
+	@RequestMapping(value = "/egress/update", method = { RequestMethod.POST })
+	@ResponseBody
 	public String updateEgress(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response, @RequestBody String reqBody)
+			throws ErrorCodeException, NoTokenException,
+			UnsupportedEncodingException {
 		// 调用宗礼的接口
+		NetUpdateDict dict = PaymentCommonUtils.jsonStrToObject(reqBody,
+				NetUpdateDict.class);
+		NetUpdateMessageDict messageDict = null;
+		try {
+			messageDict = vmService.updateBrandAndPay(dict.getUserId(),
+					dict.getProductId(), dict.getNet(), dict.getIsNeedPay());
+		} catch (ErrorCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "fail";
+		}
 		// 根据返回值调用OpenStack接口
-		return null;
+		if (messageDict != null && "1".equals(messageDict.getRet())) {// OK
+			List<UserInfoDto> list = userService.findUserInfoByEmailAndMobile(
+					Integer.parseInt(dict.getUserId()), "", "");
+			if (list.size() > 0) {
+				Map<String, Object> map = (Map<String, Object>) list.get(0);
+				String email = (String) map.get("email");
+				UserPojo user = userService.searchUser("", email, "");
+				vmService.updateBrand(user.getTenant_id(), user.getUser_id(),
+						dict.getProductId(), dict.getNet());
+			}
+			return "ok";
+		} else {
+			return messageDict.getRet();
+		}
 	}
 }

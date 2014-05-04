@@ -86,7 +86,8 @@
 			<br />
 		</div>
 	</div>
-	<div id="adduser_form" title="请输入角色名称">
+	<div id="adduser_form" title="请输入角色名称"
+		style="margin-left: 1.5%;margin-right: 2%">
 		<p class="validateTips">添加角色</p>
 		<form action="/g/acl/add_role" method="post" id="data_Form_add_role">
 			<fieldset>

@@ -44,13 +44,17 @@ body {
 					<td>$!elem.name</td>
 					<td>$!elem.instance_type.network_bandwidth M</td>
 					<td><button
-							onclick="a_update_egress('$!elem.id','$!elem.instance_type.network_bandwidth')">更新带宽</button></td>
+							onclick="a_update_egress('$!elem.id','$!elem.instance_type.network_bandwidth','$user_id')">更新带宽</button></td>
 				</tr>
 				<div id="dialog_update_egress_$!elem.id" title="更新带宽_$!elem.id"
 					style="display: none;">
-					<span> 当前带宽值:<font color="blue">$!elem.instance_type.network_bandwidth
+					<span> 当前带宽:<font color="blue">$!elem.instance_type.network_bandwidth
 							M</font>
 					</span><br /> <span> 新带宽值:<input id="new_brand_$!elem.id" size="5">M
+					</span> <br /> <span> 是否计费:<select id="isNeedPay_$!elem.id">
+							<option value="1">是</option>
+							<option value="2">否</option>
+					</select>
 					</span>
 					<hr />
 					<p>

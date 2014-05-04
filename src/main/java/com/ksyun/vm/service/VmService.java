@@ -1,22 +1,25 @@
 package com.ksyun.vm.service;
 
-import com.alibaba.fastjson.JSONArray;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSONObject;
+import com.ksyun.payment.common.AppConfig;
+import com.ksyun.payment.common.PaymentCommonUtils;
+import com.ksyun.payment.common.SmipleJsonService;
+import com.ksyun.payment.dict.NetUpdateMessageDict;
 import com.ksyun.vm.exception.ErrorCodeException;
 import com.ksyun.vm.exception.NoTokenException;
 import com.ksyun.vm.pojo.vm.ImagePojo;
 import com.ksyun.vm.pojo.vm.VNC;
 import com.ksyun.vm.pojo.vm.VmPojo;
-import com.ksyun.vm.utils.Constants;
 import com.ksyun.vm.utils.InitConst;
 import com.ksyun.vm.utils.enumeration.EnumEditVm;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * User: liuchuandong Date: 13-10-14 Time: 下午1:37 Func:
@@ -165,5 +168,31 @@ public class VmService {
 		String requestBody = JSONObject.toJSONString(map);
 		jsonService.poPost(InitConst.KVM_BANDWIDTH, null, null, null,
 				requestBody);
+	}
+
+	/**
+	 * 带宽升级计费
+	 * 
+	 * @param userId
+	 * @param vm_id
+	 * @param new_brand
+	 * @param isNeedPay
+	 * @return
+	 * @throws ErrorCodeException
+	 */
+	public NetUpdateMessageDict updateBrandAndPay(String userId, String vm_id,
+			String new_brand, String isNeedPay) throws ErrorCodeException {
+		Map<String, String> map = new HashMap<>();
+		map.put("userId", userId);
+		map.put("productId", vm_id);
+		map.put("net", new_brand);
+		String signNew = PaymentCommonUtils.getSign(map, AppConfig.AES_KEY);
+		map.put("isNeedPay", isNeedPay);
+		map.put("sign", signNew);
+		String requestBody = JSONObject.toJSONString(map);
+		NetUpdateMessageDict msg = SmipleJsonService.post(
+				InitConst.ICONSOLE_UPDATE_EGRESS, requestBody,
+				NetUpdateMessageDict.class);
+		return msg;
 	}
 }
