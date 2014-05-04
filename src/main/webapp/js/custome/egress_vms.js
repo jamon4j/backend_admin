@@ -15,7 +15,13 @@ function a_update_egress(vm_id, old_egress, userId) {
 							if (new_egress > i_old_egress) {
 								var confirm_html = "确认更新?\n\nvm_id:" + vm_id
 										+ "\n\n旧带宽:" + old_egress + "M\n\n新带宽:"
-										+ new_egress + "M\n\n\n请仔细核对信息!";
+										+ new_egress;
+								if ($("#isNeedPay_" + vm_id).val() == "1") {
+									confirm_html = confirm_html + "\n\n计费:是";
+								} else {
+									confirm_html = confirm_html + "\n\n计费:否";
+								}
+								confirm_html = confirm_html + "\n\n\n请仔细核对信息!"
 								var jsonData = JSON.stringify({
 									"userId" : userId,
 									"productId" : vm_id,
@@ -50,6 +56,7 @@ function a_update_egress(vm_id, old_egress, userId) {
 										error : function(a, b, c) {
 											alert("带宽升级失败:" + a + "|" + b + "|"
 													+ c);
+											window.location.reload();
 										}
 									});
 								}
