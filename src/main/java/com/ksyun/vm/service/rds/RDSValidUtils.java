@@ -1,4 +1,4 @@
-package com.ksyun.vm.service;
+package com.ksyun.vm.service.rds;
 
 
 import com.ksyun.vm.dao.rds.RDSValidationDao;
@@ -21,7 +21,7 @@ public class RDSValidUtils {
         if (list != null&&!list.isEmpty()) {
             for (RDSInstance t : list) {
                 RDSValidationPo rdsValidationPo = (RDSValidationPo) lbsValidationDao.getValidTime(t.getId());
-                if (rdsValidationPo != null) {
+                if (rdsValidationPo != null && t.getValidTime() !=null) {
                     t.setValidTime(TimeUtils.makeYMDHMSStringFormat(rdsValidationPo.getValidTime()));
                 }
                 if (t.getValidTime() != null && TimeUtils.makeYMDHMSDateFormat(t.getValidTime()).compareTo(new Date()) < 0) {
@@ -35,7 +35,7 @@ public class RDSValidUtils {
     public static RDSInstance addValidTime(RDSInstance t,RDSValidationDao lbsValidationDao) {
         if (t != null) {
             RDSValidationPo ebsValidationPo = (RDSValidationPo) lbsValidationDao.getValidTime(t.getId());
-            if (ebsValidationPo != null) {
+            if (ebsValidationPo != null && ebsValidationPo.getValidTime() !=null) {
                 t.setValidTime(TimeUtils.makeYMDHMSStringFormat(ebsValidationPo.getValidTime()));
             }
             if (t.getValidTime() != null && TimeUtils.makeYMDHMSDateFormat(t.getValidTime()).compareTo(new Date()) < 0) {

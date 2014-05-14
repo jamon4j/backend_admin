@@ -4,7 +4,7 @@ import com.ksyun.vm.exception.ErrorCodeException;
 import com.ksyun.vm.exception.NoTokenException;
 import com.ksyun.vm.pojo.rds.RDSInstance;
 import com.ksyun.vm.service.BaseAuth;
-import com.ksyun.vm.service.RdsService;
+import com.ksyun.vm.service.RDSService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class RDSInstanceAuth  implements BaseAuth {
     @Resource
-    private RdsService rdsService;
+    private RDSService rdsService;
 
     public boolean isOwner(String username, String id) throws ErrorCodeException, NoTokenException {
         if (existRDS(username, id)) {

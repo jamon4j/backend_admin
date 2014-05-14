@@ -27,7 +27,7 @@ public class RDSInstanceCheck extends Check implements Validation {
     @Resource(type = InstanceCheck.class)
     private CheckListener instanceCheck;
     @Resource
-    private RdsService rdsService;
+    private RDSService rdsService;
 
     @Override
     public Map<String, Object> check(MethodType type, String username, Map<String, String> keyValues,CheckListener checkListener) throws ErrorCodeException,NoTokenException {

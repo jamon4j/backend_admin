@@ -37,7 +37,7 @@ public class RDSController {
 
     Logger log = LoggerFactory.getLogger(RDSController.class);
     @Resource
-    private RdsService rdsService;
+    private RDSService rdsService;
     @Resource
     private RDSInstanceAuth rdsInstanceAuth;
     @Resource(type = RDSInstanceCheck.class)

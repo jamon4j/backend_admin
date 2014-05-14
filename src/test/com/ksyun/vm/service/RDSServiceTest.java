@@ -26,7 +26,7 @@ import java.util.List;
 public class RDSServiceTest {
 
     @Autowired
-    private RdsService rdsService;
+    private RDSService rdsService;
     protected Logger logger = Logger.getLogger(getClass());
     @Autowired
     private DataSwitchService dataSwitchService;
