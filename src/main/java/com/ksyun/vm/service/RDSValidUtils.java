@@ -1,4 +1,4 @@
-package com.ksyun.vm.service.rds;
+package com.ksyun.vm.service;
 
 
 import com.ksyun.vm.dao.rds.RDSValidationDao;
