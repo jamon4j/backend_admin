@@ -1,9 +1,10 @@
-package com.ksyun.vm.utils;
+package com.ksyun.vm.service;
 
 import com.ksyun.vm.exception.ErrorCodeException;
 import com.ksyun.vm.exception.NoTokenException;
-import com.ksyun.vm.pojo.UserPo;
-import com.ksyun.vm.pojo.user.UserPojo;
+import com.ksyun.vm.pojo.zone.ZonePojo;
+import com.ksyun.vm.utils.Constants;
+import com.ksyun.vm.utils.InitConst;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -21,22 +21,21 @@ import java.util.List;
  */
 @ContextConfiguration(locations = {"classpath*:**/applicationContext*.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class UserServiceTest {
-
-    @Autowired
-    private UserService userService;
+public class ZoneServiceTest {
     protected Logger logger = Logger.getLogger(getClass());
+    @Autowired
+    private ZoneService zoneService;
 
     @Test
-    public void testGetUsers() throws NoTokenException, ErrorCodeException {
+    public void testGetZoneList() throws NoTokenException, ErrorCodeException {
         logger.info("test");
         Constants.setPropertyValue(InitConst.HTTP_HOST,
                 Constants.getPropertyValue(InitConst.HTTP_HOST_PRIVATE));
         Constants.setPropertyValue(InitConst.HTTP_PORT,
                 Constants.getPropertyValue(InitConst.HTTP_PORT_PRIVATE));
-        List<UserPojo> userPos = userService.getUsers();
-        for(UserPojo pojo:userPos){
-            logger.info("pojo:"+ ToStringBuilder.reflectionToString(pojo));
+        List<ZonePojo> zoneList = zoneService.getZoneList();
+        for(ZonePojo z:zoneList){
+            logger.info("z:"+ ToStringBuilder.reflectionToString(z));
         }
     }
 }

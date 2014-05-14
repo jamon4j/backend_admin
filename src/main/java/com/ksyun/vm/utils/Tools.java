@@ -1,6 +1,8 @@
 package com.ksyun.vm.utils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Tools {
 	public static String listToString(List<?> list) {
@@ -23,5 +25,16 @@ public class Tools {
 	public static String makeNetworkRowKey(String vmuuid, String network, String logTime){
 		return vmuuid + "_"+ network+"_"+logTime;
 	}
+
+
+    public static Map<String,String> collectProperties(String[] keys,String[] values) {
+        Map<String, String> map = new HashMap<>();
+        for(int i=0;i<keys.length;i++){
+            String key = keys[i];
+            String value = values[i];
+            map.put(key, value);
+        }
+        return map;
+    }
 	
 }

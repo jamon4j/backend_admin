@@ -1,8 +1,6 @@
 package com.ksyun.vm.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.slf4j.Logger;
@@ -297,7 +295,49 @@ public class JSONService {
 		}
 	}
 
-	/**
+    /**
+     * GET 方式获取List
+     * @param proKey 连接的key
+     * @param token token
+     * @param clazz 返回的类的class
+     * @param <T> 类
+     * @param param url 参数
+     * @return 返回基本类 T
+     * @throws NoTokenException 没有授权
+     * @throws ErrorCodeException 执行错误异常
+     */
+    public <T extends BasePo> List<T> getPoListToken(String proKey, String token, Class<T> clazz,Object... param) throws NoTokenException,ErrorCodeException {
+        long start = Calendar.getInstance().getTimeInMillis();
+        OpenStackResult result = HttpUtils.get(getUrl(proKey, param), setHeaderWithToken(token));
+        long end = Calendar.getInstance().getTimeInMillis();
+        logger.info("调用 "+getUrl(proKey, param)+" 耗时:"+(end-start) + " ms");
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        if ((result.getStatus() >= org.apache.http.HttpStatus.SC_OK && result.getStatus()<= org.apache.http.HttpStatus.SC_MULTI_STATUS)) {
+            List<T> list = JSONArray.parseArray(result.getMessage(), clazz);
+            return list;
+        } else {
+            throw new ErrorCodeException(result);
+        }
+    }
+
+
+    /**
+     * 获取要设置的header的map
+     * @param token token
+     * @return map
+     * @throws NoTokenException 没有授权
+     */
+    private Map<String, String> setHeaderWithToken(String token){
+        Map<String, String> header = new HashMap<String, String>();
+        header.put("Content-Type", "application/json");
+        header.put("X-Auth-Token", token);
+        return header;
+    }
+
+
+    /**
 	 * 获取URL连接
 	 * 
 	 * @param key

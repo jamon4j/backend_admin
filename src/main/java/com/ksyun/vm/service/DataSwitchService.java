@@ -2,6 +2,7 @@ package com.ksyun.vm.service;
 
 import javax.annotation.Resource;
 
+import com.ksyun.vm.dao.rds.RDSValidationDao;
 import org.springframework.stereotype.Service;
 
 import com.ksyun.vm.dao.LoginDao;
@@ -26,6 +27,8 @@ public class DataSwitchService {
 	private MonitorVmNetworkDao monitorVmNetworkDao;
 	@Resource
 	private MonitorVmStatusFlowDao monitorVmStatusFlowDao;
+    @Resource
+    private RDSValidationDao rdsValidationDao;
 
 	public void setDataSource(String dataSource) {
 		// 由于是Spring的注入默认是单例，对应DAO的baseDAO设置完数据源以后，所有DAO操作的数据源都改变了
@@ -35,5 +38,6 @@ public class DataSwitchService {
 		monitorVmLoadDao.setDataSource(dataSource);
 		monitorVmNetworkDao.setDataSource(dataSource);
 		monitorVmStatusFlowDao.setDataSource(dataSource);
+        rdsValidationDao.setDataSource(dataSource);
 	}
 }

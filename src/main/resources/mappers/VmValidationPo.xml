@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ksyun.vm.pojo.vm.VmValidationPo" >
+  <resultMap id="BaseResultMap" type="com.ksyun.vm.pojo.vm.VmValidationPo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="image_id" property="imageId" jdbcType="VARCHAR" />
+    <result column="instance_count" property="instanceCount" jdbcType="VARCHAR" />
+    <result column="vcpu" property="vcpu" jdbcType="VARCHAR" />
+    <result column="security_groups" property="securityGroups" jdbcType="VARCHAR" />
+    <result column="network_bandwidth" property="networkBandwidth" jdbcType="VARCHAR" />
+    <result column="root_disk" property="rootDisk" jdbcType="VARCHAR" />
+    <result column="memory" property="memory" jdbcType="VARCHAR" />
+    <result column="vm_id" property="vmId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="valid_time" property="validTime" jdbcType="TIMESTAMP" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+    <result column="order_type" property="orderType" jdbcType="INTEGER" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, name, image_id, instance_count, vcpu, security_groups, network_bandwidth, root_disk, 
+    memory, vm_id, user_name, status, create_time, update_time, valid_time, password, 
+    order_id, order_type
+  </sql>
+
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from vm_validation
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.Long" >
+    delete from vm_validation
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.ksyun.vm.pojo.vm.VmValidationPo"  useGeneratedKeys="true" keyProperty="id">
+    insert into vm_validation (id, name, image_id, 
+      instance_count, vcpu, security_groups, 
+      network_bandwidth, root_disk, memory, 
+      vm_id, user_name, status, 
+      create_time, update_time, valid_time, 
+      password, order_id, order_type
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{imageId,jdbcType=VARCHAR}, 
+      #{instanceCount,jdbcType=VARCHAR}, #{vcpu,jdbcType=VARCHAR}, #{securityGroups,jdbcType=VARCHAR}, 
+      #{networkBandwidth,jdbcType=VARCHAR}, #{rootDisk,jdbcType=VARCHAR}, #{memory,jdbcType=VARCHAR}, 
+      #{vmId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{validTime,jdbcType=TIMESTAMP}, 
+      #{password,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR}, #{orderType,jdbcType=INTEGER}
+      )
+  </insert>
+
+  <update id="updateIfNecessary" parameterType="com.ksyun.vm.pojo.vm.VmValidationPo" >
+    update vm_validation
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="imageId != null" >
+        image_id = #{imageId,jdbcType=VARCHAR},
+      </if>
+      <if test="instanceCount != null" >
+        instance_count = #{instanceCount,jdbcType=VARCHAR},
+      </if>
+      <if test="vcpu != null" >
+        vcpu = #{vcpu,jdbcType=VARCHAR},
+      </if>
+      <if test="securityGroups != null" >
+        security_groups = #{securityGroups,jdbcType=VARCHAR},
+      </if>
+      <if test="networkBandwidth != null" >
+        network_bandwidth = #{networkBandwidth,jdbcType=VARCHAR},
+      </if>
+      <if test="rootDisk != null" >
+        root_disk = #{rootDisk,jdbcType=VARCHAR},
+      </if>
+      <if test="memory != null" >
+        memory = #{memory,jdbcType=VARCHAR},
+      </if>
+      <if test="vmId != null" >
+        vm_id = #{vmId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validTime != null" >
+        valid_time = #{validTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null" >
+        order_type = #{orderType,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="update" parameterType="com.ksyun.vm.pojo.vm.VmValidationPo" >
+    update vm_validation
+    set name = #{name,jdbcType=VARCHAR},
+      image_id = #{imageId,jdbcType=VARCHAR},
+      instance_count = #{instanceCount,jdbcType=VARCHAR},
+      vcpu = #{vcpu,jdbcType=VARCHAR},
+      security_groups = #{securityGroups,jdbcType=VARCHAR},
+      network_bandwidth = #{networkBandwidth,jdbcType=VARCHAR},
+      root_disk = #{rootDisk,jdbcType=VARCHAR},
+      memory = #{memory,jdbcType=VARCHAR},
+      vm_id = #{vmId,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      valid_time = #{validTime,jdbcType=TIMESTAMP},
+      password = #{password,jdbcType=VARCHAR},
+      order_id = #{orderId,jdbcType=VARCHAR},
+      order_type = #{orderType,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="getVmIsavailable" resultMap="BaseResultMap">
+  	select 
+  		<include refid="Base_Column_List" />
+	from vm_validation where
+  		<foreach item="item" index="index" collection="vmIdList"
+			separator="or">
+			vm_id=#{item}
+		</foreach>
+  </select>
+  <update id="updateValidTime">
+  	update vm_validation set valid_time=#{validTime} where vm_id=#{vmId}
+  </update>
+  <select id="getValidTime" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from vm_validation where vm_id=#{vmId} order by valid_time desc limit 1;
+  </select>
+  <select id="getpw" resultType="java.lang.String">
+  	select password from vm_validation where vm_id=#{vmId} and user_name=#{username} and order_type=1;
+  </select>
+  <select id="getUserNameByVmId" resultType="java.lang.String">
+        select user_name from vm_validation where vm_id=#{vmId} limit 1;
+  </select>
+</mapper>

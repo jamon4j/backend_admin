@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ksyun.vm.pojo.rds.RDSValidationPo" >
+  <resultMap id="BaseResultMap" type="com.ksyun.vm.pojo.rds.RDSValidationPo" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+    <result column="rds_id" property="rdsId" jdbcType="VARCHAR" />
+    <result column="order_type" property="orderType" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="autobackup_at" property="autobackup_at" jdbcType="VARCHAR" />
+    <result column="duration" property="duration" jdbcType="VARCHAR" />
+    <result column="expire_after" property="expireAfter" jdbcType="VARCHAR" />
+    <result column="rds_id" property="rdsId" jdbcType="VARCHAR" />
+    <result column="admin_user" property="adminUser" jdbcType="VARCHAR" />
+    <result column="admin_password" property="adminPassword" jdbcType="VARCHAR" />
+    <result column="port" property="port" jdbcType="VARCHAR" />
+    <result column="ram" property="ram" jdbcType="VARCHAR" />
+    <result column="vcpus" property="vcpus" jdbcType="VARCHAR" />
+    <result column="disk" property="disk" jdbcType="VARCHAR" />
+    <result column="service_type" property="serviceType" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="valid_time" property="validTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id,user_name,email, name, order_id,rds_id, order_type, type,autobackup_at, duration, expire_after, admin_user,admin_password,
+    port,ram,vcpus,disk,service_type,create_time,update_time,valid_time
+  </sql>
+
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from rds_validation
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insert" parameterType="com.ksyun.vm.pojo.rds.RDSValidationPo" >
+    insert into rds_validation (id,user_name,email, name, order_id,rds_id, order_type, type,autobackup_at, duration, expire_after, admin_user,admin_password,
+    port,ram,vcpus,disk,service_type,create_time,update_time,valid_time)
+    values (#{id,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{orderId,jdbcType=VARCHAR},#{rdsId,jdbcType=VARCHAR},
+    #{orderType,jdbcType=INTEGER},#{type,jdbcType=VARCHAR},#{autobackup_at,jdbcType=VARCHAR},#{duration,jdbcType=VARCHAR},#{expireAfter,jdbcType=VARCHAR},
+    #{adminUser,jdbcType=VARCHAR},#{adminPassword,jdbcType=VARCHAR},#{port,jdbcType=VARCHAR},#{ram,jdbcType=VARCHAR},#{vcpus,jdbcType=VARCHAR},#{disk,jdbcType=VARCHAR},
+    #{serviceType,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP},#{updateTime,jdbcType=TIMESTAMP},#{validTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateIfNecessary" parameterType="com.ksyun.vm.pojo.rds.RDSValidationPo" >
+    update rds_validation
+    <set >
+      <if test="userName != null" >
+          user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+          email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null" >
+        order_id = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="rdsId != null" >
+          rds_id = #{rdsId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null" >
+          order_type = #{orderType,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+          type = #{type,jdbcType=TIMESTAMP},
+      </if>
+      <if test="autobackupAt != null" >
+          autobackup_at = #{autobackupAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="duration != null" >
+          duration = #{duration,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expireAfter != null" >
+          expire_after = #{expireAfter,jdbcType=TIMESTAMP},
+      </if>
+      <if test="adminUser != null" >
+          admin_user = #{adminUser,jdbcType=TIMESTAMP},
+      </if>
+      <if test="adminPassword != null" >
+          admin_password = #{adminPassword,jdbcType=TIMESTAMP},
+      </if>
+      <if test="port != null" >
+          port = #{port,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ram != null" >
+          ram = #{ram,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vcups != null" >
+          vcups = #{vcups,jdbcType=TIMESTAMP},
+      </if>
+      <if test="disk != null" >
+          disk = #{disk,jdbcType=TIMESTAMP},
+      </if>
+      <if test="servcieType != null" >
+          servcie_type = #{servcieType,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+          create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+          update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validTime != null" >
+          valid_time = #{validTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="update" parameterType="com.ksyun.vm.pojo.rds.RDSValidationPo" >
+    update rds_validation
+    set
+      user_name = #{userName,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      order_id = #{orderId,jdbcType=VARCHAR},
+      rds_id = #{rdsId,jdbcType=VARCHAR},
+      order_type = #{orderType,jdbcType=INTEGER},
+      type = #{type,jdbcType=VARCHAR},
+      autobackup_at = #{autobackupAt,jdbcType=VARCHAR},
+      duration = #{duration,jdbcType=VARCHAR},
+      expire_after = #{expireAfter,jdbcType=VARCHAR},
+      admin_user = #{adminUser,jdbcType=VARCHAR},
+      admin_password = #{adminPassword,jdbcType=VARCHAR},
+      port = #{port,jdbcType=VARCHAR},
+      ram = #{ram,jdbcType=VARCHAR},
+      vcpus = #{vcpus,jdbcType=VARCHAR},
+      disk = #{disk,jdbcType=VARCHAR},
+      service_type = #{serviceType,jdbcType=VARCHAR},
+      valid_time = #{validTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+   <select id="getValidTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from rds_validation where rds_id=#{rdsId,jdbcType=VARCHAR} order by valid_time desc limit 1;
+    </select>
+
+    <select id="findByRdsId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from rds_validation
+        where rds_id = #{rdsId,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -111,6 +111,37 @@ public class InitConst {
 	public static final String KVM_LBS_HEALTH_FALL = "kvm.lbs.health.update.fall";
 	public static final String KVM_LBS_HEALTH_OPEN = "kvm.lbs.health.update.open";
 
+
+    public static final String KVM_RDS_INSTANCE_LIST = "kvm.rds.instance.list";
+    public static final String KVM_RDS_INSTANCE_GET = "kvm.rds.instance.get";
+    public static final String KVM_RDS_INSTANCE_ADD = "kvm.rds.instance.add";
+    public static final String KVM_RDS_INSTANCE_DEL = "kvm.rds.instance.del";
+    public static final String KVM_RDS_INSTANCE_BACKUP_CONFIG = "kvm.rds.instance.backup_config";
+    public static final String KVM_RDS_INSTANCE_ADMIN_USER = "kvm.rds.instance.admin_user";
+    public static final String KVM_RDS_INSTANCE_BACKUPS = "kvm.rds.instance.backups";
+
+    public static final String KVM_RDS_INSTANCE_BACKUP_CONFIG_MODIFY = "kvm.rds.instance.backup_config_modify";
+    public static final String KVM_RDS_INSTANCE_RESET_ADMIN_PASSWORD = "kvm.rds.instance.reset_admin_password";
+    public static final String KVM_RDS_INSTANCE_UPGRADE_HA = "kvm.rds.instance.upgrade_ha";
+    public static final String KVM_RDS_INSTANCE_RESIZE = "kvm.rds.instance.resize";
+    public static final String KVM_RDS_INSTANCE_RESTART = "kvm.rds.instance.restart";
+
+    public static final String KVM_RDS_SERVICEIMAGE_LIST = "kvm.rds.serviceimage.list";
+
+    public static final String KVM_RDS_FLAVOR_LIST = "kvm.rds.flavor.list";
+    public static final String KVM_RDS_FLAVOR_GET = "kvm.rds.flavor.get";
+
+    public static final String KVM_RDS_BACKUP_ADD = "kvm.rds.backup.add";
+    public static final String KVM_RDS_BACKUP_GET = "kvm.rds.backup.get";
+    public static final String KVM_RDS_BACKUP_LIST = "kvm.rds.backup.list";
+    public static final String KVM_RDS_BACKUP_DEL = "kvm.rds.backup.del";
+
+    public static final String KVM_RDS_SECURITYGROUP_GET = "kvm.rds.securitygroup.get";
+    public static final String KVM_RDS_SECURITYGROUP_LIST = "kvm.rds.securitygroup.list";
+    public static final String KVM_RDS_SECURITYGROUPRULE_ADD = "kvm.rds.securitygrouprule.add";
+    public static final String KVM_RDS_SECURITYGROUPRULE_DEL = "kvm.rds.securitygrouprule.del";
+
+
 	public static final String MONITOR_HBASE_TABLE_STATUS = "vm_table_status";
 	public static final String MONITOR_HBASE_TABLE_NETWORK = "vm_table_network";
 	public static final String MONITOR_HBASE_TABLE_LOAD = "vm_table_load";
@@ -124,4 +155,7 @@ public class InitConst {
 	public static final String COOKIE_PUBLIC = "public";
 	public static final String COOKIE_PRIVATE = "private";
 	public static final String COOKIE_SPLIT = "&3B87652BA0916C03C634D5DB8558D494&";
+
+
+    public static final String CREATE_RDS_URL = "kvm.rds.callback";
 }

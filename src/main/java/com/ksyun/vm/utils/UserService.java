@@ -8,6 +8,10 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.alibaba.fastjson.JSON;
+import com.ksyun.vm.pojo.user.CreateUserPo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -36,7 +40,7 @@ import com.ksyun.vm.service.JSONService;
  */
 @Service
 public class UserService {
-
+    private Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private JSONService jsonService;
     
@@ -50,6 +54,29 @@ public class UserService {
     @Autowired
   	private IUserInfoDao<UserInfoDto> userInfoDao;
 
+    public boolean isRegister(String username, String password,String email){
+        CreateUserPo po = new CreateUserPo();
+        po.setName(username);
+        po.setPassword(password);
+        po.setIs_admin("0");
+        po.setEmail(email);
+        String requestBody = JSON.toJSONString(po);
+        System.out.println(requestBody);
+        try {
+            jsonService.poWithNoAuth(InitConst.KVM_USER_REGISTER,null,requestBody);
+        } catch (ErrorCodeException e) {
+            if(e.getResult().getStatus() == 409){
+                logger.info(username +" 已经注册");
+                return true;
+            }else{
+                logger.error(e.getResult().getStatus() + "---" + e.getResult().getMessage());
+                return false;
+            }
+        }
+        logger.info("[{}] 已经成功注册",username);
+
+        return true;
+    }
 
     public List<UserPojo> getUsers() throws ErrorCodeException, NoTokenException {
         List<UserPojo> list = jsonService.getPoList(InitConst.KVM_USER_LIST,InitConst.ADMIN,InitConst.PASSWORD,UserPojo.class);
