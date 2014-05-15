@@ -154,17 +154,17 @@
                               <th width="12%">cpu信息</th>
                           </thead>
                                <tr class="tb-tit-bg" style="text-align:center">
-                                   <td>总和：[<span><c:out value="${fn:length(dto.statZone.host_usage)}"></c:out></span>&nbsp个]</td>
+                                   <td>总和：[<span><em style="color:red;"><c:out value="${fn:length(dto.statZone.host_usage)}"></c:out></em></span>&nbsp个]</td>
                                    <td></td>
-                                   <td>总和：[<span id="running_vms">${running_vms}</span>&nbsp个]</td>
-                                   <td>总和：[<span id="vcpus">${vcpus}</span>&nbsp核]</td>
-                                   <td>总和：[<span id="vcpus_used">${vcpus_used}</span>&nbsp个]</td>
-                                   <td>总和：[<span id="local_gb">${local_gb}</span>&nbspGB]</td>
-                                   <td>总和：[<span id="local_gb_used">${local_gb_used}</span>&nbspGB]</td>
-                                   <td>总和：[<span id="free_disk_gb">${free_disk_gb}</span>&nbspGB]</td>
-                                   <td>总和：[<span id="memory_mb">${memory_mb}</span>&nbspMB]</td>
-                                   <td>总和：[<span id="memory_mb_used">${memory_mb_used}</span>&nbspMB]</td>
-                                   <td>总和：[<span id="free_ram_mb">${free_ram_mb}</span>&nbspMB]</td>
+                                   <td>总和：[<span id="running_vms"><em style="color:red;">${running_vms}</em></span>&nbsp个]</td>
+                                   <td>总和：[<span id="vcpus"><em style="color:red;">${vcpus}</em><em></span>&nbsp核]</td>
+                                   <td>总和：[<span id="vcpus_used"><em style="color:red;">${vcpus_used}</em></span>&nbsp个]</td>
+                                   <td>总和：[<span id="local_gb"><em style="color:red;">${local_gb}</em></span>&nbspGB]</td>
+                                   <td>总和：[<span id="local_gb_used"><em style="color:red;">${local_gb_used}</em></span>&nbspGB]</td>
+                                   <td>总和：[<span id="free_disk_gb"><em style="color:red;">${free_disk_gb}</em></span>&nbspGB]</td>
+                                   <td>总和：[<span id="memory_mb"><em style="color:red;">${memory_mb}</em></span>&nbspMB]</td>
+                                   <td>总和：[<span id="memory_mb_used"><em style="color:red;">${memory_mb_used}</em></span>&nbspMB]</td>
+                                   <td>总和：[<span id="free_ram_mb"><em style="color:red;">${free_ram_mb}</em></span>&nbspMB]</td>
                                    <td width="12%"></td>
                                </tr>
                                <tbody>
