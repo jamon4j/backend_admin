@@ -38,6 +38,18 @@
         function chart_status(id){
             window.location.href="/g/chart/status/"+id;
         }
+           	$(function(){
+                    $( "#slider-range-min" ).slider({
+                        range: "min",
+                        value: 20,
+                        min: 5,
+                        max: 200,
+                        slide: function( event, ui ) {
+                            $( "#create_root_disk" ).val(ui.value);
+                        }
+                    });
+                    $( "#create_root_disk" ).val($( "#slider-range-min" ).slider( "value" ));
+        	   	});
         function vnc(instanceId){
             $("#vncDialog").dialog({
                 autoOpen: false,
@@ -399,10 +411,10 @@
        		///////////   创建rds开始  ///////////
     	   	function addrds(userid){
 
-    			//创建虚拟机窗口
+    			//创建RDS窗口
     		   	$( "#addrds_form" ).dialog({
     				autoOpen: false,
-    				height: 550,
+    				height: 750,
     				width: 700,
     				modal: true,
     				buttons: {
@@ -451,39 +463,39 @@
     										create_ram:create_ram.val()},
     								success : function(data) {
     									if(data == "failed"){
-    										alert("创建虚拟机失败!");
-    										window.location.href="/g/user/vmlist/"+tenantid+"/"+userid;
+    										alert("创建RDS失败!");
+    										window.location.href="/g/user/rdslist/"+userid;
     										return;
     									}
     									var jsonobj=eval('('+data+')');
-    									window.location.href="/g/user/vmlist/"+tenantid+"/"+userid;
+    									window.location.href="/g/user/rdslist/"+userid;
     								},
     								error : function(XMLHttpRequest,textStatus,errorThrown) {
-    									alert("创建虚拟机失败!");
+    									alert("创建RDS失败!");
     									alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
     									alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
     									alert("textStatus:"+textStatus);
     								}
     							});
 
-    						$("#addvm_form").dialog( "close" );
+    						$("#addrds_form").dialog( "close" );
     						}
     					},
     					"取消": function() {
-    						$("#addvm_form").dialog( "close" );
+    						$("#addrds_form").dialog( "close" );
     					}
     				},
     				close: function() {
-    					$("#create_imageRef").empty();
-    					$("#create_imageRef").append("<option value=''>请选择镜像</option>");
-    					$("#create_zone").empty();
-    					$("#create_zone").append("<option value=''>请选择zone</option>");
-    					$("#create_security_groups").empty();
+    					//$("#create_imageRef").empty();
+    					//$("#create_imageRef").append("<option value=''>请选择镜像</option>");
+    					//$("#create_zone").empty();
+    					//$("#create_zone").append("<option value=''>请选择zone</option>");
+    					//$("#create_security_groups").empty();
     				}
     			});
-    	   		$( "#addvm_form" ).dialog("open");
+    	   		$( "#addrds_form" ).dialog("open");
     	   	}
-    	   	///////////   创建vm结束  ///////////
+    	   	///////////   创建rds结束  ///////////
 </script>
 
 <div id="setebs_dialog" title="关联EBS" style="display:none;">
