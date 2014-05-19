@@ -145,21 +145,21 @@
 						    <fmt:parseNumber var="local_gb_used_scale_int" integerOnly="true" type="number" value="${local_gb_used / local_gb * 100}" />
 						    <fmt:parseNumber var="memory_mb_used_scale_int" integerOnly="true" type="number" value="${memory_mb_used / memory_mb * 100}" />
                             <fmt:parseNumber var="wan_used_ipnum_scale_int" integerOnly="true" type="number" value="${wan_used_ipnum / wan_ipnum * 100}" />
-                            <p>总CPU：<em>${vcpus}</em>&nbsp;个</p>
-                            <p>已使用CPU：<em>${vcpus_used}</em>&nbsp;个</p>
-                            <p>已使用CPU百分比：<em>${vcpus_used_scale_int}</em>&nbsp;%</p>
-                            <p>总磁盘：<em>${local_gb}</em>&nbsp;GB</p>
-                            <p>已使用磁盘：<em>${local_gb_used}</em>&nbsp;GB</p>
-                            <p>已使用磁盘百分比：<em>${local_gb_used_scale_int}</em>&nbsp;%</p>
-                            <p>总内存：<em>${memory_mb}</em>&nbsp;MB</p>
-                            <p>已使用内存：<em>${memory_mb_used}</em>&nbsp;MB</p>
-                            <p>已使用内存百分比：<em>${memory_mb_used_scale_int}</em>&nbsp;%</p>
-                            <p>总IP（公网）：<em>${wan_ipnum}</em>&nbsp;个</p>
-                            <p>已使用IP：<em>${wan_used_ipnum}</em>&nbsp;个</p>
-                            <p>已使用IP百分比：<em>${wan_used_ipnum_scale_int}</em>&nbsp;%</p>
-                            <p>已使用带宽：<em>&nbsp;</p>
-                            <p>已运行虚机总数：<em>${running_vms}</em>&nbsp;个</p>
-                            <p>物理机总数：<em><c:out value="${fn:length(dto.statZone.host_usage)}"></c:out>&nbsp;个</p>
+                            <p>总CPU：<em style="color:red;">${vcpus}</em>&nbsp;个</p>
+                            <p>已使用CPU：<em style="color:red;">${vcpus_used}</em>&nbsp;个</p>
+                            <p>已使用CPU百分比：<em style="color:red;">${vcpus_used_scale_int}</em>&nbsp;%</p>
+                            <p>总磁盘：<em style="color:red;">${local_gb}</em>&nbsp;GB</p>
+                            <p>已使用磁盘：<em style="color:red;">${local_gb_used}</em>&nbsp;GB</p>
+                            <p>已使用磁盘百分比：<em style="color:red;">${local_gb_used_scale_int}</em>&nbsp;%</p>
+                            <p>总内存：<em style="color:red;">${memory_mb}</em>&nbsp;MB</p>
+                            <p>已使用内存：<em style="color:red;">${memory_mb_used}</em>&nbsp;MB</p>
+                            <p>已使用内存百分比：<em style="color:red;">${memory_mb_used_scale_int}</em>&nbsp;%</p>
+                            <p>总IP（公网）：<em style="color:red;">${wan_ipnum}</em>&nbsp;个</p>
+                            <p>已使用IP：<em style="color:red;">${wan_used_ipnum}</em>&nbsp;个</p>
+                            <p>已使用IP百分比：<em style="color:red;">${wan_used_ipnum_scale_int}</em>&nbsp;%</p>
+                            <p>已使用带宽：<em style="color:red;"></em>&nbsp;</p>
+                            <p>已运行虚机总数：<em style="color:red;">${running_vms}</em>&nbsp;个</p>
+                            <p>物理机总数：<em style="color:red;"><c:out value="${fn:length(dto.statZone.host_usage)}"></c:out></em>&nbsp;个</p>
 						</td>
                         <td><button onclick="show(${dto.id})">查看容量详情</button></td>
                         <td><button onclick="showIp(${dto.id})">IP查看</button> </td>
@@ -294,7 +294,7 @@
                   <th>硬盘售卖百分比</th>
                   <th>总IP（公网）</th>
                   <th>已售IP</th>
-                  <th>IP售卖百分</th>
+                  <th>IP售卖百分比</th>
                   <th>已售带宽</th>
               </thead>
                    <tbody>

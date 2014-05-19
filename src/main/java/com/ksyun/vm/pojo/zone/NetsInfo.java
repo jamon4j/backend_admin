@@ -2,6 +2,7 @@ package com.ksyun.vm.pojo.zone;
 
 import com.ksyun.vm.pojo.stat.IpStat;
 import com.ksyun.vm.pojo.stat.WLan;
+import org.apache.log4j.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Set;
  * Email: zn.share@gmail.com
  */
 public class NetsInfo {
-
+    private Logger logger = Logger.getLogger(getClass());
     private int wan_ipnum_zones;
     private int wan_availability_ipnum_zones;
     private int wan_used_ipnum_zones;
@@ -36,7 +37,8 @@ public class NetsInfo {
                     }
                 }
             }
-            wan_used_ipnum_zones_scale = wan_used_ipnum_zones / wan_ipnum_zones * 100;
+            wan_used_ipnum_zones_scale = (int) ((float) wan_used_ipnum_zones / (float) wan_ipnum_zones * 100);
+            logger.info("wan_used_ipnum_zones_scale:"+wan_used_ipnum_zones_scale);
         }
     }
 
