@@ -13,6 +13,7 @@ import com.ksyun.vm.pojo.stat.CpuInfos;
 import com.ksyun.vm.pojo.stat.HostUsage;
 import com.ksyun.vm.pojo.stat.IpStat;
 import com.ksyun.vm.pojo.stat.StatZone;
+import com.ksyun.vm.pojo.zone.NetsInfo;
 import com.ksyun.vm.pojo.zone.ZonePojo;
 import com.ksyun.vm.service.StatService;
 import com.ksyun.vm.service.ZoneService;
@@ -39,6 +40,7 @@ public class ZoneController {
         List<ZonePojo> list = null;
         List<StatZone> stat_zone = null;
         List<IpStat> ip_stat = null;
+        NetsInfo netsInfo = null;
         try {
             list = zoneService.getZoneList();
             stat_zone = statService.getStatZone();
@@ -59,10 +61,12 @@ public class ZoneController {
                     }
                 }
             }
+             netsInfo = NetsInfo.getInstance(ip_stat);
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
         }
         mav.addObject("zonelist", list);
+        mav.addObject("netsInfo",netsInfo);
 		mav.setViewName("/gestion/zone/zone_list");
 		return mav;
 	}

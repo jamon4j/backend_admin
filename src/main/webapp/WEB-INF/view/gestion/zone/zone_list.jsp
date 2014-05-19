@@ -1,6 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@include file="../inc/jsCssIncludeHeader.jspf"%>
 <head>
    	<%@include file="../inc/meta.jspf"%>
@@ -67,7 +69,10 @@
                     <div class="th-gap">查看该zone下物理机</div>
                 </th>
                 <th>
-                    <div class="th-gap">查看容量</div>
+                    <div class="th-gap">容量概览</div>
+                </th>
+                <th>
+                    <div class="th-gap">容量详情</div>
                 </th>
                 <th>
                     <div class="th-gap">查看IP</div>
@@ -75,15 +80,88 @@
             </tr>
             </thead>
             <tbody>
-			
+                <c:set value="0" var="running_vms_zones" />
+                <c:set value="0" var="vcpus_zones" />
+                <c:set value="0" var="vcpus_used_zones" />
+                <c:set value="0" var="local_gb_zones" />
+                <c:set value="0" var="local_gb_used_zones" />
+                <c:set value="0" var="memory_mb_zones" />
+                <c:set value="0" var="memory_mb_used_zones" /><%-- zones的总属性 --%>
             	<c:forEach var="dto" items="${zonelist}" varStatus="status">
+                    <c:set value="0" var="running_vms" />
+                    <c:set value="0" var="vcpus" />
+                    <c:set value="0" var="vcpus_used" />
+                    <c:set value="0" var="local_gb" />
+                    <c:set value="0" var="local_gb_used" />
+                    <c:set value="0" var="free_disk_gb" />
+                    <c:set value="0" var="memory_mb" />
+                    <c:set value="0" var="memory_mb_used" />
+                    <c:set value="0" var="free_ram_mb" />
+                    <c:set value="0" var="wan_ipnum" />
+                    <c:set value="0" var="wan_availability_ipnum" />
+                    <c:set value="0" var="wan_used_ipnum" />
+                    <c:set value="0" var="lan_ipnum" />
+                    <c:set value="0" var="lan_availability_ipnum" />
+                    <c:set value="0" var="lan_used_ipnum" />
+                    <%-- 各个zone的属性 --%>
+                    <c:forEach items="${dto.statZone.host_usage}" var="husage" varStatus="status">
+                        <tr>
+                            <c:set value="${running_vms + husage.running_vms}" var="running_vms" />
+                            <c:set value="${vcpus + husage.vcpus}" var="vcpus" />
+                            <c:set value="${vcpus_used + husage.vcpus_used}" var="vcpus_used" />
+                            <c:set value="${local_gb + husage.local_gb}" var="local_gb" />
+                            <c:set value="${local_gb_used + husage.local_gb_used}" var="local_gb_used" />
+                            <c:set value="${free_disk_gb + husage.free_disk_gb}" var="free_disk_gb" />
+                            <c:set value="${memory_mb + husage.memory_mb}" var="memory_mb" />
+                            <c:set value="${memory_mb_used + husage.memory_mb_used}" var="memory_mb_used" />
+                            <c:set value="${free_ram_mb + husage.free_ram_mb}" var="free_ram_mb" />
+                            <%-- 将各个物理机的属性累加到zone的属性 --%>
+                    </c:forEach>
+
+                    <c:set value="${running_vms_zones + running_vms}" var="running_vms_zones" />
+                    <c:set value="${vcpus_zones + vcpus}" var="vcpus_zones" />
+                    <c:set value="${vcpus_used_zones + vcpus_used}" var="vcpus_used_zones" />
+                    <c:set value="${local_gb_zones + local_gb}" var="local_gb_zones" />
+                    <c:set value="${local_gb_used_zones + local_gb_used}" var="local_gb_used_zones" />
+                    <c:set value="${memory_mb_zones + memory_mb}" var="memory_mb_zones" />
+                    <c:set value="${memory_mb_used_zones + memory_mb_used}" var="memory_mb_used_zones" /><%-- 将各个zone的属性累加到zones的总属性 --%>
+					<fmt:parseNumber var="vcpus_used_zones_scale_int" integerOnly="true" type="number" value="${vcpus_used_zones / vcpus_zones * 100}" />
+                    <fmt:parseNumber var="local_gb_used_zones_scale_int" integerOnly="true" type="number" value="${local_gb_used_zones / local_gb_zones * 100}" />
+                    <fmt:parseNumber var="memory_mb_used_zones_scale_int" integerOnly="true" type="number" value="${memory_mb_used_zones / memory_mb_zones * 100}" />
+
+                    <c:forEach items="${dto.ipStat.wan}" var="wan" varStatus="status">
+                        <c:set value="${wan_ipnum + wan.ipnum}" var="wan_ipnum" />
+                        <c:set value="${wan_availability_ipnum + wan.availability_ipnum}" var="wan_availability_ipnum" />
+                        <c:set value="${wan_used_ipnum + wan.used_ipnum}" var="wan_used_ipnum" />
+                    </c:forEach>
 					<tr>
 						<td>${dto.id} </td>
 						<td>${dto.name} </td>
 						<td><c:if test="${dto.deleted=='false'}">是</c:if><c:if test="${dto.deleted=='true'}">否</c:if> </td>
 						<td><button onclick="detail(${dto.id})">详情</button></td>
 						<td><button onclick="showhostlist(${dto.id})">查看物理机</button></td>
-                        <td><button onclick="show(${dto.id})">容量查看</button></td>
+						<td>
+						    <fmt:parseNumber var="vcpus_used_scale_int" integerOnly="true" type="number" value="${vcpus_used / vcpus * 100}" />
+						    <fmt:parseNumber var="local_gb_used_scale_int" integerOnly="true" type="number" value="${local_gb_used / local_gb * 100}" />
+						    <fmt:parseNumber var="memory_mb_used_scale_int" integerOnly="true" type="number" value="${memory_mb_used / memory_mb * 100}" />
+                            <fmt:parseNumber var="wan_used_ipnum_scale_int" integerOnly="true" type="number" value="${wan_used_ipnum / wan_ipnum * 100}" />
+                            <p>总CPU：<em style="color:red;">${vcpus}</em>&nbsp;个</p>
+                            <p>已使用CPU：<em style="color:red;">${vcpus_used}</em>&nbsp;个</p>
+                            <p>已使用CPU百分比：<em style="color:red;">${vcpus_used_scale_int}</em>&nbsp;%</p>
+                            <p>总磁盘：<em style="color:red;">${local_gb}</em>&nbsp;GB</p>
+                            <p>已使用磁盘：<em style="color:red;">${local_gb_used}</em>&nbsp;GB</p>
+                            <p>已使用磁盘百分比：<em style="color:red;">${local_gb_used_scale_int}</em>&nbsp;%</p>
+                            <p>总内存：<em style="color:red;">${memory_mb}</em>&nbsp;MB</p>
+                            <p>已使用内存：<em style="color:red;">${memory_mb_used}</em>&nbsp;MB</p>
+                            <p>已使用内存百分比：<em style="color:red;">${memory_mb_used_scale_int}</em>&nbsp;%</p>
+                            <p>总IP（公网）：<em style="color:red;">${wan_ipnum}</em>&nbsp;个</p>
+                            <p>已使用IP：<em style="color:red;">${wan_used_ipnum}</em>&nbsp;个</p>
+                            <p>已使用IP百分比：<em style="color:red;">${wan_used_ipnum_scale_int}</em>&nbsp;%</p>
+                            <p>已使用带宽：<em style="color:red;"></em>&nbsp;</p>
+                            <p>已运行虚机总数：<em style="color:red;">${running_vms}</em>&nbsp;个</p>
+                            <p>物理机总数：<em style="color:red;"><c:out value="${fn:length(dto.statZone.host_usage)}"></c:out></em>&nbsp;个</p>
+						</td>
+                        <td><button onclick="show(${dto.id})">查看容量详情</button></td>
                         <td><button onclick="showIp(${dto.id})">IP查看</button> </td>
 						<div id="zone_dialog_${dto.id}" title="zone${dto.id}详情" style="display:none">
 							<p>id:${dto.id}</p>
@@ -96,23 +174,40 @@
 						</div>
 					</tr>
                     <tr id="contain-${dto.id}" style="display: none;">
-                        <td colspan="7">
+                        <td colspan="8">
                         <div>
                            <table class="table">
-                               <thead class="tb-tit-bg">
-                                   <th>hostname</th>
-                                   <th>hypervisor类型</th>
-                                   <th>运行虚机个数</th>
-                                   <th>总cpu数</th>
-                                   <th>使用的cpu数</th>
-                                   <th>总磁盘空间</th>
-                                   <th>已使用磁盘大小</th>
-                                   <th>剩余磁盘大小</th>
-                                   <th>总内存数</th>
-                                   <th>内存使用</th>
-                                   <th>剩余内存</th>
-                                   <th width="12%">cpu信息</th>
-                               </thead>
+                           <thead class="tb-tit-bg" style="text-align:center">
+                              <th>hostname</th>
+                              <th>hypervisor类型</th>
+                              <th>运行虚机个数</th>
+                              <th>总cpu数；累计</th>
+                              <th>使用的cpu数</th>
+                              <th>总磁盘空间</th>
+                              <th>已使用磁盘大小</th>
+                              <th>剩余磁盘大小</th>
+                              <th>总内存数</th>
+                              <th>内存使用</th>
+                              <th>剩余内存</th>
+                              <th>
+                                  <div class="th-gap">容量概览</div>
+                              </th>
+                              <th width="12%">cpu信息</th>
+                          </thead>
+                               <tr class="tb-tit-bg" style="text-align:center">
+                                   <td>总和：[<span><em style="color:red;"><c:out value="${fn:length(dto.statZone.host_usage)}"></c:out></em></span>&nbsp个]</td>
+                                   <td></td>
+                                   <td>总和：[<span id="running_vms"><em style="color:red;">${running_vms}</em></span>&nbsp个]</td>
+                                   <td>总和：[<span id="vcpus"><em style="color:red;">${vcpus}</em><em></span>&nbsp核]</td>
+                                   <td>总和：[<span id="vcpus_used"><em style="color:red;">${vcpus_used}</em></span>&nbsp个]</td>
+                                   <td>总和：[<span id="local_gb"><em style="color:red;">${local_gb}</em></span>&nbspGB]</td>
+                                   <td>总和：[<span id="local_gb_used"><em style="color:red;">${local_gb_used}</em></span>&nbspGB]</td>
+                                   <td>总和：[<span id="free_disk_gb"><em style="color:red;">${free_disk_gb}</em></span>&nbspGB]</td>
+                                   <td>总和：[<span id="memory_mb"><em style="color:red;">${memory_mb}</em></span>&nbspMB]</td>
+                                   <td>总和：[<span id="memory_mb_used"><em style="color:red;">${memory_mb_used}</em></span>&nbspMB]</td>
+                                   <td>总和：[<span id="free_ram_mb"><em style="color:red;">${free_ram_mb}</em></span>&nbspMB]</td>
+                                   <td width="12%"></td>
+                               </tr>
                                <tbody>
                                     <c:forEach items="${dto.statZone.host_usage}" var="husage" varStatus="status">
                                         <tr>
@@ -127,6 +222,14 @@
                                             <td>${husage.memory_mb}MB</td>
                                             <td>${husage.memory_mb_used}MB</td>
                                             <td>${husage.free_ram_mb}MB</td>
+                                            <td>
+                                                <fmt:parseNumber var="vcpus_used_scale_int" integerOnly="true" type="number" value="${husage.vcpus_used / husage.vcpus * 100}" />
+                                                <fmt:parseNumber var="local_gb_used_scale_int" integerOnly="true" type="number" value="${husage.local_gb_used / husage.local_gb * 100}" />
+                                                <fmt:parseNumber var="memory_mb_used_scale_int" integerOnly="true" type="number" value="${husage.memory_mb_used / husage.memory_mb * 100}" />
+                                                <p>已使用CPU：<em>${vcpus_used_scale_int}</em>&nbsp;%</p>
+                                                <p>已使用磁盘：<em>${local_gb_used_scale_int}</em>&nbsp;%</p>
+                                                <p>已使用内存：<em>${memory_mb_used_scale_int}</em>&nbsp;%</p>
+                                            </td>
                                             <td>
                                                 <p>厂商:${husage.cpu_infos.vendor}</p>
                                                 <p>model:${husage.cpu_infos.model}</p>
@@ -144,7 +247,7 @@
                         </td>
                     </tr>
                     <tr id="ip-${dto.id}" style="display: none;">
-                        <td colspan="7">
+                        <td colspan="8">
                         <div>
                         <table class="table">
                         <thead class="tb-tit-bg">
@@ -176,9 +279,42 @@
                         </td>
                     </tr>
 				</c:forEach>
-
             </tbody>
         </table>
+               <table class="table" style="text-align:center">
+               <thead class="tb-tit-bg" >
+                  <th>总cpu</th>
+                  <th>已售cpu</th>
+                  <th>cpu售卖百分比</th>
+                  <th>总内存</th>
+                  <th>已售内存</th>
+                  <th>内存售卖百分比</th>
+                  <th>总硬盘</th>
+                  <th>已售硬盘</th>
+                  <th>硬盘售卖百分比</th>
+                  <th>总IP（公网）</th>
+                  <th>已售IP</th>
+                  <th>IP售卖百分比</th>
+                  <th>已售带宽</th>
+              </thead>
+                   <tbody>
+                   <tr>
+                        <td><em style="color:red;">${vcpus_zones}</em>&nbsp;核</td>
+                        <td><em style="color:red;">${vcpus_used_zones}</em>&nbsp;核</td>
+                        <td><em style="color:red;">${vcpus_used_zones_scale_int}</em>&nbsp;%</td>
+                        <td><em style="color:red;">${memory_mb_zones}</em>&nbsp;MB</td>
+                        <td><em style="color:red;">${memory_mb_used_zones}</em>&nbsp;MB</td>
+                        <td><em style="color:red;">${memory_mb_used_zones_scale_int}</em>&nbsp;%</td>
+                        <td><em style="color:red;">${local_gb_zones}</em>&nbsp;GB</td>
+                        <td><em style="color:red;">${local_gb_used_zones}</em>&nbsp;GB</td>
+                        <td><em style="color:red;">${local_gb_used_zones_scale_int}</em>&nbsp;%</td>
+                        <td><em style="color:red;">${netsInfo.wan_ipnum_zones}</em>&nbsp;个</td>
+                        <td><em style="color:red;">${netsInfo.wan_used_ipnum_zones}</em>&nbsp;个</td>
+                        <td><em style="color:red;">${netsInfo.wan_used_ipnum_zones_scale}</em>&nbsp;%</td>
+                        <td><em style="color:red;"></em>&nbsp;</td>
+                    </tr>
+                   </tbody>
+               </table>
     </div>
 </div>
 
