@@ -125,6 +125,8 @@ public class InitConst {
     public static final String KVM_RDS_INSTANCE_UPGRADE_HA = "kvm.rds.instance.upgrade_ha";
     public static final String KVM_RDS_INSTANCE_RESIZE = "kvm.rds.instance.resize";
     public static final String KVM_RDS_INSTANCE_RESTART = "kvm.rds.instance.restart";
+    public static final String KVM_RDS_INSTANCE_MIGRATE = "kvm.rds.instance.migrate";
+    public static final String KVM_RDS_INSTANCE_FAILOVER = "kvm.rds.instance.failover";
 
     public static final String KVM_RDS_SERVICEIMAGE_LIST = "kvm.rds.serviceimage.list";
 

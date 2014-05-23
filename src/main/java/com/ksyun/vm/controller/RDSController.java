@@ -1,17 +1,17 @@
 package com.ksyun.vm.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.ksyun.tools.net.ServletUtil;
 import com.ksyun.vm.exception.ErrorCodeException;
 import com.ksyun.vm.exception.NoTokenException;
 import com.ksyun.vm.pojo.Result;
 import com.ksyun.vm.pojo.rds.*;
 import com.ksyun.vm.pojo.vm.VmValidationPo;
-import com.ksyun.vm.service.*;
-import com.ksyun.vm.service.rds.RDSInstanceAuth;
-import com.ksyun.vm.service.rds.RDSInstanceCheck;
-import com.ksyun.vm.utils.*;
-import org.apache.commons.beanutils.BeanUtils;
+import com.ksyun.vm.service.RDSService;
+import com.ksyun.vm.utils.Constants;
+import com.ksyun.vm.utils.HttpUtils;
+import com.ksyun.vm.utils.InitConst;
+import com.ksyun.vm.utils.TimeUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -20,10 +20,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * User: liuchuandong
@@ -35,40 +35,32 @@ import java.util.Map;
 @RequestMapping()
 public class RDSController {
 
-    Logger log = LoggerFactory.getLogger(RDSController.class);
+    private Logger log = LoggerFactory.getLogger(RDSController.class);
     @Resource
     private RDSService rdsService;
-    @Resource
-    private RDSInstanceAuth rdsInstanceAuth;
-    @Resource(type = RDSInstanceCheck.class)
-    private Validation rDSInstanceCheck;
-    @Resource
-    private UserService userService;
 
-    @RequestMapping(value = "/g/user/rdslist/{user_id}")
+    @Deprecated
+    @RequestMapping(value = "/g/user/rdslist1/{user_id}")
     @ResponseBody
-    public ModelAndView getInstanceList(@PathVariable("user_id") String userId, HttpServletRequest request,ModelAndView mav) {
+    public ModelAndView getInstanceList(@PathVariable("user_id") String userId, HttpServletRequest request, ModelAndView mav) {
         Result result = new Result();
         List<RDSInstance> instances = null;
         boolean flag = true;
-        boolean notExits = true;
         try {
         } catch (Exception e) {
             log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
         } finally {
-            if (notExits) {
-                try {
-                    instances = rdsService.getInstanceList(userId);
-                } catch (Exception e) {
-                    if (e instanceof ErrorCodeException) {
-                        log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:" + ((ErrorCodeException) e).getResult().getStatus() + "---" + ((ErrorCodeException) e).getResult().getMessage());
-                    } else {
-                        log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
-                    }
-                    flag = false;
+            try {
+                instances = rdsService.getInstanceList(userId);
+            } catch (Exception e) {
+                if (e instanceof ErrorCodeException) {
+                    log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:" + ((ErrorCodeException) e).getResult().getStatus() + "---" + ((ErrorCodeException) e).getResult().getMessage());
+                } else {
+                    log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
                 }
+                flag = false;
             }
-            ReturnRdsInstance returnRdsInstance= new ReturnRdsInstance();
+            ReturnRdsInstance returnRdsInstance = new ReturnRdsInstance();
             if (flag) {
                 try {
                     returnRdsInstance.setRdsInstances(instances);
@@ -85,8 +77,33 @@ public class RDSController {
                 result.setStatus("0");
                 result.setStatusText("获取失败!");
             }
-            request.setAttribute("userid", userId);
+            request.setAttribute("userId", userId);
             mav.addObject("rdslist", returnRdsInstance);
+            mav.setViewName("/gestion/user/rds_list");
+            return mav;
+        }
+    }
+
+    @RequestMapping(value = "/g/user/rdslist/{user_id}")
+    @ResponseBody
+    public ModelAndView getInstanceList2(@PathVariable("user_id") String userId, HttpServletRequest request, ModelAndView mav) {
+        RDSGroupDTO rdsGroupDTO = null;
+        try {
+        } catch (Exception e) {
+            log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
+        } finally {
+            try {
+                rdsGroupDTO = rdsService.getRDSGroupDTO(userId);
+            } catch (Exception e) {
+                if (e instanceof ErrorCodeException) {
+                    log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:" + ((ErrorCodeException) e).getResult().getStatus() + "---" + ((ErrorCodeException) e).getResult().getMessage());
+                } else {
+                    log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
+                }
+            }
+
+            request.setAttribute("userId", userId);
+            mav.addObject("rdsGroupDTO", rdsGroupDTO);
             mav.setViewName("/gestion/user/rds_list");
             return mav;
         }
@@ -94,83 +111,28 @@ public class RDSController {
 
     @RequestMapping(value = "/instance/get/{instance_id}", method = RequestMethod.POST)
     @ResponseBody
-    public Result getInstance(HttpServletRequest request, @PathVariable String instance_id) {
-        String username = request.getAttribute("username").toString();
-        List<RDSInstance> instances = null;
-        Map<String, String> checkMap = Tools.collectProperties(new String[]{"id"}, new String[]{instance_id});
-        boolean flag = true;
-        boolean notExits = true;
-        Result result = null;
+    public ModelAndView getInstance(HttpServletRequest request, @RequestParam("username") String username, @RequestParam("instance_id") String instance_id
+            , ModelAndView mav) {
+        RDSInstance instance;
         try {
-            rDSInstanceCheck.setBaseAuth(rdsInstanceAuth);
-            Map<String, Object> map = rDSInstanceCheck.check(MethodType.SELECT, username, checkMap);
-            if (map.size() > 0) {
-                if (Boolean.valueOf(map.get("isNotPass").toString())) {
-                    flag = false;
-                    notExits = false;
-                    return result = (Result) map.get("result");
-                }
-            }
+            instance = rdsService.getInstanceFull(username, instance_id);
         } catch (Exception e) {
-            log.error("[ RDS_INSTNACE_GET---user:" + username + " ]Error:", e);
-        } finally {
-            if (notExits) {
-                try {
-                    instances = new ArrayList<>();
-                    RDSInstance instance = rdsService.getInstance(username, instance_id);
-                    instances.add(instance);
-                } catch (Exception e) {
-                    if (e instanceof ErrorCodeException) {
-                        log.error("[ RDS_INSTNACE_GET---user:" + username + " ]Error:" + ((ErrorCodeException) e).getResult().getStatus() + "---" + ((ErrorCodeException) e).getResult().getMessage());
-                    } else {
-                        log.error("[ RDS_INSTNACE_GET---user:" + username + " ]Error:", e);
-                    }
-                    flag = false;
-                }
-            }
-            if (flag) {
-                List<ReturnRdsInstance> list = new ArrayList<>();
-                try {
-                    for (RDSInstance instance : instances) {
-                        instance.getFlavor().setLinks(null);
-                        instance.getFlavor().setId(null);
-                        instance.getFlavor().setLocal_storage(null);
-                        instance.getFlavor().setName(null);
-                        ReturnRdsInstance returnRdsInstance = new ReturnRdsInstance();
-                        BeanUtils.copyProperties(returnRdsInstance, instance);
-//                        if (returnRdsInstance.getId() == null) {
-//                            returnRdsInstance.setId(instance.getId());
-//                        }
-                        list.add(returnRdsInstance);
-                    }
-                } catch (Exception e) {
-                    log.error("[ RDS_INSTNACE_GET---user:" + username + " ]Error:", e);
-                }
-                result = new Result();
-                result.setData(list);
-                result.setStatus("1");
-                result.setStatusText("success");
-                log.info("用户{}/rds/instance/get，返回结果{}", new Object[]{username, result});
+            if (e instanceof ErrorCodeException) {
+                log.error("[ RDS_INSTNACE_GET---user:" + username + " ]Error:" + ((ErrorCodeException) e).getResult().getStatus() + "---" + ((ErrorCodeException) e).getResult().getMessage());
             } else {
-                if (result == null) {
-                    result = new Result();
-                    result.setData(new ArrayList());
-                    result.setStatus("0");
-                    result.setStatusText("获取失败!");
-                }
+                log.error("[ RDS_INSTNACE_GET---user:" + username + " ]Error:", e);
             }
-            return result;
+            return mav;
         }
+        log.info("用户{}/rds/instance/get，返回结果{}", new Object[]{username, ToStringBuilder.reflectionToString(instance)});
+        return mav;
     }
 
-    @RequestMapping(value = "/instance/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/g/user/createrds/", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody
     public String addInstance(HttpServletRequest request, @RequestBody final CreateInstance createInstance) {
         final String username = createInstance.getUser_id();
-        if (!userService.isRegister(createInstance.getUser_id(), null, createInstance.getEmail())) {
-            log.error("用户{}获取用户信息失败", new Object[] { createInstance.getUser_id() });
-            return "{\"result\":\"failed\"}";
-        }
+
         new Thread(new Runnable() {
             boolean flag = true;
             String message = "";
@@ -211,7 +173,7 @@ public class RDSController {
                                 int retry = 60;
                                 RDSInstance po = null;
                                 try {
-                                    while (retry >= 0 && ((po = rdsService.getInstance(username, rdsId)).getStatus().equalsIgnoreCase("building"))) {
+                                    while (retry >= 0 && ((po = rdsService.getInstanceFull(username, rdsId)).getStatus().equalsIgnoreCase("building"))) {
                                         Thread.currentThread().sleep(3000);
                                         retry--;
                                         log.info(String.format("RDS %s 状态为 %s", po.getId(), po.getStatus()));
@@ -243,48 +205,190 @@ public class RDSController {
         return "{\"result\":\"success\"}";
     }
 
-    @RequestMapping(value = "/instance/{instance_id}/rule/del", method = RequestMethod.POST)
+    @RequestMapping(value = "/g/user/rds/resetAdminPassword/")
     @ResponseBody
-    public Result delRule(HttpServletRequest request, @PathVariable String instance_id) {
-        String username = request.getAttribute("username").toString();
-        String rule_id = ServletUtil.getString(request, "rule_id");
-        Map<String, String> checkMap = Tools.collectProperties(new String[]{"id", "rule_id"}, new String[]{instance_id, rule_id});
-        boolean flag = true;
-        Result result = null;
+    public String resetAdminPassword(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id
+            , @RequestParam("password") String password) {
+        log.info("username:{},instance_id:{},password:{}", username, instance_id, password);
         try {
-            rDSInstanceCheck.setBaseAuth(rdsInstanceAuth);
-            Map<String, Object> map = rDSInstanceCheck.check(MethodType.DELETE, username, checkMap);
-            if (map.size() > 0) {
-                if (Boolean.valueOf(map.get("isNotPass").toString())) {
-                    flag = false;
-                    return result = (Result) map.get("result");
-                }
-            }
-            rdsService.delRule(username, rule_id, instance_id);
+            checkNotNull(username);
+            checkNotNull(instance_id);
+            checkNotNull(password);
         } catch (Exception e) {
-            if (e instanceof ErrorCodeException) {
-                log.error("[ RDS_INSTNACE_upgrade---user:" + username + " ]Error:" + ((ErrorCodeException) e).getResult().getStatus() + "---" + ((ErrorCodeException) e).getResult().getMessage());
-            } else {
-                log.error("[ RDS_INSTNACE_upgrade---user:" + username + " ]Error:", e);
-            }
-            flag = false;
-        } finally {
-            if (flag) {
-                result = new Result();
-                result.setData(new ArrayList());
-                result.setStatus("1");
-                result.setStatusText("success");
-                log.info("用户{}/rds/instance/upgrade，返回结果{}", new Object[]{username, result});
-            } else {
-                if (result == null) {
-                    result = new Result();
-                    result.setData(new ArrayList());
-                    result.setStatus("0");
-                    result.setStatusText("修改失败!");
-                }
-            }
-            return result;
+            return "{\"result\":\"参数不能为空!\"}";
         }
+        try {
+            rdsService.resetAdminPassword(username, instance_id, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return "{\"result\":\"" + e.getMessage() + "\"}";
+        }
+        return "{\"result\":\"success\"}";
+    }
+
+    @RequestMapping(value = "/g/user/rds/upgrade/")
+    @ResponseBody
+    public String upgrade(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
+        log.info("username:{},instance_id:{}", username, instance_id);
+        try {
+            checkNotNull(username);
+            checkNotNull(instance_id);
+        } catch (Exception e) {
+            return "{\"result\":\"参数不能为空!\"}";
+        }
+        try {
+            rdsService.upgrade(username, instance_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return "{\"result\":\"" + e.getMessage() + "\"}";
+        }
+        return "{\"result\":\"success\"}";
+    }
+
+    @RequestMapping(value = "/g/user/rds/restart/")
+    @ResponseBody
+    public String restart(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
+        log.info("username:{},instance_id:{}", username, instance_id);
+        try {
+            checkNotNull(username);
+            checkNotNull(instance_id);
+        } catch (Exception e) {
+            return "{\"result\":\"参数不能为空!\"}";
+        }
+        try {
+            rdsService.restart(username, instance_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return "{\"result\":\"" + e.getMessage() + "\"}";
+        }
+        return "{\"result\":\"success\"}";
+    }
+
+    @RequestMapping(value = "/g/user/rds/resize/")
+    @ResponseBody
+    public String resize(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id,
+                         @RequestParam("ram") String ram, @RequestParam("vcpus") String vcpus, @RequestParam("disk") String disk) {
+        log.info("username:{},instance_id:{},ram:{},vcpus:{},disk:{}", username, instance_id, ram, vcpus, disk);
+        try {
+            checkNotNull(username);
+            checkNotNull(instance_id);
+            checkNotNull(ram);
+            checkNotNull(vcpus);
+            checkNotNull(disk);
+        } catch (Exception e) {
+            return "{\"result\":\"参数不能为空!\"}";
+        }
+        try {
+            rdsService.resize(username, instance_id, ram, vcpus, disk);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return "{\"result\":\"" + e.getMessage() + "\"}";
+        }
+        return "{\"result\":\"success\"}";
+    }
+
+    @RequestMapping(value = "/g/user/rds/migrate/")
+    @ResponseBody
+    public String migrate(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
+        log.info("username:{},instance_id:{}", username, instance_id);
+        try {
+            checkNotNull(username);
+            checkNotNull(instance_id);
+        } catch (Exception e) {
+            return "{\"result\":\"参数不能为空!\"}";
+        }
+        try {
+            rdsService.migrate(username, instance_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return "{\"result\":\"" + e.getMessage() + "\"}";
+        }
+        return "{\"result\":\"success\"}";
+    }
+
+    @RequestMapping(value = "/g/user/rds/failover/")
+    @ResponseBody
+    public String failover(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
+        log.info("username:{},instance_id:{}", username, instance_id);
+        try {
+            checkNotNull(username);
+            checkNotNull(instance_id);
+        } catch (Exception e) {
+            return "{\"result\":\"参数不能为空!\"}";
+        }
+        try {
+            rdsService.failover(username, instance_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return "{\"result\":\"" + e.getMessage() + "\"}";
+        }
+        return "{\"result\":\"success\"}";
+    }
+
+    @RequestMapping(value = "/g/user/rds/startInstance/")
+    @ResponseBody
+    public String startInstance(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
+        log.info("username:{},instance_id:{}", username, instance_id);
+        try {
+            checkNotNull(username);
+            checkNotNull(instance_id);
+        } catch (Exception e) {
+            return "{\"result\":\"参数不能为空!\"}";
+        }
+        try {
+            rdsService.startInstance(username, instance_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return "{\"result\":\"" + e.getMessage() + "\"}";
+        }
+        return "{\"result\":\"success\"}";
+    }
+
+    @RequestMapping(value = "/g/user/rds/stopInstance/")
+    @ResponseBody
+    public String stopInstance(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
+        log.info("username:{},instance_id:{}", username, instance_id);
+        try {
+            checkNotNull(username);
+            checkNotNull(instance_id);
+        } catch (Exception e) {
+            return "{\"result\":\"参数不能为空!\"}";
+        }
+        try {
+            rdsService.stopInstance(username, instance_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return "{\"result\":\"" + e.getMessage() + "\"}";
+        }
+        return "{\"result\":\"success\"}";
+    }
+
+    @RequestMapping(value = "/g/user/rds/removeInstance/")
+    @ResponseBody
+    public String removeInstance(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
+        log.info("username:{},instance_id:{}", username, instance_id);
+        try {
+            checkNotNull(username);
+            checkNotNull(instance_id);
+        } catch (Exception e) {
+            return "{\"result\":\"参数不能为空!\"}";
+        }
+        try {
+            rdsService.removeInstance(username, instance_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return "{\"result\":\"" + e.getMessage() + "\"}";
+        }
+        return "{\"result\":\"success\"}";
     }
 }
 

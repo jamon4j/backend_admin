@@ -2,6 +2,8 @@ package com.ksyun.vm.pojo.rds;
 
 import com.ksyun.vm.pojo.BasePo;
 
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -16,7 +18,6 @@ public class RDSInstanceSecGroup extends BasePo {
     private List<Links> links;
     private String created;
     private List<RDSInstanceRule> rules;
-    private String instance_id;
     private String id;
     private String description;
 
@@ -58,14 +59,6 @@ public class RDSInstanceSecGroup extends BasePo {
 
     public void setRules(List<RDSInstanceRule> rules) {
         this.rules = rules;
-    }
-
-    public String getInstance_id() {
-        return instance_id;
-    }
-
-    public void setInstance_id(String instance_id) {
-        this.instance_id = instance_id;
     }
 
     public String getId() {

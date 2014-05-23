@@ -22,4 +22,9 @@ public class ErrorCodeException extends Exception {
     public void setResult(OpenStackResult result) {
         this.result = result;
     }
+
+    @Override
+    public String getMessage() {
+        return result.getMessage();
+    }
 }

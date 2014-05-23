@@ -178,7 +178,7 @@
 						<td><button class="ui-state-default ui-corner-all" onclick="security_groups('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
 						<td><button class="ui-state-default ui-corner-all" onclick="ebs_snapshot_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
 						<td><button class="ui-state-default ui-corner-all" onclick="vm_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
-						<td><button class="ui-state-default ui-corner-all" onclick="rds_list('39490241')">查看</button></td>
+						<td><button class="ui-state-default ui-corner-all" onclick="rds_list('3653277')">查看</button></td>
 					</tr>
 				</c:forEach>
             </tbody>

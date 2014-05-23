@@ -376,7 +376,7 @@ public class HBaseDao {
 //		hbaseDao.writeMultCell("vm_table_disk", list);
 //		
 //		
-//		Calendar c = Calendar.getInstance();
+//		Calendar c = Calendar.getInstanceFull();
 //        c.add(Calendar.DATE,-1);
 //        String startTime = String.valueOf(c.getTimeInMillis()/1000);
 //        String endTime = String.valueOf(new Date().getTime()/1000);

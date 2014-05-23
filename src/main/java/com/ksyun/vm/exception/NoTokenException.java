@@ -11,4 +11,9 @@ public class NoTokenException extends Exception {
     public NoTokenException(String username,String password) {
         super("Can't get UserToken by username:"+username+" password:"+password);
     }
+
+    @Override
+    public String getMessage() {
+        return super.getMessage();
+    }
 }
