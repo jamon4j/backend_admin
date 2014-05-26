@@ -57,7 +57,7 @@ public class RDSServiceTest extends BaseTest {
     @Test
     public void testGetInstance() throws NoTokenException, ErrorCodeException {
 
-        RDSInstance rdsInstance=  rdsService.getInstanceFull("16552981", "d95ae418-f848-434f-bff1-fbec1973007d");
+        RDSInstance rdsInstance=  rdsService.getInstanceFull("39490241", "ea0b0cd9-ab29-4287-a359-f604a65d8520");
         logger.info("rdsInstance:" + ToStringBuilder.reflectionToString(rdsInstance));
     }
 
@@ -123,6 +123,36 @@ public class RDSServiceTest extends BaseTest {
         createInstance.setRds(instancePo);
         createInstance.setUser_id("39490241");
 
+        RDSValidationPo rdsValidationPo = rdsService.addRDS(createInstance);
+        logger.info("rdsValidationPo:" + ToStringBuilder.reflectionToString(rdsValidationPo));
+    }
+
+
+    @Test
+    public void testAddRDSFromBackup() throws Exception {
+        CreateInstance createInstance = new CreateInstance();
+        InstancePo instancePo = new InstancePo();
+        instancePo.setType("SG");
+        instancePo.setName("test5-26");
+        instancePo.setService_type("mysql");
+        Extend extend = new Extend();
+        extend.setAdmin_user("master");
+        extend.setAdmin_password("123456");
+        extend.setPort("3306");
+        extend.setAutobackup_at("2300");//
+        extend.setDuration("1440");//
+        extend.setExpire_after("7");//
+        instancePo.setExtend(extend);
+        CreateFlavor createFlavor = new CreateFlavor();
+        createFlavor.setDisk("5");
+        createFlavor.setRam("512");
+        createFlavor.setVcpus("1");
+        instancePo.setFlavor(createFlavor);
+        RestorePoint restorePoint = new RestorePoint();
+        restorePoint.setBackupRef("84bd89e9-7652-47bf-baf7-4a5824e9ef3a");
+        instancePo.setRestorePoint(restorePoint);
+        createInstance.setRds(instancePo);
+        createInstance.setUser_id("39490241");
         RDSValidationPo rdsValidationPo = rdsService.addRDS(createInstance);
         logger.info("rdsValidationPo:" + ToStringBuilder.reflectionToString(rdsValidationPo));
     }

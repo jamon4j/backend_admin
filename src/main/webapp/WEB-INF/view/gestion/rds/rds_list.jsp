@@ -257,7 +257,7 @@
 <div class="path"><p>当前位置：机器管理<span>&gt;</span><a href="/g/user/list/1">用户信息</a><span>&gt;</span>rds列表</p></div>
 <div class="main-cont">
     <h3 class="title">rds列表</h3>
-    <form action="/g/user/rdslist/"  method="post" style="display:inline;" >
+    <form action="/g/user/rdslist/"  method="post"  style="display:inline-block;" >
         user_id：<input type="text" name="user_id" value=""/>
         group：<input type="text" name="group" value=""/>
         instance_id：<input type="text" name="instance_id" value=""/>
@@ -273,7 +273,7 @@
                 <button></button>
             </li>--%>
             <li class="ui-state-default ui-corner-all">
-                <button  onclick="addrds('<%=userId %>');">创建</button>
+                <button  onclick="addrds('<%=userId %>',false);">创建</button>
             </li>
             <li class="ui-state-default ui-corner-all">
                 <button  onclick="addrdsFromBackup('<%=userId %>');">从备份创建</button>
@@ -395,7 +395,6 @@
                                        </c:when>
                                 </c:choose>
                                 <p><button onclick="createBackup('<%=userId %>','${rds.id}');">创建备份</button></p>
-                                <p><button onclick="reload('<%=userId %>','${rds.id}');">刷新</button></p>
                             </td>
                         </tr>
                     </c:forEach>
@@ -441,6 +440,11 @@
 		<fieldset>
 			<p>名称<b>(必填)</b>：</p>
 			<input AUTOCOMPLETE="off" type="text" name="create_name" id="create_name"  value="" class="text ui-widget-content ui-corner-all" />
+			<div id="create_backup_id_div"  style="display: none">
+                <p>备份列表：</p>
+                   <select name="create_backup_id" id="create_backup_id"  class="text ui-widget-content ui-corner-all">
+                   </select>
+            </div>
 			<p>类型：</p>
            <select name="create_type" id="create_type"  class="text ui-widget-content ui-corner-all" >
                <option value="SG">测试</option>
@@ -527,7 +531,7 @@
     									  var d1 = JSON.parse(data);
                                            if(d1.result != "success"){
                                                alert(d1.result);
-                                               window.location.href="/g/user/rdslist/"+userid;
+                                               window.location.href="/g/user/rdslist/?user_id="+userid;
                                                return;
                                            }
                                            alert("操作成功!");
@@ -592,7 +596,7 @@
     									  var d1 = JSON.parse(data);
                                            if(d1.result != "success"){
                                                alert(d1.result);
-                                               window.location.href="/g/user/rdslist/"+userid;
+                                               window.location.href="/g/user/rdslist/?user_id="+userid;
                                                return;
                                            }
                                            alert("操作成功!");
@@ -620,8 +624,45 @@
 </script>
 
 <script>
+            function addrdsFromBackup(userid){
+                $( "#create_backup_id_div").show();
+                var create_backup_id = $("#create_backup_id");
+                create_backup_id.html("");
+                 $.ajax({
+                    type: "GET",
+                    url : "/g/user/rds/backup/",
+                    data : {
+                        username:userid
+                    },
+                    success : function(data) {
+                          var d1 = JSON.parse(data);
+                           if(d1.result != "success"){
+                               alert(d1.result);
+                               return;
+                           }
+                        if(d1.content.length>0){
+                            for(var i=0;i<d1.content.length;i++){
+                                create_backup_id.append("<option value='"+d1.content[i].id+"'>" + d1.content[i].name + "</option>");
+                            }
+                        }else{
+                           create_backup_id.append("<option value=''>暂无备份.</option>");
+                        }
+                           addrds(userid,true);
+                    },
+                    error : function(XMLHttpRequest,textStatus,errorThrown) {
+                        alert("失败!");
+                        alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
+                        alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
+                        alert("textStatus:"+textStatus);
+                    }
+                });
+            }
+
        		///////////   创建rds开始  ///////////
-    	   	function addrds(userid){
+    	   	function addrds(userid,addrdsFromBackup){
+    	   	    if(addrdsFromBackup == null || addrdsFromBackup == false){
+    	   	        $( "#create_backup_id_div").hide();
+    	   	    }
     		   	$( "#addrds_form" ).dialog({
     				autoOpen: false,
     				height: 750,
@@ -702,10 +743,10 @@
                                            //alert(d1.result);
                                            if(d1.result != "success"){
                                                alert(d1.result);
-                                               window.location.href="/g/user/rdslist/"+userid;
+                                               window.location.href="/g/user/rdslist/?user_id="+userid;
                                                return;
                                            }
-                                           window.location.href="/g/user/rdslist/"+userid;
+                                           window.location.href="/g/user/rdslist/?user_id="+userid;
     								},
     								error : function(XMLHttpRequest,textStatus,errorThrown) {
     									alert("创建RDS失败!");
@@ -757,7 +798,7 @@
                                    return;
                                }
                                alert("操作成功!");
-                               window.location.href="/g/user/rdslist/"+userid;
+                               window.location.href="/g/user/rdslist/?user_id="+userid;
                         },
                         error : function(XMLHttpRequest,textStatus,errorThrown) {
                             alert("失败!");
@@ -790,7 +831,7 @@
                                return;
                            }
                            alert("操作成功!");
-                           window.location.href="/g/user/rdslist/"+userid;
+                           window.location.href="/g/user/rdslist/?user_id="+userid;
                         },
                         error : function(XMLHttpRequest,textStatus,errorThrown) {
                             alert("失败!");
@@ -823,7 +864,7 @@
                               return;
                           }
                           alert("操作成功!");
-                          window.location.href="/g/user/rdslist/"+userid;
+                          window.location.href="/g/user/rdslist/?user_id="+userid;
                         },
                         error : function(XMLHttpRequest,textStatus,errorThrown) {
                             alert("失败!");
@@ -856,8 +897,8 @@
                                 alert(d1.result);
                                 return;
                             }
-                            $( "#tr_"+ instance_id ).remove();
                             alert("操作成功!");
+                            window.location.reload();
                         },
                         error : function(XMLHttpRequest,textStatus,errorThrown) {
                             alert("失败!");

@@ -12,6 +12,7 @@ import com.ksyun.vm.pojo.rds.Backup;
 import com.ksyun.vm.pojo.rds.BackupConfig;
 import com.ksyun.vm.pojo.rds.RDSGroupDTO;
 import com.ksyun.vm.service.RDSBackupService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -36,17 +37,20 @@ public class RDSBackupController {
     @RequestMapping(value = "/g/user/rds/backup/", method = RequestMethod.GET)
     @ResponseBody
     public String getBackups(HttpServletRequest request,
-                             @RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
+                             @RequestParam("username") String username, @RequestParam(value = "instance_id",required = false) String instance_id) {
         log.info("username:{},instance_id:{}", username, instance_id);
         try {
             checkNotNull(username);
-            checkNotNull(instance_id);
         } catch (Exception e) {
             return "{\"result\":\"参数不能为空!\"}";
         }
         List<Backup> backups = null;
         try {
-            backups = rdsBackupService.getBackups(username, instance_id);
+            if(StringUtils.isEmpty(instance_id)){
+                backups = rdsBackupService.getBackups(username);
+            }else{
+                backups = rdsBackupService.getBackups(username, instance_id);
+            }
         } catch (Exception e) {
             log.error("[ getBackups---user:" + username + " ]Error:", e);
             return "{\"result\":\"" + e.getMessage() + "\"}";
@@ -56,6 +60,8 @@ public class RDSBackupController {
         log.debug("result:{}", result);
         return result;
     }
+
+
 
     @RequestMapping(value = "/g/user/rds/backup/", method = RequestMethod.POST)
     @ResponseBody

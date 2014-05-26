@@ -55,6 +55,8 @@ public class RDSService {
         RDSGroupDTO rdsGroupDTO = new RDSGroupDTO();
         for (RDSInstance instance : list) {
 //            RDSInstance instance2 = getInstanceFull(username, instance.getId());
+//            Flavor flavor = getFlavor(username, instance.getId());
+//            instance.setFlavor(flavor);
             rdsGroupDTO.addRDSGroup(instance);
         }
         return rdsGroupDTO;
@@ -72,6 +74,7 @@ public class RDSService {
         return instance;
     }
 
+    @Deprecated
     public RDSInstance getInstanceFull(String username, String instance_id) {
         RDSInstance instance = null;
         try {
