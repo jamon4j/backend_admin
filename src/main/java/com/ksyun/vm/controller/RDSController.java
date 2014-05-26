@@ -39,6 +39,12 @@ public class RDSController {
     @Resource
     private RDSService rdsService;
 
+    @RequestMapping(value = "/g/rds/init")
+    public ModelAndView initLBS(ModelAndView mav) {
+        mav.setViewName("/gestion/rds/rds_list");
+        return mav;
+    }
+
     @Deprecated
     @RequestMapping(value = "/g/user/rdslist1/{user_id}")
     @ResponseBody
@@ -79,14 +85,17 @@ public class RDSController {
             }
             request.setAttribute("userId", userId);
             mav.addObject("rdslist", returnRdsInstance);
-            mav.setViewName("/gestion/user/rds_list");
+            mav.setViewName("/gestion/rds/rds_list");
             return mav;
         }
     }
 
-    @RequestMapping(value = "/g/user/rdslist/{user_id}")
+    @RequestMapping(value = "/g/user/rdslist/")
     @ResponseBody
-    public ModelAndView getInstanceList2(@PathVariable("user_id") String userId, HttpServletRequest request, ModelAndView mav) {
+    public ModelAndView getInstanceList2(@RequestParam(value = "user_id", required = false) String userId,
+                                         @RequestParam(value = "group", required = false) String group,
+                                         @RequestParam(value = "instance_id", required = false) String instance_id, HttpServletRequest request, ModelAndView mav) {
+        log.info("userId:{},group:{},instance_id:{}", userId, group, instance_id);
         RDSGroupDTO rdsGroupDTO = null;
         try {
         } catch (Exception e) {
@@ -104,7 +113,7 @@ public class RDSController {
 
             request.setAttribute("userId", userId);
             mav.addObject("rdsGroupDTO", rdsGroupDTO);
-            mav.setViewName("/gestion/user/rds_list");
+            mav.setViewName("/gestion/rds/rds_list");
             return mav;
         }
     }
@@ -115,7 +124,7 @@ public class RDSController {
             , ModelAndView mav) {
         RDSInstance instance;
         try {
-            instance = rdsService.getInstanceFull(username, instance_id);
+            instance = rdsService.getInstance(username, instance_id);
         } catch (Exception e) {
             if (e instanceof ErrorCodeException) {
                 log.error("[ RDS_INSTNACE_GET---user:" + username + " ]Error:" + ((ErrorCodeException) e).getResult().getStatus() + "---" + ((ErrorCodeException) e).getResult().getMessage());

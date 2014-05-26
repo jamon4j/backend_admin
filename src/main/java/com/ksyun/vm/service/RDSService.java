@@ -49,13 +49,13 @@ public class RDSService {
     }
 
     public RDSGroupDTO getRDSGroupDTO(String username) throws ErrorCodeException, NoTokenException {
-        logger.info("jsonService.hashCode():"+jsonService.hashCode());
+        logger.info("jsonService.hashCode():" + jsonService.hashCode());
         List<RDSInstance> list = jsonService.getPoList(InitConst.KVM_RDS_INSTANCE_LIST, username, null, RDSInstance.class);
         checkNotNull(list);
         RDSGroupDTO rdsGroupDTO = new RDSGroupDTO();
         for (RDSInstance instance : list) {
-            RDSInstance instance2 = getInstanceFull(username, instance.getId());
-            rdsGroupDTO.addRDSGroup(instance2);
+//            RDSInstance instance2 = getInstanceFull(username, instance.getId());
+            rdsGroupDTO.addRDSGroup(instance);
         }
         return rdsGroupDTO;
     }
@@ -105,14 +105,14 @@ public class RDSService {
             logger.error(e.getMessage());
         }
         instance.setrDSInstanceSecGroup(secGroups);
-//        List<Backup> backups = null;
-//        try {
-//            backups = rdsBackupService.getBackups(username, instance_id);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            logger.error(e.getMessage());
-//        }
-//        instance.setBackups(backups);
+        List<Backup> backups = null;
+        try {
+            backups = rdsBackupService.getBackups(username, instance_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+        instance.setBackups(backups);
         //instance = RDSValidUtils.addValidTime(instance, rdsValidationDao);
         return instance;
     }
@@ -248,5 +248,17 @@ public class RDSService {
         rdsValidationDao.save(rdsValidationPo);
         instance.setPrimaryKey(instance.getId());
         return rdsValidationPo;
+    }
+
+
+    public Flavor getFlavor(String username, String flavorId) {
+        Flavor flavor = null;
+        try {
+            flavor = jsonService.poGet(InitConst.KVM_RDS_FLAVOR_GET, username, null, Flavor.class, flavorId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+        return flavor;
     }
 }

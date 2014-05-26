@@ -23,6 +23,7 @@
 				<li><a href="<%=webRootPath%>/iconsole_page/lbs_home.jsp">LBS管理</a></li>
 			</c:if>
 			<li><a href="<%=webRootPath%>/iconsole_page/warn_home.jsp">运营配置</a></li>
+			<li><a href="<%=webRootPath%>/rds/rds_home.jsp">RDS管理</a></li>
 			<!--
         <li><a href="#">用户管理</a></li>
         <li><a href="#">虚拟机管理</a></li>
@@ -173,6 +174,13 @@
 						target="mainframe">计费系统</a></li>
 				</ul>
 			</div>
+            <div class="menu-group">
+				<h2 class="first">RDS管理</h2>
+				<ul>
+					<li><a href="/g/rds/init" router="home/7/1"
+						target="mainframe">RDS设置</a></li>
+				</ul>
+			</div>
 		</c:if>
 		<c:if test="${sessionScope.type=='private'}">
 			<div class="menu-group">
@@ -188,8 +196,14 @@
 						target="mainframe">计费系统</a></li>
 				</ul>
 			</div>
+            <div class="menu-group">
+				<h2 class="first">RDS管理</h2>
+				<ul>
+					<li><a href="/g/rds/init" router="home/6/1"
+						target="mainframe">RDS设置</a></li>
+				</ul>
+			</div>
 		</c:if>
-
 		<div class="menu-group">
 			<h2 class="first">用户管理</h2>
 			<ul>

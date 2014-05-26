@@ -38,7 +38,7 @@
    	}
 
     function rds_list(userId){
-        window.location.href="/g/user/rdslist/"+userId;
+        window.location.href="/g/user/rdslist/?userId="+userId;
     }
    	
    	function security_groups(tenantId, userId){
@@ -178,7 +178,7 @@
 						<td><button class="ui-state-default ui-corner-all" onclick="security_groups('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
 						<td><button class="ui-state-default ui-corner-all" onclick="ebs_snapshot_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
 						<td><button class="ui-state-default ui-corner-all" onclick="vm_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
-						<td><button class="ui-state-default ui-corner-all" onclick="rds_list('3653277')">查看</button></td>
+						<td><button class="ui-state-default ui-corner-all" onclick="rds_list('${dto.user_name}')">查看</button></td>
 					</tr>
 				</c:forEach>
             </tbody>

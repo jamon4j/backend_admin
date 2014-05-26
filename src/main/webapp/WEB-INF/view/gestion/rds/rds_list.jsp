@@ -8,6 +8,7 @@
     <%@include file="../inc/meta.jspf"%>
     <%
 		String userId = (String)request.getAttribute("userId");
+		//userId = "39490241";
  	%>
     <title>RDS - RDS列表</title>
 	<style>
@@ -75,8 +76,10 @@
     ///////////   securityDetail详情结束  ///////////
 
     ///////////   security开始  ///////////
-            function security(id){
-                $( "#security_"+id ).dialog({
+            function security(user_id,securityGroupId){
+             var security_dialog = $("#security_dialog");
+                 security_dialog.html("");
+                security_dialog.dialog({
                     autoOpen: false,
                     postion: "center",
                     modal: true,
@@ -88,7 +91,50 @@
 
                     }
                 });
-                $( "#security_"+id ).dialog("open");
+                    $.ajax({
+                        type: "GET",
+                        url : "/g/user/rds/secrityGroup/",
+                        data : {
+                            username:user_id,
+                            securityGroupId:securityGroupId
+                        },
+                        success : function(data) {
+                              var d1 = JSON.parse(data);
+                               if(d1.result != "success"){
+                                   alert(d1.result);
+                                   return;
+                               }
+                               if(d1.content != null){
+                                   security_dialog.append("<p>id:"+d1.content.id+"</p>");
+                                   security_dialog.append("<p>名称:"+d1.content.name+"</p>");
+                                    for(var i=0;i<d1.content.links.length;i++){
+                                        security_dialog.append("<p>&nbsp;&nbsp;<b>link</b></p>");
+                                        security_dialog.append("<p>&nbsp;&nbsp;&nbsp;&nbsp;href: "+d1.content.links[i].href+"</p>");
+                                        security_dialog.append("<p>&nbsp;&nbsp;&nbsp;&nbsp;rel: "+d1.content.links[i].rel+"</p>");
+                                    }
+                                    for(var i=0;i<d1.content.rules.length;i++){
+                                        security_dialog.append("<p>&nbsp;&nbsp;<b>rule</b></p>");
+                                        security_dialog.append("<p>&nbsp;&nbsp;&nbsp;&nbsp;id: "+d1.content.rules[i].id+"</p>");
+                                        security_dialog.append("<p>&nbsp;&nbsp;&nbsp;&nbsp;to_port: "+d1.content.rules[i].to_port+"</p>");
+                                        security_dialog.append("<p>&nbsp;&nbsp;&nbsp;&nbsp;cidr: "+d1.content.rules[i].cidr+"</p>");
+                                        security_dialog.append("<p>&nbsp;&nbsp;&nbsp;&nbsp;from_port: "+d1.content.rules[i].from_port+"</p>");
+                                        security_dialog.append("<p>&nbsp;&nbsp;&nbsp;&nbsp;protocol: "+d1.content.rules[i].protocol+"</p>");
+                                    }
+                                    security_dialog.append("<p>描述:"+d1.content.description+"</p>");
+                                    security_dialog.append("<p>创建时间:"+d1.content.created+"</p>");
+                                    security_dialog.append("<p>更新时间:"+d1.content.updated+"</p>");
+                               }else{
+                                     security_dialog.append("<p>没有信息</p>");
+                               }
+                        },
+                        error : function(XMLHttpRequest,textStatus,errorThrown) {
+                            alert("失败!");
+                            alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
+                            alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
+                            alert("textStatus:"+textStatus);
+                        }
+                    });
+                security_dialog.dialog("open");
             }
     ///////////   security结束  ///////////
 
@@ -105,6 +151,7 @@
                         duration: 200
                     }
                 });
+                var backup_dialog = $("#backup_dialog");
                 backup_dialog.html("");
                 $.ajax({
                     type: "GET",
@@ -119,7 +166,6 @@
                                alert(d1.result);
                                return;
                            }
-                        var backup_dialog = $("#backup_dialog");
                         if(d1.content.length>0){
                             for(var i=0;i<d1.content.length;i++){
                                 backup_dialog.append("<p></p>");
@@ -157,8 +203,10 @@
     ///////////   backup结束  ///////////
 
     ///////////   backup_config开始  ///////////
-            function backup_config(id){
-                $( "#backup_config_"+id ).dialog({
+            function backup_config(user_id,instance_id){
+                var backup_config_dialog = $("#backup_config_dialog");
+                backup_config_dialog.html("");
+                backup_config_dialog.dialog({
                     autoOpen: false,
                     postion: "center",
                     modal: true,
@@ -170,7 +218,35 @@
 
                     }
                 });
-                $( "#backup_config_"+id ).dialog("open");
+                $.ajax({
+                    type: "GET",
+                    url : "/g/user/rds/backupConfig/",
+                    data : {
+                        username:user_id,
+                        instance_id:instance_id
+                    },
+                    success : function(data) {
+                          var d1 = JSON.parse(data);
+                           if(d1.result != "success"){
+                               alert(d1.result);
+                               return;
+                           }
+                        if(d1.content != null){
+                            backup_config_dialog.append("<p>duration: "+d1.content.duration+"</p>");
+                            backup_config_dialog.append("<p>autobackup_at: "+d1.content.autobackup_at+"</p>");
+                            backup_config_dialog.append("<p>expire_after: "+d1.content.expire_after+"</p>");
+                        }else{
+                            backup_config_dialog.append("<p>没有信息.</p>");
+                        }
+                    },
+                    error : function(XMLHttpRequest,textStatus,errorThrown) {
+                        alert("失败!");
+                        alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
+                        alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
+                        alert("textStatus:"+textStatus);
+                    }
+                });
+                backup_config_dialog.dialog("open");
             }
     ///////////   backup_config结束  ///////////
 
@@ -181,11 +257,17 @@
 <div class="path"><p>当前位置：机器管理<span>&gt;</span><a href="/g/user/list/1">用户信息</a><span>&gt;</span>rds列表</p></div>
 <div class="main-cont">
     <h3 class="title">rds列表</h3>
+    <form action="/g/user/rdslist/"  method="post" style="display:inline;" >
+        user_id：<input type="text" name="user_id" value=""/>
+        group：<input type="text" name="group" value=""/>
+        instance_id：<input type="text" name="instance_id" value=""/>
+        <input class="ui-state-default ui-corner-all" type="submit" name="submit" value="查  找"  />
+    </form>
     <div class="set-area">
         <div>rds列表，rds数量：<c:out value="${rdsGroupDTO.instanceSize}"></c:out>
         <ul id="icons" class="ui-widget ui-helper-clearfix" style="float: right;">
             <li class="ui-state-default ui-corner-all">
-                <button  onclick="window.location.reload();">刷新</button>
+                <a href="/g/user/rdslist/?user_id=<%=userId %>"><button >刷新</button></a>
             </li>
             <%--<li class="ui-state-default ui-corner-all" onclick="editrds();">
                 <button></button>
@@ -239,9 +321,6 @@
                     <div class="th-gap">安全组信息</div>
                 </th>
                 <th>
-                    <div class="th-gap">安全组规则信息</div>
-                </th>
-                <th>
                     <div class="th-gap">备份列表</div>
                 </th>
                  <th>
@@ -286,38 +365,11 @@
                                 <p>ip:${i}</p>
                             </c:forEach></td>
                             <td>${rds.vip} </td>
-                            <td><button class="ui-state-default ui-corner-all" onclick="security('${rds.rDSInstanceSecGroup.id}')">安全组信息</button>
-                                <div id="security_${rds.rDSInstanceSecGroup.id}" title="security_${rds.rDSInstanceSecGroup.id}详情" style="display:none">
-                                    <p>id:${rds.rDSInstanceSecGroup.id}</p>
-                                    <p>名称:${rds.rDSInstanceSecGroup.name}</p>
-                                    <c:forEach var="link" items="${rds.rDSInstanceSecGroup.links}" varStatus="status">
-                                        <p>&nbsp;&nbsp;href: ${link.href}</p>
-                                        <p>&nbsp;&nbsp;rel: ${link.rel}</p>
-                                    </c:forEach>
-                                    <p>描述:${rds.rDSInstanceSecGroup.description}</p>
-                                    <p>创建时间:${rds.rDSInstanceSecGroup.created}</p>
-                                    <p>更新时间:${rds.rDSInstanceSecGroup.updated}</p>
-                                </div>
-                            </td>
-                            <td><button class="ui-state-default ui-corner-all" onclick="securityDetail('${rds.rDSInstanceSecGroup.id}')">安全组信息详情</button>
-                                <div id="securityDetail_${rds.rDSInstanceSecGroup.id}" title="securityDetail_${rds.rDSInstanceSecGroup.id}详情" style="display:none">
-                                    <c:forEach var="rule" items="${rds.rDSInstanceSecGroup.rules}" varStatus="status">
-                                    <p>id: ${rule.id}</p>
-                                    <p>to_port: ${rule.to_port}</p>
-                                    <p>cidr: ${rule.cidr}</p>
-                                    <p>from_port: ${rule.from_port}</p>
-                                    <p>protocol: ${rule.protocol}</p>
-                                    </c:forEach>
-                                </div>
+                            <td><button class="ui-state-default ui-corner-all" onclick="security('<%=userId %>','${rds.security_group}')">安全组信息</button>
                             </td>
                             <td><button class="ui-state-default ui-corner-all" onclick="backup('<%=userId %>','${rds.id}')">备份列表</button>
                             </td>
-                            <td><button class="ui-state-default ui-corner-all" onclick="backup_config('${rds.id}')">备份配置</button>
-                                <div id="backup_config_${rds.id}" title="backup_config_${rds.id}详情" style="display:none">
-                                    <p>duration: ${rds.backup_config.duration}</p>
-                                    <p>autobackup_at: ${rds.backup_config.autobackup_at}</p>
-                                    <p>expire_after: ${rds.backup_config.expire_after}</p>
-                                </div>
+                            <td><button class="ui-state-default ui-corner-all" onclick="backup_config('<%=userId %>','${rds.id}')">备份配置</button>
                             </td>
                             <td>
                                 <c:choose>
@@ -342,6 +394,7 @@
                                           <p><button onclick="upgrade('<%=userId %>','${rds.id}');">升级</button></p>
                                        </c:when>
                                 </c:choose>
+                                <p><button onclick="createBackup('<%=userId %>','${rds.id}');">创建备份</button></p>
                                 <p><button onclick="reload('<%=userId %>','${rds.id}');">刷新</button></p>
                             </td>
                         </tr>
@@ -354,6 +407,9 @@
 
  <%-- 隐藏区 开始 --%>
 
+    <div id="backup_config_dialog" title="backup_config详情" style="display:none"></div>
+
+    <div id="security_dialog" title="security详情" style="display:none"></div>
 
     <div id="backup_dialog" title="backup_dialog" style="display:none">
     </div>

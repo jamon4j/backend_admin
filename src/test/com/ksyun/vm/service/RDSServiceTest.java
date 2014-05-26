@@ -33,7 +33,7 @@ public class RDSServiceTest extends BaseTest {
     @Test
     public void testGetInstanceList() throws NoTokenException, ErrorCodeException {
 
-        List<RDSInstance> instances = rdsService.getInstanceList("19780820");
+        List<RDSInstance> instances = rdsService.getInstanceList("39490241");
         logger.info("instances.size():" + instances.size());
         for (RDSInstance i : instances) {
             logger.info("i:" + ToStringBuilder.reflectionToString(i));
@@ -41,7 +41,7 @@ public class RDSServiceTest extends BaseTest {
     }
 
     @Test
-    public void testGetRDSInstanceListDTO() throws NoTokenException, ErrorCodeException {
+    public void testGetRDSGroupDTO() throws NoTokenException, ErrorCodeException {
 
         RDSGroupDTO rdsGroupDTO = rdsService.getRDSGroupDTO("39490241");
         logger.info("rdsGroupDTO.getRdsGroups().size():" + rdsGroupDTO.getRdsGroups().size());
@@ -57,7 +57,7 @@ public class RDSServiceTest extends BaseTest {
     @Test
     public void testGetInstance() throws NoTokenException, ErrorCodeException {
 
-        RDSInstance rdsInstance=  rdsService.getInstanceFull("16552981", "bb23316f-0ef6-446a-b8cc-441e88f18086");
+        RDSInstance rdsInstance=  rdsService.getInstanceFull("16552981", "d95ae418-f848-434f-bff1-fbec1973007d");
         logger.info("rdsInstance:" + ToStringBuilder.reflectionToString(rdsInstance));
     }
 

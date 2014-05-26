@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.ksyun.vm.exception.ErrorCodeException;
 import com.ksyun.vm.pojo.Result;
 import com.ksyun.vm.pojo.rds.Backup;
+import com.ksyun.vm.pojo.rds.BackupConfig;
 import com.ksyun.vm.pojo.rds.RDSGroupDTO;
 import com.ksyun.vm.service.RDSBackupService;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class RDSBackupController {
     @ResponseBody
     public String getBackups(HttpServletRequest request,
                              @RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
-        log.info("username:{},instance_id:{}",username,instance_id);
+        log.info("username:{},instance_id:{}", username, instance_id);
         try {
             checkNotNull(username);
             checkNotNull(instance_id);
@@ -52,6 +53,57 @@ public class RDSBackupController {
         }
         request.setAttribute("userId", username);
         String result = "{\"result\":\"success\",\"content\":" + JSON.toJSONString(backups) + "}";
+        log.debug("result:{}", result);
+        return result;
+    }
+
+    @RequestMapping(value = "/g/user/rds/backup/", method = RequestMethod.POST)
+    @ResponseBody
+    public String createBackup(HttpServletRequest request,
+                               @RequestParam("username") String username, @RequestParam("instance_id") String instance_id
+            , @RequestParam("backup_name") String backup_name, @RequestParam("type") String type) {
+        log.info("username:{},instance_id:{},backup_name:{}", username, instance_id, backup_name);
+        try {
+            checkNotNull(username);
+            checkNotNull(instance_id);
+            checkNotNull(backup_name);
+            checkNotNull(type);
+        } catch (Exception e) {
+            return "{\"result\":\"参数不能为空!\"}";
+        }
+        Backup backup = null;
+        try {
+            backup = rdsBackupService.createBackup(username, instance_id, backup_name, type);
+        } catch (Exception e) {
+            log.error("[ createBackup---user:" + username + " ]Error:", e);
+            return "{\"result\":\"" + e.getMessage() + "\"}";
+        }
+        request.setAttribute("userId", username);
+        String result = "{\"result\":\"success\",\"content\":" + JSON.toJSONString(backup) + "}";
+        log.debug("result:{}", result);
+        return result;
+    }
+
+    @RequestMapping(value = "/g/user/rds/backupConfig/", method = RequestMethod.GET)
+    @ResponseBody
+    public String getBackupConfig(HttpServletRequest request,
+                                  @RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
+        log.info("username:{},instance_id:{}", username, instance_id);
+        try {
+            checkNotNull(username);
+            checkNotNull(instance_id);
+        } catch (Exception e) {
+            return "{\"result\":\"参数不能为空!\"}";
+        }
+        BackupConfig backupConfig = null;
+        try {
+            backupConfig = rdsBackupService.getBackupConfig(username, instance_id);
+        } catch (Exception e) {
+            log.error("[ getBackupConfig---user:" + username + " ]Error:", e);
+            return "{\"result\":\"" + e.getMessage() + "\"}";
+        }
+        request.setAttribute("userId", username);
+        String result = "{\"result\":\"success\",\"content\":" + JSON.toJSONString(backupConfig) + "}";
         log.debug("result:{}", result);
         return result;
     }
