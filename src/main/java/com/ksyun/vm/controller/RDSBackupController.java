@@ -37,30 +37,60 @@ public class RDSBackupController {
     @RequestMapping(value = "/g/user/rds/backup/", method = RequestMethod.GET)
     @ResponseBody
     public String getBackups(HttpServletRequest request,
-                             @RequestParam("username") String username, @RequestParam(value = "instance_id",required = false) String instance_id) {
+                             @RequestParam("username") String username, @RequestParam(value = "instance_id", required = false) String instance_id) {
         log.info("username:{},instance_id:{}", username, instance_id);
+        List<Backup> backups;
+        String result = null;
+        try {
+            try {
+                checkNotNull(username);
+            } catch (Exception e) {
+                result = "{\"result\":\"参数不能为空!\"}";
+                return result;
+            }
+            backups = null;
+            try {
+                if (StringUtils.isEmpty(instance_id)) {
+                    backups = rdsBackupService.getBackups(username);
+                } else {
+                    backups = rdsBackupService.getBackups(username, instance_id);
+                }
+            } catch (Exception e) {
+                log.error("[ getBackups---user:" + username + " ]Error:", e);
+                result = "{\"result\":\"" + e.getMessage() + "\"}";
+                return result;
+            }
+            request.setAttribute("userId", username);
+            result = "{\"result\":\"success\",\"content\":" + JSON.toJSONString(backups) + "}";
+            return result;
+        } finally {
+            log.debug("result:{}", result);
+        }
+    }
+
+
+    @RequestMapping(value = "/g/user/rds/backup/delete")
+    @ResponseBody
+    public String delBackup(HttpServletRequest request,
+                            @RequestParam("username") String username, @RequestParam(value = "backup_id") String backup_id) {
+        log.info("username:{},backup_id:{}", username, backup_id);
         try {
             checkNotNull(username);
+            checkNotNull(backup_id);
         } catch (Exception e) {
             return "{\"result\":\"参数不能为空!\"}";
         }
-        List<Backup> backups = null;
         try {
-            if(StringUtils.isEmpty(instance_id)){
-                backups = rdsBackupService.getBackups(username);
-            }else{
-                backups = rdsBackupService.getBackups(username, instance_id);
-            }
+            rdsBackupService.delBackup(username, backup_id);
         } catch (Exception e) {
-            log.error("[ getBackups---user:" + username + " ]Error:", e);
+            log.error("[ delBackup---user:" + username + " ]Error:", e);
             return "{\"result\":\"" + e.getMessage() + "\"}";
         }
         request.setAttribute("userId", username);
-        String result = "{\"result\":\"success\",\"content\":" + JSON.toJSONString(backups) + "}";
+        String result = "{\"result\":\"success\"}";
         log.debug("result:{}", result);
         return result;
     }
-
 
 
     @RequestMapping(value = "/g/user/rds/backup/", method = RequestMethod.POST)

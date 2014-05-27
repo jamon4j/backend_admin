@@ -55,11 +55,18 @@ public class RDSService {
         checkNotNull(list);
         RDSGroupDTO rdsGroupDTO = new RDSGroupDTO();
         for (RDSInstance instance : list) {
-//            RDSInstance instance2 = getInstanceFull(username, instance.getId());
-//            Flavor flavor = getFlavor(username, instance.getId());
-//            instance.setFlavor(flavor);
-            rdsGroupDTO.addRDSGroup(instance);
+            RDSInstance instance2 = getInstance(username, instance.getId());
+            rdsGroupDTO.addRDSGroup(instance2);
         }
+        return rdsGroupDTO;
+    }
+
+    public RDSGroupDTO getRDSGroupDTO(String username,String instance_id) throws ErrorCodeException, NoTokenException {
+        logger.info("jsonService.hashCode():" + jsonService.hashCode());
+        RDSInstance instance = getInstance(username, instance_id);
+        checkNotNull(instance);
+        RDSGroupDTO rdsGroupDTO = new RDSGroupDTO();
+        rdsGroupDTO.addRDSGroup(instance);
         return rdsGroupDTO;
     }
 
@@ -139,24 +146,7 @@ public class RDSService {
         jsonService.poPut(InitConst.KVM_RDS_INSTANCE_RESIZE, username, null, null, requestBody, instance_id);
     }
 
-    public void migrate(String username, String instance_id, String host, String backup_id, String ram, String disk
-            , String vcpus) throws Exception {
-        MigrateDto migrateDto = new MigrateDto();
-        if (StringUtils.isNotEmpty(ram)) {
-            migrateDto.setRam(ram);
-        }
-        if (StringUtils.isNotEmpty(host)) {
-            migrateDto.setHost(host);
-        }
-        if (StringUtils.isNotEmpty(backup_id)) {
-            migrateDto.setBackup_id(backup_id);
-        }
-        if (StringUtils.isNotEmpty(disk)) {
-            migrateDto.setDisk(disk);
-        }
-        if (StringUtils.isNotEmpty(vcpus)) {
-            migrateDto.setVcpus(vcpus);
-        }
+    public void migrate(String username, String instance_id, MigrateDto migrateDto) throws Exception {
         String requestBody = JSON.toJSONString(migrateDto);
         logger.info("migrateDto:" + requestBody);
         RDSInstance rdsInstance = getInstance(username, instance_id);
@@ -167,12 +157,7 @@ public class RDSService {
         }
     }
 
-    public void failover(String username, String instance_id, String force_host) throws Exception {
-        FailoverDto failoverDto = new FailoverDto();
-        if (StringUtils.isNotEmpty(force_host)) {
-            failoverDto.setForce_host(force_host);
-        }
-        failoverDto.setIs_req_body("true");
+    public void failover(String username, String instance_id, FailoverDto failoverDto) throws Exception {
         String requestBody = JSON.toJSONString(failoverDto);
         logger.info("failoverDto:" + requestBody);
         RDSInstance rdsInstance = getInstance(username, instance_id);
@@ -236,7 +221,7 @@ public class RDSService {
         InstancePo instancePo = createInstance.getRds();
         RDSInstance instance = null;
         RDSValidationPo rdsValidationPo = new RDSValidationPo();
-        if (instancePo.getType().equals("SG") || instancePo.getType().equals("HA")) {
+        if (instancePo.getType().equalsIgnoreCase("SG") || instancePo.getType().equalsIgnoreCase("HA") || instancePo.getType().equalsIgnoreCase("RR")) {
             instancePo.getExtend().setAutobackup_at("2300");
             instancePo.getExtend().setDuration("1440");
             instancePo.getExtend().setExpire_after("7");
@@ -263,15 +248,8 @@ public class RDSService {
             rdsValidationPo.setRdsId(instance.getId());
             rdsValidationPo.setServiceType(createInstance.getRds().getService_type());
             rdsValidationPo.setUserName(createInstance.getUser_id());
-        } else if (instancePo.getType().equals("RR")) {
-            RDSInstance instance1 = getInstanceFull(createInstance.getUser_id(), instancePo.getInstance_id());
-            if (!instance1.getType().equals("MASTER")) {
-                throw new Exception("SG can't be Create RR Instance!");
-            }
-            instance = jsonService.poPost(InitConst.KVM_RDS_INSTANCE_ADD, createInstance.getUser_id(), null, RDSInstance.class, JSON.toJSONString(instancePo));
-            rdsValidationPo = (RDSValidationPo) rdsValidationDao.getByRDSId(instance1.getId());
-            rdsValidationPo.setRdsId(instance.getId());
-            rdsValidationPo.setId(null);
+        } else {
+            throw new Exception("错误的类型" + instancePo.getType());
         }
         rdsValidationDao.save(rdsValidationPo);
         instance.setPrimaryKey(instance.getId());

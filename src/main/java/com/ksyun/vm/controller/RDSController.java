@@ -11,6 +11,7 @@ import com.ksyun.vm.utils.Constants;
 import com.ksyun.vm.utils.HttpUtils;
 import com.ksyun.vm.utils.InitConst;
 import com.ksyun.vm.utils.TimeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @RequestMapping()
 public class RDSController {
 
-    private Logger log = LoggerFactory.getLogger(RDSController.class);
+    private Logger logger = LoggerFactory.getLogger(RDSController.class);
     @Resource
     private RDSService rdsService;
 
@@ -54,15 +55,15 @@ public class RDSController {
         boolean flag = true;
         try {
         } catch (Exception e) {
-            log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
+            logger.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
         } finally {
             try {
                 instances = rdsService.getInstanceList(userId);
             } catch (Exception e) {
                 if (e instanceof ErrorCodeException) {
-                    log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:" + ((ErrorCodeException) e).getResult().getStatus() + "---" + ((ErrorCodeException) e).getResult().getMessage());
+                    logger.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:" + ((ErrorCodeException) e).getResult().getStatus() + "---" + ((ErrorCodeException) e).getResult().getMessage());
                 } else {
-                    log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
+                    logger.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
                 }
                 flag = false;
             }
@@ -74,11 +75,11 @@ public class RDSController {
                     vmValidationPo.setUserName(userId);
                     returnRdsInstance.setVmValidationPo(vmValidationPo);
                 } catch (Exception e) {
-                    log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
+                    logger.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
                 }
                 result.setStatus("1");
                 result.setStatusText("success");
-                log.info("用户{}/rds/instance/list，返回结果{}", new Object[]{userId, result});
+                logger.info("用户{}/rds/instance/list，返回结果{}", new Object[]{userId, result});
             } else {
                 result.setStatus("0");
                 result.setStatusText("获取失败!");
@@ -94,28 +95,24 @@ public class RDSController {
     @ResponseBody
     public ModelAndView getInstanceList2(@RequestParam(value = "user_id", required = false) String userId,
                                          @RequestParam(value = "group", required = false) String group,
-                                         @RequestParam(value = "instance_id", required = false) String instance_id, HttpServletRequest request, ModelAndView mav) {
-        log.info("userId:{},group:{},instance_id:{}", userId, group, instance_id);
-        RDSGroupDTO rdsGroupDTO = null;
+                                         @RequestParam(value = "instance_id", required = false) String instance_id
+            , HttpServletRequest request, ModelAndView mav) {
+        logger.info("userId:{},group:{},instance_id:{}", userId, group, instance_id);
+        RDSGroupDTO rdsGroupDTO = new RDSGroupDTO();
         try {
-        } catch (Exception e) {
-            log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
-        } finally {
-            try {
+            if (StringUtils.isNotEmpty(userId) && StringUtils.isNotEmpty(instance_id)) {
+                rdsGroupDTO = rdsService.getRDSGroupDTO(userId, instance_id);
+            } else {
                 rdsGroupDTO = rdsService.getRDSGroupDTO(userId);
-            } catch (Exception e) {
-                if (e instanceof ErrorCodeException) {
-                    log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:" + ((ErrorCodeException) e).getResult().getStatus() + "---" + ((ErrorCodeException) e).getResult().getMessage());
-                } else {
-                    log.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
-                }
             }
-
-            request.setAttribute("userId", userId);
-            mav.addObject("rdsGroupDTO", rdsGroupDTO);
-            mav.setViewName("/gestion/rds/rds_list");
-            return mav;
+        } catch (Exception e) {
+            logger.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
         }
+        request.setAttribute("instance_id", instance_id);
+        request.setAttribute("userId", userId);
+        mav.addObject("rdsGroupDTO", rdsGroupDTO);
+        mav.setViewName("/gestion/rds/rds_list");
+        return mav;
     }
 
     @RequestMapping(value = "/instance/get/{instance_id}", method = RequestMethod.POST)
@@ -127,13 +124,13 @@ public class RDSController {
             instance = rdsService.getInstance(username, instance_id);
         } catch (Exception e) {
             if (e instanceof ErrorCodeException) {
-                log.error("[ RDS_INSTNACE_GET---user:" + username + " ]Error:" + ((ErrorCodeException) e).getResult().getStatus() + "---" + ((ErrorCodeException) e).getResult().getMessage());
+                logger.error("[ RDS_INSTNACE_GET---user:" + username + " ]Error:" + ((ErrorCodeException) e).getResult().getStatus() + "---" + ((ErrorCodeException) e).getResult().getMessage());
             } else {
-                log.error("[ RDS_INSTNACE_GET---user:" + username + " ]Error:", e);
+                logger.error("[ RDS_INSTNACE_GET---user:" + username + " ]Error:", e);
             }
             return mav;
         }
-        log.info("用户{}/rds/instance/get，返回结果{}", new Object[]{username, ToStringBuilder.reflectionToString(instance)});
+        logger.info("用户{}/rds/instance/get，返回结果{}", new Object[]{username, ToStringBuilder.reflectionToString(instance)});
         return mav;
     }
 
@@ -150,18 +147,18 @@ public class RDSController {
                 CallBackRDSPo callBackRDSPo = new CallBackRDSPo();
                 RDSValidationPo rdsValidationPo = null;
                 try {
-                    log.info("准备创建RDS-Instance:" + JSON.toJSONString(createInstance));
+                    logger.info("准备创建RDS-Instance:" + JSON.toJSONString(createInstance));
                     rdsValidationPo = rdsService.addRDS(createInstance);
                 } catch (NoTokenException e) {
-                    log.error("[ RDS CREATE---user:" + username + " ]Error:", e);
+                    logger.error("[ RDS CREATE---user:" + username + " ]Error:", e);
                     flag = false;
                     message = "NoTokenException:" + e.getMessage();
                 } catch (ErrorCodeException e) {
-                    log.error("[ RDS CREATE---user:" + username + " ]Error:" + e.getResult().getStatus() + "---" + e.getResult().getMessage());
+                    logger.error("[ RDS CREATE---user:" + username + " ]Error:" + e.getResult().getStatus() + "---" + e.getResult().getMessage());
                     flag = false;
                     message = "ErrorCodeException:" + e.getResult().getStatus() + "---" + e.getResult().getMessage();
                 } catch (Exception e) {
-                    log.error("[ RDS CREATE---user:" + username + " ]Error:", e);
+                    logger.error("[ RDS CREATE---user:" + username + " ]Error:", e);
                     flag = false;
                     message = "Exception:" + e.getMessage();
                 } finally {
@@ -185,7 +182,7 @@ public class RDSController {
                                     while (retry >= 0 && ((po = rdsService.getInstanceFull(username, rdsId)).getStatus().equalsIgnoreCase("building"))) {
                                         Thread.currentThread().sleep(3000);
                                         retry--;
-                                        log.info(String.format("RDS %s 状态为 %s", po.getId(), po.getStatus()));
+                                        logger.info(String.format("RDS %s 状态为 %s", po.getId(), po.getStatus()));
                                     }
                                     po.setPrimaryKey(po.getId());
                                 } catch (Exception e) {
@@ -193,7 +190,7 @@ public class RDSController {
                                 }
                             }
                         }).start();
-                        log.info("创建RDS成功--回调RDS接口:" + JSON.toJSONString(callBackRDSPo));
+                        logger.info("创建RDS成功--回调RDS接口:" + JSON.toJSONString(callBackRDSPo));
                     } else {
                         dataMap.setIs_ok(flag);
                         dataMap.setRds_id("");
@@ -201,12 +198,12 @@ public class RDSController {
                         dataMap.setOrder_id(createInstance.getOrder_id());
                         dataMap.setMessage(message);
                         callBackRDSPo.setDataMap(dataMap);
-                        log.info("创建RDS失败--回调RDS接口:" + JSON.toJSONString(callBackRDSPo));
+                        logger.info("创建RDS失败--回调RDS接口:" + JSON.toJSONString(callBackRDSPo));
                     }
                     try {
                         HttpUtils.post(Constants.getPropertyValue(InitConst.CREATE_RDS_URL), null, JSON.toJSONString(callBackRDSPo));
                     } catch (Exception e) {
-                        log.error("回调创建RDS接口失败:", e);
+                        logger.error("回调创建RDS接口失败:", e);
                     }
                 }
             }
@@ -218,7 +215,7 @@ public class RDSController {
     @ResponseBody
     public String resetAdminPassword(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id
             , @RequestParam("password") String password) {
-        log.info("username:{},instance_id:{},password:{}", username, instance_id, password);
+        logger.info("username:{},instance_id:{},password:{}", username, instance_id, password);
         try {
             checkNotNull(username);
             checkNotNull(instance_id);
@@ -230,7 +227,7 @@ public class RDSController {
             rdsService.resetAdminPassword(username, instance_id, password);
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(e.getMessage());
+            logger.error(e.getMessage());
             return "{\"result\":\"" + e.getMessage() + "\"}";
         }
         return "{\"result\":\"success\"}";
@@ -239,7 +236,7 @@ public class RDSController {
     @RequestMapping(value = "/g/user/rds/upgrade/")
     @ResponseBody
     public String upgrade(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
-        log.info("username:{},instance_id:{}", username, instance_id);
+        logger.info("username:{},instance_id:{}", username, instance_id);
         try {
             checkNotNull(username);
             checkNotNull(instance_id);
@@ -250,7 +247,7 @@ public class RDSController {
             rdsService.upgrade(username, instance_id);
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(e.getMessage());
+            logger.error(e.getMessage());
             return "{\"result\":\"" + e.getMessage() + "\"}";
         }
         return "{\"result\":\"success\"}";
@@ -259,7 +256,7 @@ public class RDSController {
     @RequestMapping(value = "/g/user/rds/restart/")
     @ResponseBody
     public String restart(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
-        log.info("username:{},instance_id:{}", username, instance_id);
+        logger.info("username:{},instance_id:{}", username, instance_id);
         try {
             checkNotNull(username);
             checkNotNull(instance_id);
@@ -270,7 +267,7 @@ public class RDSController {
             rdsService.restart(username, instance_id);
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(e.getMessage());
+            logger.error(e.getMessage());
             return "{\"result\":\"" + e.getMessage() + "\"}";
         }
         return "{\"result\":\"success\"}";
@@ -280,7 +277,7 @@ public class RDSController {
     @ResponseBody
     public String resize(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id,
                          @RequestParam("ram") String ram, @RequestParam("vcpus") String vcpus, @RequestParam("disk") String disk) {
-        log.info("username:{},instance_id:{},ram:{},vcpus:{},disk:{}", username, instance_id, ram, vcpus, disk);
+        logger.info("username:{},instance_id:{},ram:{},vcpus:{},disk:{}", username, instance_id, ram, vcpus, disk);
         try {
             checkNotNull(username);
             checkNotNull(instance_id);
@@ -294,7 +291,7 @@ public class RDSController {
             rdsService.resize(username, instance_id, ram, vcpus, disk);
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(e.getMessage());
+            logger.error(e.getMessage());
             return "{\"result\":\"" + e.getMessage() + "\"}";
         }
         return "{\"result\":\"success\"}";
@@ -306,18 +303,35 @@ public class RDSController {
                           @RequestParam(value = "host", required = false) String host, @RequestParam(value = "backup_id", required = false) String backup_id
             , @RequestParam(value = "ram", required = false) String ram, @RequestParam(value = "disk", required = false) String disk
             , @RequestParam(value = "vcpus", required = false) String vcpus) {
-        log.info("username:{},instance_id:{}", username, instance_id);
+        logger.info("username:{},instance_id:{},instance_id:{},host:{},backup_id:{},ram:{},disk:{},vcpus:{}"
+                , username, instance_id, host, backup_id, ram, disk, vcpus);
         try {
             checkNotNull(username);
             checkNotNull(instance_id);
         } catch (Exception e) {
             return "{\"result\":\"参数不能为空!\"}";
         }
+        MigrateDto migrateDto = new MigrateDto();
+        if (StringUtils.isNotEmpty(ram)) {
+            migrateDto.setRam(ram);
+        }
+        if (StringUtils.isNotEmpty(host)) {
+            migrateDto.setHost(host);
+        }
+        if (StringUtils.isNotEmpty(backup_id)) {
+            migrateDto.setBackup_id(backup_id);
+        }
+        if (StringUtils.isNotEmpty(disk)) {
+            migrateDto.setDisk(disk);
+        }
+        if (StringUtils.isNotEmpty(vcpus)) {
+            migrateDto.setVcpus(vcpus);
+        }
         try {
-            rdsService.migrate(username, instance_id, host, backup_id, ram, disk, vcpus);
+            rdsService.migrate(username, instance_id, migrateDto);
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(e.getMessage());
+            logger.error(e.getMessage());
             return "{\"result\":\"" + e.getMessage() + "\"}";
         }
         return "{\"result\":\"success\"}";
@@ -327,18 +341,22 @@ public class RDSController {
     @ResponseBody
     public String failover(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id,
                            @RequestParam(value = "force_host", required = false) String force_host) {
-        log.info("username:{},instance_id:{},force_host:{}", username, instance_id, force_host);
+        logger.info("username:{},instance_id:{},force_host:{}", username, instance_id, force_host);
         try {
             checkNotNull(username);
             checkNotNull(instance_id);
         } catch (Exception e) {
             return "{\"result\":\"参数不能为空!\"}";
         }
+        FailoverDto failoverDto = new FailoverDto();
+        if (StringUtils.isNotEmpty(force_host)) {
+            failoverDto.setForce_host(force_host);
+        }
         try {
-            rdsService.failover(username, instance_id, force_host);
+            rdsService.failover(username, instance_id, failoverDto);
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(e.getMessage());
+            logger.error(e.getMessage());
             return "{\"result\":\"" + e.getMessage() + "\"}";
         }
         return "{\"result\":\"success\"}";
@@ -347,7 +365,7 @@ public class RDSController {
     @RequestMapping(value = "/g/user/rds/startInstance/")
     @ResponseBody
     public String startInstance(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
-        log.info("username:{},instance_id:{}", username, instance_id);
+        logger.info("username:{},instance_id:{}", username, instance_id);
         try {
             checkNotNull(username);
             checkNotNull(instance_id);
@@ -358,7 +376,7 @@ public class RDSController {
             rdsService.startInstance(username, instance_id);
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(e.getMessage());
+            logger.error(e.getMessage());
             return "{\"result\":\"" + e.getMessage() + "\"}";
         }
         return "{\"result\":\"success\"}";
@@ -367,7 +385,7 @@ public class RDSController {
     @RequestMapping(value = "/g/user/rds/stopInstance/")
     @ResponseBody
     public String stopInstance(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
-        log.info("username:{},instance_id:{}", username, instance_id);
+        logger.info("username:{},instance_id:{}", username, instance_id);
         try {
             checkNotNull(username);
             checkNotNull(instance_id);
@@ -378,7 +396,7 @@ public class RDSController {
             rdsService.stopInstance(username, instance_id);
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(e.getMessage());
+            logger.error(e.getMessage());
             return "{\"result\":\"" + e.getMessage() + "\"}";
         }
         return "{\"result\":\"success\"}";
@@ -387,7 +405,7 @@ public class RDSController {
     @RequestMapping(value = "/g/user/rds/removeInstance/")
     @ResponseBody
     public String removeInstance(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
-        log.info("username:{},instance_id:{}", username, instance_id);
+        logger.info("username:{},instance_id:{}", username, instance_id);
         try {
             checkNotNull(username);
             checkNotNull(instance_id);
@@ -398,7 +416,7 @@ public class RDSController {
             rdsService.removeInstance(username, instance_id);
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(e.getMessage());
+            logger.error(e.getMessage());
             return "{\"result\":\"" + e.getMessage() + "\"}";
         }
         return "{\"result\":\"success\"}";

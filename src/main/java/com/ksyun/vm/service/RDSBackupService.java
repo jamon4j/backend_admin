@@ -1,5 +1,6 @@
 package com.ksyun.vm.service;
 
+import com.alibaba.fastjson.JSON;
 import com.ksyun.vm.exception.ErrorCodeException;
 import com.ksyun.vm.exception.NoTokenException;
 import com.ksyun.vm.pojo.rds.Backup;
@@ -43,12 +44,22 @@ public class RDSBackupService {
         return backups;
     }
 
-    public void delBackup(String username, String backup_id) throws ErrorCodeException, NoTokenException {
+    public void delBackup(String username, String backup_id) throws Exception {
+        Backup backup = getBackup(username, backup_id);
+        if (!"SNAPSHOT".equalsIgnoreCase(backup.getType())) {
+            throw new Exception(backup_id + "备份类型不为手动,无法删除!");
+        }
         jsonService.poDelete(InitConst.KVM_RDS_BACKUP_DEL, username, null, backup_id);
     }
 
+    public Backup getBackup(String username, String backup_id) throws ErrorCodeException, NoTokenException {
+        Backup backup = jsonService.poGet(InitConst.KVM_RDS_BACKUP_GET, username, null, Backup.class, backup_id);
+        logger.info("backup:" + JSON.toJSONString(backup));
+        return backup;
+    }
 
-    public BackupConfig getBackupConfig(String username,String instance_id) throws Exception{
+
+    public BackupConfig getBackupConfig(String username, String instance_id) throws Exception {
         BackupConfig backupConfig = null;
         try {
             backupConfig = jsonService.poGet(InitConst.KVM_RDS_INSTANCE_BACKUP_CONFIG, username, null, BackupConfig.class, instance_id);

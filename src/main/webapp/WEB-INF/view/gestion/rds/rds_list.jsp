@@ -8,11 +8,11 @@
     <%@include file="../inc/meta.jspf"%>
     <%
 		String userId = (String)request.getAttribute("userId");
-		//userId = "39490241";
+		String instance_id = (String)request.getAttribute("instance_id");
  	%>
     <title>RDS - RDS列表</title>
 	<style>
-			label, input { display:block; }
+			label, input {  }
 			input.text { margin-bottom:12px; width:80%; padding: .4em; }
 			select {margin-bottom:12px; width:80%; padding: .4em; }
 			fieldset { padding:0; border:0; margin-top:25px; }
@@ -161,16 +161,23 @@
                         instance_id:instance_id
                     },
                     success : function(data) {
-                          var d1 = JSON.parse(data);
+                            var d1;
+                            try{
+                                d1 = JSON.parse(data);
+                            }catch(err){
+                               //alert("错误:"+ err);
+                               backup_dialog.append("<p>暂无备份.</p>");
+                            }
                            if(d1.result != "success"){
                                alert(d1.result);
                                return;
                            }
                         if(d1.content.length>0){
+                            backup_dialog.append("<form>");
+                            backup_dialog.append("<fieldset>");
                             for(var i=0;i<d1.content.length;i++){
+                                backup_dialog.append("<div id='backup_div_"+d1.content[i].id+"'>");
                                 backup_dialog.append("<p></p>");
-                                backup_dialog.append("<form>");
-                                backup_dialog.append("<fieldset>");
                                     backup_dialog.append("<legend>id: " + d1.content[i].id + "</legend>");
                                     backup_dialog.append("<p>name: " + d1.content[i].name + "</p>");
                                     backup_dialog.append("<p>描述: " + d1.content[i].description + "</p>");
@@ -183,10 +190,20 @@
                                     backup_dialog.append("<p>group_id: " + d1.content[i].group_id + "</p>");
                                     backup_dialog.append("<p>创建时间: " + d1.content[i].created + "</p>");
                                     backup_dialog.append("<p>更新时间: " + d1.content[i].updated + "</p>");
-                                backup_dialog.append("</fieldset>");
-                                backup_dialog.append("</form>");
+                                    backup_dialog.append("<p>更新时间: " + d1.content[i].updated + "</p>");
+                                    if("snapshot" == d1.content[i].type){
+                                        backup_dialog.append("<button id='del_backup_button_"+d1.content[i].id+"'>删除备份</button>");
+                                        $("#del_backup_button_"+d1.content[i].id).attr("onclick","delete_backup('"+userid+"','"+d1.content[i].id+"');");
+                                    }
                                 backup_dialog.append("<p></p>");
+                                backup_dialog.append("<br/>");
+                                backup_dialog.append("<br/>");
+                                backup_dialog.append("<br/>");
+                                backup_dialog.append("<hr/>");
+                                backup_dialog.append("</div>");
                             }
+                            backup_dialog.append("</fieldset>");
+                            backup_dialog.append("</form>");
                         }else{
                             backup_dialog.append("<p>暂无备份.</p>");
                         }
@@ -201,6 +218,38 @@
                 $( "#backup_dialog").dialog("open");
             }
     ///////////   backup结束  ///////////
+
+
+    function delete_backup(userid,backup_id){
+        var c= confirm("确定要 delete backup "+ backup_id +"吗?");
+         if(c== false){
+             return false;
+         }
+         $.ajax({
+             type: "POST",
+             url : "/g/user/rds/backup/delete",
+             data : {
+                 username:userid,
+                 backup_id:backup_id
+             },
+             success : function(data) {
+                   var d1 = JSON.parse(data);
+                    if(d1.result != "success"){
+                        alert(d1.result);
+                        return;
+                    }
+                    alert("操作成功!");
+                    $("#backup_div_"+backup_id).remove();
+             },
+             error : function(XMLHttpRequest,textStatus,errorThrown) {
+                 alert("失败!");
+                 alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
+                 alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
+                 alert("textStatus:"+textStatus);
+                 return false;
+             }
+         });
+    }
 
     ///////////   backup_config开始  ///////////
             function backup_config(user_id,instance_id){
@@ -254,20 +303,20 @@
 </head>
 
 <body class="main-body">
-<div class="path"><p>当前位置：机器管理<span>&gt;</span><a href="/g/user/list/1">用户信息</a><span>&gt;</span>rds列表</p></div>
+<div class="path"><p>当前位置：RDS管理<span>&gt;</span>rds列表</p></div>
 <div class="main-cont">
     <h3 class="title">rds列表</h3>
     <form action="/g/user/rdslist/"  method="post"  style="display:inline-block;" >
-        user_id：<input type="text" name="user_id" value=""/>
-        group：<input type="text" name="group" value=""/>
-        instance_id：<input type="text" name="instance_id" value=""/>
+        user_id：<input type="text" name="user_id" value="" />
+        <%--group：<input type="text" name="group" value="" size="50"/>--%>
+        instance_id：<input type="text" name="instance_id" value="" size="50"/>
         <input class="ui-state-default ui-corner-all" type="submit" name="submit" value="查  找"  />
     </form>
     <div class="set-area">
         <div>rds列表，rds数量：<c:out value="${rdsGroupDTO.instanceSize}"></c:out>
         <ul id="icons" class="ui-widget ui-helper-clearfix" style="float: right;">
             <li class="ui-state-default ui-corner-all">
-                <a href="/g/user/rdslist/?user_id=<%=userId %>"><button >刷新</button></a>
+                <a href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>"><button >刷新</button></a>
             </li>
             <%--<li class="ui-state-default ui-corner-all" onclick="editrds();">
                 <button></button>
@@ -302,12 +351,6 @@
                  <th>
                     <div class="th-gap">状态</div>
                 </th>
-                <th>
-                    <div class="th-gap">创建时间</div>
-                </th>
-                <th >
-                    <div class="th-gap">更新时间</div>
-                </th>
                  <th >
                     <div class="th-gap">复制组ID</div>
                 </th>
@@ -316,6 +359,12 @@
                 </th>
                 <th >
                     <div class="th-gap">VIP</div>
+                </th>
+                <th>
+                    <div class="th-gap">创建时间</div>
+                </th>
+                <th >
+                    <div class="th-gap">更新时间</div>
                 </th>
                 <th >
                     <div class="th-gap">安全组信息</div>
@@ -358,13 +407,13 @@
                             <hr/>
                             <p><b>task_status</b></p><p>[${rds.task_status}]</p>
                             </td>
-                            <td>${rds.created}</td>
-                            <td>${rds.updated}</td>
                             <td>${rds.group} </td>
                             <td><c:forEach var="i" items="${rds.ip}" varStatus="status">
                                 <p>ip:${i}</p>
                             </c:forEach></td>
                             <td>${rds.vip} </td>
+                            <td>${rds.created}</td>
+                            <td>${rds.updated}</td>
                             <td><button class="ui-state-default ui-corner-all" onclick="security('<%=userId %>','${rds.security_group}')">安全组信息</button>
                             </td>
                             <td><button class="ui-state-default ui-corner-all" onclick="backup('<%=userId %>','${rds.id}')">备份列表</button>
@@ -372,11 +421,7 @@
                             <td><button class="ui-state-default ui-corner-all" onclick="backup_config('<%=userId %>','${rds.id}')">备份配置</button>
                             </td>
                             <td>
-                                <c:choose>
-                                       <c:when test="${rds.type eq 'MASTER' || rds.type eq 'READ_REPLI' || rds.type eq 'SINGLE' }">
-                                          <p><button onclick="removeInstance('<%=userId %>','${rds.id}');">删除</button></p>
-                                       </c:when>
-                                </c:choose>
+                                <p><button onclick="removeInstance('<%=userId %>','${rds.id}');">删除</button></p>
                                 <c:choose>
                                        <c:when test="${rds.type eq 'MASTER' || rds.type eq 'STANDBY'}">
                                         <p><button onclick="migrate('<%=userId %>','${rds.id}');">迁移</button></p>
@@ -384,17 +429,13 @@
                                        </c:when>
                                 </c:choose>
                                 <p><button onclick="resize('<%=userId %>','${rds.id}','${rds.flavor.vcpus}','${rds.flavor.disk}','${rds.flavor.ram}');">resize</button></p>
-                                <c:choose>
-                                       <c:when test="${rds.type eq 'MASTER' || rds.type eq 'READ_REPLI' || rds.type eq 'SINGLE' }">
-                                         <p><button onclick="resetAdminPassword('<%=userId %>','${rds.id}');">修改密码</button></p>
-                                       </c:when>
-                                </c:choose>
+                                <p><button onclick="resetAdminPassword('<%=userId %>','${rds.id}');">修改密码</button></p>
                                 <c:choose>
                                        <c:when test="${rds.type eq 'SINGLE'}">
                                           <p><button onclick="upgrade('<%=userId %>','${rds.id}');">升级</button></p>
                                        </c:when>
                                 </c:choose>
-                                <p><button onclick="createBackup('<%=userId %>','${rds.id}');">创建备份</button></p>
+                                <p><button onclick="create_backup('<%=userId %>','${rds.id}');">创建备份</button></p>
                             </td>
                         </tr>
                     </c:forEach>
@@ -406,9 +447,25 @@
 
  <%-- 隐藏区 开始 --%>
 
+    <div id="create_backup_dialog" title="create_backup" style="display:none;">
+        <form>
+            <fieldset>
+                <legend id="create_backup_legend">创建备份</legend>
+                <p class="validateTips"><b style="color:red"></b></p>
+                <p>备份名称:<input id="create_backup_name" name="create_backup_name" value=""/></p>
+                 <p>备份类型：</p>
+                  <select name="create_backup_type" id="create_backup_type"  class="text ui-widget-content ui-corner-all">
+                       <option value="snapshot">手动</option>
+                       <option value="autobackup">自动</option>
+                  </select>
+                <p>description:<input id="create_backup_description" name="create_backup_description" value=""/></p>
+            </fieldset>
+        </form>
+    </div>
+
     <div id="migrate_dialog" title="migrateRDS" style="display:none;">
         <fieldset>
-            <legend>migrateRDS</legend>
+            <legend id="migrate_legend"></legend>
             <p class="validateTips"><b style="color:red"></b></p>
             <div id="migrate_backup_id_div">
                 <p>备份列表：</p>
@@ -425,7 +482,7 @@
 
     <div id="failover_dialog" title="failoverRDS" style="display:none;">
         <fieldset>
-            <legend>failoverRDS</legend>
+            <legend id="failover_legend">failoverRDS</legend>
             <p class="validateTips"><b style="color:red"></b></p>
             <p>force_host:<input id="failover_force_host" name="failover_force_host" value=""/></p>
         </fieldset>
@@ -440,7 +497,7 @@
 
     <div id="resize_dialog" title="resizeRDS" style="display:none;">
         <fieldset>
-            <legend>resizeRDS</legend>
+            <legend id="resize_legend"></legend>
             <p class="validateTips"><b style="color:red"></b></p>
             <p>内存:<input id="resize_ram" name="resize_ram" value=""/></p>
             <p>CPU:<input id="resize_vcpus" name="resize_vcpus" value=""/></p>
@@ -453,8 +510,8 @@
         <form>
             <fieldset>
                 <legend>resetAdminPassword</legend>
-                <p>超管密码:<input type="passowrd"  id="reset_admin_password" name="reset_admin_password" value="" AUTOCOMPLETE="off"/></p>
-                <p>再次输入超管密码:<input  type="passowrd" id="reset_admin_password2" name="reset_admin_password2" value="" AUTOCOMPLETE="off"/></p>
+                <p>新的超管密码:<input AUTOCOMPLETE="off" type="passowrd"  id="reset_admin_password" name="reset_admin_password" value="" AUTOCOMPLETE="off"/></p>
+                <p>再次输入超管密码:<input AUTOCOMPLETE="off" type="passowrd" id="reset_admin_password2" name="reset_admin_password2" value="" AUTOCOMPLETE="off"/></p>
             </fieldset>
         </form>
     </div>
@@ -490,7 +547,7 @@
             <input AUTOCOMPLETE="off"  type="text" name="create_port" id="create_port" value="" class="text ui-widget-content ui-corner-all" />
             <p>cpu核数（如：1、4、8）</p>
             <input AUTOCOMPLETE="off"  type="text" name="create_vcpu" id="create_vcpu" value="" class="text ui-widget-content ui-corner-all" />
-            <label for="create_root_disk">系统盘大小<b>(必填,单位:<input type="text" name="create_root_disk" id="create_root_disk" style="width:28px;border:0;color: #f6931f; font-weight: bold;display: inline-block;" />GB)</b></label>
+            <p><label for="create_root_disk">系统盘大小<b>(必填,单位:<input type="text" name="create_root_disk" id="create_root_disk" style="width:28px;border:0;color: #f6931f; font-weight: bold;display: inline-block;" />GB)</b></label></p>
             <div id="slider-range-min" style="width:81%;"></div>
             <p>内存大小(如：512、2048)：</p>
             <input AUTOCOMPLETE="off"  type="text" name="create_ram" id="create_ram" value="" class="text ui-widget-content ui-corner-all" />
@@ -500,18 +557,82 @@
 
 
  <%-- 隐藏区 结束 --%>
+ <script>
+        		///////////   create_backup 开始  ///////////
+     	   	function create_backup(userid,instance_id){
+                $("#create_backup_legend").html("create_backup " + instance_id);
+     		   	$( "#create_backup_dialog").dialog({
+     				autoOpen: false,
+     				height: 350,
+     				width: 700,
+     				modal: true,
+     				buttons: {
+     					"提交": function() {
+                            var c= confirm("确定要 create_backup 吗?");
+                              if(c== false){
+                                  return false;
+                              }
+     						var bValid = true;
+     						create_backup_type = $( "#create_backup_type");
+     						create_backup_name = $( "#create_backup_name");
+     					    tips = $( ".validateTips" );
+
+     						bValid = bValid && checknull( tips, create_backup_name, "create_backup_name");
+     						if(bValid){
+     							$.ajax({
+     								type: "POST",
+     								url : "/g/user/rds/backup/",
+     								data : {
+                                         username:userid,
+                                         instance_id:instance_id,
+                                         backup_name:create_backup_name.val(),
+                                         type:create_backup_type.val()
+     								},
+     								success : function(data) {
+     									  var d1 = JSON.parse(data);
+                                            if(d1.result != "success"){
+                                                alert(d1.result);
+                                                window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
+                                                return;
+                                            }
+                                            alert("操作成功!");
+                                            window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
+     								},
+     								error : function(XMLHttpRequest,textStatus,errorThrown) {
+     									alert("create_backup 失败!");
+     									alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
+     									alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
+     									alert("textStatus:"+textStatus);
+     								}
+     							});
+     						}
+     					},
+     					"取消": function() {
+     						$("#create_backup_dialog").dialog( "close" );
+     					}
+     				},
+     				close: function() {
+     				      tips.empty();
+     				}
+     			});
+     	   		$( "#create_backup_dialog" ).dialog("open");
+     	   	}
+     	   	///////////   create_backup 结束  ///////////
+ </script>
 
 
 <script>
        		///////////   resize rds开始  ///////////
-    	   	function resize(userid,instance_id,resize_vcpu,resize_disk,resize_ram){
-    	   	    $( "#resize_vcpu").val(resize_vcpu);
+    	   	function resize(userid,instance_id,resize_vcpus,resize_disk,resize_ram){
+    	   	    $("#resize_legend").html("resize "+instance_id);
+
+    	   	    $( "#resize_vcpus").val(resize_vcpus);
                 $( "#resize_disk").val(resize_disk);
                 $( "#resize_ram").val(resize_ram);
 
     		   	$( "#resize_dialog").dialog({
     				autoOpen: false,
-    				height: 750,
+    				height: 350,
     				width: 700,
     				modal: true,
     				buttons: {
@@ -521,19 +642,19 @@
                                  return false;
                              }
     						var bValid = true;
-    						resize_vcpu = $( "#resize_vcpu");
+    						resize_vcpus = $( "#resize_vcpus");
     						resize_disk = $( "#resize_disk");
     						resize_ram = $("#resize_ram");
     					    tips = $( ".validateTips" );
 
-    						bValid = bValid && checknull( tips, resize_vcpu, "resize_vcpu");
+    						bValid = bValid && checknull( tips, resize_vcpus, "resize_vcpus");
     						bValid = bValid && checknull( tips, resize_disk, "resize_disk");
     						bValid = bValid && checknull( tips, resize_ram, "resize_ram");
                             if(isNaN(resize_disk.val())){
                                 bValid = false;
                                 alert("请确认磁盘大小为数字！");
                             }
-                            if(isNaN(resize_vcpu.val())){
+                            if(isNaN(resize_vcpus.val())){
                                 bValid = false;
                                 alert("请确认cpu核数为数字！");
                             }
@@ -549,17 +670,18 @@
                                         username:userid,
                                         instance_id:instance_id,
                                         ram:resize_ram.val(),
-                                        vcpu:resize_vcpu.val(),
+                                        vcpus:resize_vcpus.val(),
                                         disk:resize_disk.val()
     								},
     								success : function(data) {
     									  var d1 = JSON.parse(data);
                                            if(d1.result != "success"){
                                                alert(d1.result);
-                                               window.location.href="/g/user/rdslist/?user_id="+userid;
+                                               window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
                                                return;
                                            }
                                            alert("操作成功!");
+                                           window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
     								},
     								error : function(XMLHttpRequest,textStatus,errorThrown) {
     									alert("resize RDS失败!");
@@ -573,9 +695,6 @@
     					"取消": function() {
     						$("#resize_dialog").dialog( "close" );
     					}
-    				},
-    				close: function() {
-    				      tips.empty();
     				}
     			});
     	   		$( "#resize_dialog" ).dialog("open");
@@ -588,7 +707,7 @@
     	   	function resetAdminPassword(userid,instance_id){
     		   	$( "#resetAdminPassword_dialog").dialog({
     				autoOpen: false,
-    				height: 750,
+    				height: 350,
     				width: 700,
     				modal: true,
     				buttons: {
@@ -621,10 +740,11 @@
     									  var d1 = JSON.parse(data);
                                            if(d1.result != "success"){
                                                alert(d1.result);
-                                               window.location.href="/g/user/rdslist/?user_id="+userid;
+                                               window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
                                                return;
                                            }
                                            alert("操作成功!");
+                                           window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
     								},
     								error : function(XMLHttpRequest,textStatus,errorThrown) {
     									alert("resetAdminPassword 失败!");
@@ -690,7 +810,7 @@
     	   	    }
     		   	$( "#addrds_form" ).dialog({
     				autoOpen: false,
-    				height: 750,
+    				height: 800,
     				width: 700,
     				modal: true,
     				buttons: {
@@ -771,10 +891,11 @@
                                            //alert(d1.result);
                                            if(d1.result != "success"){
                                                alert(d1.result);
-                                               window.location.href="/g/user/rdslist/?user_id="+userid;
+                                               window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
                                                return;
                                            }
-                                           window.location.href="/g/user/rdslist/?user_id="+userid;
+                                           alert("操作成功!");
+                                           window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
     								},
     								error : function(XMLHttpRequest,textStatus,errorThrown) {
     									alert("创建RDS失败!");
@@ -826,7 +947,7 @@
                                    return;
                                }
                                alert("操作成功!");
-                               window.location.href="/g/user/rdslist/?user_id="+userid;
+                               window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
                         },
                         error : function(XMLHttpRequest,textStatus,errorThrown) {
                             alert("失败!");
@@ -840,6 +961,7 @@
 
             ///////////   migrate rds开始  ///////////
                 function migrate(userid,instance_id){
+                    $("#migrate_legend").html("migrate " + instance_id);
                     var migrate_backup_id = $("#migrate_backup_id");
                         migrate_backup_id.html("");
                         migrate_backup_id.html("<option value=''>不选择</option>");
@@ -861,7 +983,7 @@
                                     }
                                 }else{
                                 }
-                                   addrds(userid,true);
+                                migrate2(userid,instance_id);
                             },
                             error : function(XMLHttpRequest,textStatus,errorThrown) {
                                 alert("失败!");
@@ -872,14 +994,14 @@
                         });
                 }
 
-                function migrate2(){
+                function migrate2(userid,instance_id){
                     $( "#migrate_dialog").dialog({
                         autoOpen: false,
-                        height: 750,
+                        height: 350,
                         width: 700,
                         modal: true,
                         buttons: {
-                            "修改": function() {
+                            "提交": function() {
                                var c= confirm("确定要 migrate 吗?");
                                  if(c== false){
                                      return false;
@@ -889,21 +1011,17 @@
                                 var migrate_vcpus = $( "#migrate_vcpus");
                                 var migrate_disk = $( "#migrate_disk");
                                 var migrate_ram = $("#migrate_ram");
-                                var tips = $( ".validateTips" );
+                                var migrate_backup_id = $("#migrate_backup_id");
 
-                                bValid = bValid && checknull( tips, migrate_vcpus, "migrate_vcpus");
-                                bValid = bValid && checknull( tips, migrate_disk, "migrate_disk");
-                                bValid = bValid && checknull( tips, migrate_ram, "migrate_ram");
-                                bValid = bValid && checknull( tips, migrate_host, "migrate_host");
-                                if(isNaN(resize_disk.val())){
+                                if(migrate_disk.val()!= "" &&  isNaN(migrate_disk.val())){
                                     bValid = false;
                                     alert("请确认磁盘大小为数字！");
                                 }
-                                if(isNaN(resize_vcpu.val())){
+                                if(migrate_vcpus.val()!= "" && isNaN(migrate_vcpus.val())){
                                     bValid = false;
                                     alert("请确认cpu核数为数字！");
                                 }
-                                if(isNaN(resize_ram.val())){
+                                if(migrate_ram.val()!= "" && isNaN(migrate_ram.val())){
                                     bValid = false;
                                     alert("请确认内存大小为数字！");
                                 }
@@ -915,7 +1033,7 @@
                                             username:userid,
                                             instance_id:instance_id,
                                             ram:migrate_ram.val(),
-                                            vcpus:migrate_vcpu.val(),
+                                            vcpus:migrate_vcpus.val(),
                                             disk:migrate_disk.val(),
                                             host:migrate_host.val(),
                                             backup_id:migrate_backup_id.val()
@@ -924,13 +1042,14 @@
                                               var d1 = JSON.parse(data);
                                                if(d1.result != "success"){
                                                    alert(d1.result);
-                                                   window.location.href="/g/user/rdslist/?user_id="+userid;
+                                                   window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
                                                    return;
                                                }
                                                alert("操作成功!");
+                                               window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
                                         },
                                         error : function(XMLHttpRequest,textStatus,errorThrown) {
-                                            alert("resize RDS失败!");
+                                            alert("migrate RDS失败!");
                                             alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
                                             alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
                                             alert("textStatus:"+textStatus);
@@ -939,49 +1058,61 @@
                                 }
                             },
                             "取消": function() {
-                                $("#resize_dialog").dialog( "close" );
+                                $("#migrate_dialog").dialog( "close" );
                             }
-                        },
-                        close: function() {
-                              tips.empty();
                         }
                     });
-                    $( "#resize_dialog" ).dialog("open");
+                    $( "#migrate_dialog" ).dialog("open");
                 }
                 ///////////   migrate rds结束  ///////////
 
 
             ///////////   failover 开始  ///////////
             function failover(userid,instance_id){
-                    var c= confirm("确定要 failover"+instance_id+"吗?");
-                    if(c== false){
-                        return false;
+            $("#failover_legend").html("failover " + instance_id);
+             $( "#failover_dialog").dialog({
+                autoOpen: false,
+                height: 350,
+                width: 700,
+                modal: true,
+                buttons: {
+                    "提交": function() {
+                            var c= confirm("确定要 failover"+instance_id+"吗?");
+                            if(c== false){
+                                return false;
+                            }
+                            $.ajax({
+                                type: "POST",
+                                url : "/g/user/rds/failover/",
+                                data : {
+                                    username:userid,
+                                    instance_id:instance_id,
+                                    force_host:$("#failover_force_host").val()
+                                },
+                                success : function(data) {
+                                  var d1 = JSON.parse(data);
+                                  //alert(d1.result);
+                                  if(d1.result != "success"){
+                                      alert(d1.result);
+                                      return;
+                                  }
+                                  alert("操作成功!");
+                                  window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
+                                },
+                                error : function(XMLHttpRequest,textStatus,errorThrown) {
+                                    alert("失败!");
+                                    alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
+                                    alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
+                                    alert("textStatus:"+textStatus);
+                                }
+                            });
+                    },
+                    "取消": function() {
+                        $("#failover_dialog").dialog( "close" );
                     }
-                    $.ajax({
-                        type: "POST",
-                        url : "/g/user/rds/failover/",
-                        data : {
-                            username:userid,
-                            instance_id:instance_id,
-
-                        },
-                        success : function(data) {
-                          var d1 = JSON.parse(data);
-                          //alert(d1.result);
-                          if(d1.result != "success"){
-                              alert(d1.result);
-                              return;
-                          }
-                          alert("操作成功!");
-                          window.location.href="/g/user/rdslist/?user_id="+userid;
-                        },
-                        error : function(XMLHttpRequest,textStatus,errorThrown) {
-                            alert("失败!");
-                            alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
-                            alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
-                            alert("textStatus:"+textStatus);
-                        }
-                    });
+                }
+            });
+            $( "#failover_dialog" ).dialog("open");
             }
             ///////////   failover 结束  ///////////
 
@@ -1007,7 +1138,7 @@
                                 return;
                             }
                             alert("操作成功!");
-                            window.location.reload();
+                            window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
                         },
                         error : function(XMLHttpRequest,textStatus,errorThrown) {
                             alert("失败!");

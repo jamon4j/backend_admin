@@ -26,7 +26,6 @@ import com.ksyun.vm.utils.enumeration.HttpMethod;
  * User: liuchuandong Date: 13-9-5 Time: 下午4:14 Func: openstack api 获取方法
  */
 @Service
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class JSONService {
     Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -303,7 +302,14 @@ public class JSONService {
         String host = Constants.getPropertyValue(InitConst.HTTP_HOST);
         String port = Constants.getPropertyValue(InitConst.HTTP_PORT);
         String uri = Constants.getPropertyValue(key, param);
-        String url = "http://" + host + ":" + port + uri;
+        StringBuilder sb = new StringBuilder();
+        sb.append("http://");
+        sb.append(host);
+        sb.append(":");
+        sb.append(port);
+        sb.append(uri);
+//        String url = "http://" + host + ":" + port + uri;
+        String url = sb.toString();
         logger.info("url:{}", url);
         return url;
     }

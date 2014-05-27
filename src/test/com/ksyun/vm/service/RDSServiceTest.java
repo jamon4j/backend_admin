@@ -87,8 +87,9 @@ public class RDSServiceTest extends BaseTest {
 
     @Test
     public void testMigrate() throws ErrorCodeException, NoTokenException {
+        MigrateDto migrateDto = new MigrateDto();
         try {
-            rdsService.migrate("39490241", "2863185f-3d59-441c-bc1e-d5ed5e662bdf","","","512","5","1");
+            rdsService.migrate("39490241", "d257b7ca-cae8-48cb-a8bc-749a80d7845e",migrateDto);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,7 +97,8 @@ public class RDSServiceTest extends BaseTest {
 
     @Test
     public void testFailover() throws Exception {
-        rdsService.failover("39490241", "be4e000b-4177-4596-9d3e-2fd0acba2e5b","");
+        FailoverDto failoverDto = new FailoverDto();
+        rdsService.failover("39490241", "4d3a36ef-707c-4bad-844a-9b4142d2c1ba",failoverDto);
     }
 
     @Test

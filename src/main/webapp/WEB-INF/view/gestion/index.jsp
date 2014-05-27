@@ -178,7 +178,7 @@
 				<h2 class="first">RDS管理</h2>
 				<ul>
 					<li><a href="/g/rds/init" router="home/7/1"
-						target="mainframe">RDS设置</a></li>
+						target="mainframe">RDS管理</a></li>
 				</ul>
 			</div>
 		</c:if>

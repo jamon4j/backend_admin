@@ -29,7 +29,7 @@ public class RDSBackupServiceTest extends BaseTest {
     @Test
     public void testGetBackups() throws NoTokenException, ErrorCodeException {
 
-        List<Backup> backups = rdsBackupService.getBackups("39490241", "d95ae418-f848-434f-bff1-fbec1973007d");
+        List<Backup> backups = rdsBackupService.getBackups("39490241", "27fdfae8-950f-4c50-ada5-aadee346cc38");
         logger.info("backups.size():" + backups.size());
         for (Backup b : backups) {
             logger.info("b:" + ToStringBuilder.reflectionToString(b));
@@ -48,7 +48,7 @@ public class RDSBackupServiceTest extends BaseTest {
 
 
     @Test
-    public void testDeleteBackup() throws ErrorCodeException, NoTokenException {
+    public void testDeleteBackup() throws Exception {
         rdsBackupService.delBackup("39490241","085e21f4-dffd-4691-90c0-116e6ed01c1e");
     }
 
