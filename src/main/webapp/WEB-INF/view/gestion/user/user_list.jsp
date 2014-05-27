@@ -38,7 +38,7 @@
    	}
 
     function rds_list(userId){
-        window.location.href="/g/user/rdslist/?userId="+userId;
+        window.location.href="/g/user/rdslist/?user_id="+userId;
     }
    	
    	function security_groups(tenantId, userId){

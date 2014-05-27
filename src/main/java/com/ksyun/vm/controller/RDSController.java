@@ -302,7 +302,10 @@ public class RDSController {
 
     @RequestMapping(value = "/g/user/rds/migrate/")
     @ResponseBody
-    public String migrate(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
+    public String migrate(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id,
+                          @RequestParam(value = "host", required = false) String host, @RequestParam(value = "backup_id", required = false) String backup_id
+            , @RequestParam(value = "ram", required = false) String ram, @RequestParam(value = "disk", required = false) String disk
+            , @RequestParam(value = "vcpus", required = false) String vcpus) {
         log.info("username:{},instance_id:{}", username, instance_id);
         try {
             checkNotNull(username);
@@ -311,7 +314,7 @@ public class RDSController {
             return "{\"result\":\"参数不能为空!\"}";
         }
         try {
-            rdsService.migrate(username, instance_id);
+            rdsService.migrate(username, instance_id, host, backup_id, ram, disk, vcpus);
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());
@@ -322,8 +325,9 @@ public class RDSController {
 
     @RequestMapping(value = "/g/user/rds/failover/")
     @ResponseBody
-    public String failover(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id) {
-        log.info("username:{},instance_id:{}", username, instance_id);
+    public String failover(@RequestParam("username") String username, @RequestParam("instance_id") String instance_id,
+                           @RequestParam(value = "force_host", required = false) String force_host) {
+        log.info("username:{},instance_id:{},force_host:{}", username, instance_id, force_host);
         try {
             checkNotNull(username);
             checkNotNull(instance_id);
@@ -331,7 +335,7 @@ public class RDSController {
             return "{\"result\":\"参数不能为空!\"}";
         }
         try {
-            rdsService.failover(username, instance_id);
+            rdsService.failover(username, instance_id, force_host);
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());

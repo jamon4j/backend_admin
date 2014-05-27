@@ -57,7 +57,7 @@ public class RDSServiceTest extends BaseTest {
     @Test
     public void testGetInstance() throws NoTokenException, ErrorCodeException {
 
-        RDSInstance rdsInstance=  rdsService.getInstanceFull("39490241", "ea0b0cd9-ab29-4287-a359-f604a65d8520");
+        RDSInstance rdsInstance=  rdsService.getInstance("39490241", "2863185f-3d59-441c-bc1e-d5ed5e662bdf");
         logger.info("rdsInstance:" + ToStringBuilder.reflectionToString(rdsInstance));
     }
 
@@ -88,7 +88,7 @@ public class RDSServiceTest extends BaseTest {
     @Test
     public void testMigrate() throws ErrorCodeException, NoTokenException {
         try {
-            rdsService.migrate("39490241", "6943e19f-2fc9-41da-a4e6-7df2a67d013d");
+            rdsService.migrate("39490241", "2863185f-3d59-441c-bc1e-d5ed5e662bdf","","","512","5","1");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,7 +96,7 @@ public class RDSServiceTest extends BaseTest {
 
     @Test
     public void testFailover() throws Exception {
-        rdsService.failover("39490241", "be4e000b-4177-4596-9d3e-2fd0acba2e5b");
+        rdsService.failover("39490241", "be4e000b-4177-4596-9d3e-2fd0acba2e5b","");
     }
 
     @Test

@@ -11,6 +11,7 @@ import com.ksyun.vm.utils.TimeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -138,8 +139,26 @@ public class RDSService {
         jsonService.poPut(InitConst.KVM_RDS_INSTANCE_RESIZE, username, null, null, requestBody, instance_id);
     }
 
-    public void migrate(String username, String instance_id) throws Exception {
-        String requestBody = "{}";
+    public void migrate(String username, String instance_id, String host, String backup_id, String ram, String disk
+            , String vcpus) throws Exception {
+        MigrateDto migrateDto = new MigrateDto();
+        if (StringUtils.isNotEmpty(ram)) {
+            migrateDto.setRam(ram);
+        }
+        if (StringUtils.isNotEmpty(host)) {
+            migrateDto.setHost(host);
+        }
+        if (StringUtils.isNotEmpty(backup_id)) {
+            migrateDto.setBackup_id(backup_id);
+        }
+        if (StringUtils.isNotEmpty(disk)) {
+            migrateDto.setDisk(disk);
+        }
+        if (StringUtils.isNotEmpty(vcpus)) {
+            migrateDto.setVcpus(vcpus);
+        }
+        String requestBody = JSON.toJSONString(migrateDto);
+        logger.info("migrateDto:" + requestBody);
         RDSInstance rdsInstance = getInstance(username, instance_id);
         if (rdsInstance != null && ("MASTER".equalsIgnoreCase(rdsInstance.getType()) || "STANDBY".equalsIgnoreCase(rdsInstance.getType()))) {
             jsonService.poPut(InitConst.KVM_RDS_INSTANCE_MIGRATE, username, null, null, requestBody, instance_id);
@@ -148,8 +167,14 @@ public class RDSService {
         }
     }
 
-    public void failover(String username, String instance_id) throws Exception {
-        String requestBody = "{}";
+    public void failover(String username, String instance_id, String force_host) throws Exception {
+        FailoverDto failoverDto = new FailoverDto();
+        if (StringUtils.isNotEmpty(force_host)) {
+            failoverDto.setForce_host(force_host);
+        }
+        failoverDto.setIs_req_body("true");
+        String requestBody = JSON.toJSONString(failoverDto);
+        logger.info("failoverDto:" + requestBody);
         RDSInstance rdsInstance = getInstance(username, instance_id);
         if (rdsInstance != null && ("MASTER".equalsIgnoreCase(rdsInstance.getType()) || "STANDBY".equalsIgnoreCase(rdsInstance.getType()))) {
             jsonService.poPut(InitConst.KVM_RDS_INSTANCE_FAILOVER, username, null, null, requestBody, instance_id);

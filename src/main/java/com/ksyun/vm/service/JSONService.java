@@ -33,8 +33,6 @@ public class JSONService {
     private String id;
     private String tenantId;
 
-    private Map<String, String> header;
-
     public String getId() {
         return id;
     }
@@ -306,7 +304,6 @@ public class JSONService {
         String port = Constants.getPropertyValue(InitConst.HTTP_PORT);
         String uri = Constants.getPropertyValue(key, param);
         String url = "http://" + host + ":" + port + uri;
-        ;
         logger.info("url:{}", url);
         return url;
     }
@@ -321,16 +318,14 @@ public class JSONService {
      */
     private Map<String, String> setHeader(String username, String password)
             throws NoTokenException, ErrorCodeException {
-        if (header == null) {
-            UserPo po = getToken(username, password);
-            if (po == null) {
-                throw new NoTokenException(username, password);
-            }
-            header = new HashMap<>();
-            header.put("Content-Type", "application/json");
-            header.put("X-Auth-Token", po.getToken());
-            logger.info("X-Auth-Token:{}", po.getToken());
+        UserPo po = getToken(username, password);
+        if (po == null) {
+            throw new NoTokenException(username, password);
         }
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("X-Auth-Token", po.getToken());
+        logger.info("X-Auth-Token:{}", po.getToken());
         return header;
     }
 

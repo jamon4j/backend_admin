@@ -406,6 +406,31 @@
 
  <%-- 隐藏区 开始 --%>
 
+    <div id="migrate_dialog" title="migrateRDS" style="display:none;">
+        <fieldset>
+            <legend>migrateRDS</legend>
+            <p class="validateTips"><b style="color:red"></b></p>
+            <div id="migrate_backup_id_div">
+                <p>备份列表：</p>
+                   <select name="migrate_backup_id" id="migrate_backup_id"  class="text ui-widget-content ui-corner-all">
+                        <option value="">不选择</option>
+                   </select>
+            </div>
+            <p>host:<input id="migrate_host" name="migrate_host" value=""/></p>
+            <p>内存:<input id="migrate_ram" name="migrate_ram" value=""/></p>
+            <p>CPU:<input id="migrate_vcpus" name="migrate_vcpus" value=""/></p>
+            <p>硬盘:<input id="migrate_disk" name="migrate_disk" value=""/></p>
+        </fieldset>
+    </div>
+
+    <div id="failover_dialog" title="failoverRDS" style="display:none;">
+        <fieldset>
+            <legend>failoverRDS</legend>
+            <p class="validateTips"><b style="color:red"></b></p>
+            <p>force_host:<input id="failover_force_host" name="failover_force_host" value=""/></p>
+        </fieldset>
+    </div>
+
     <div id="backup_config_dialog" title="backup_config详情" style="display:none"></div>
 
     <div id="security_dialog" title="security详情" style="display:none"></div>
@@ -523,9 +548,9 @@
     								data : {
                                         username:userid,
                                         instance_id:instance_id,
-                                        ram:resize_ram,
-                                        vcpu:resize_vcpu,
-                                        disk:resize_disk
+                                        ram:resize_ram.val(),
+                                        vcpu:resize_vcpu.val(),
+                                        disk:resize_disk.val()
     								},
     								success : function(data) {
     									  var d1 = JSON.parse(data);
@@ -729,6 +754,9 @@
                                                                        "ram":create_ram.val(),
                                                                        "vcpus":create_vcpu.val(),
                                                                        "disk":create_root_disk.val()
+                                                                   },
+                                                                   "restorePoint":{
+                                                                        "backupRef":$("#create_backup_id").val()
                                                                    }
                                                                }
                             });
@@ -810,38 +838,118 @@
             }
             ///////////   upgrade 结束  ///////////
 
-            ///////////   migrate 开始  ///////////
-            function migrate(userid,instance_id){
-                      var c= confirm("确定要 migrate"+instance_id+"吗?");
-                     if(c== false){
-                         return false;
-                     }
-                    $.ajax({
-                        type: "POST",
-                        url : "/g/user/rds/migrate/",
-                        data : {
-                            username:userid,
-                            instance_id:instance_id
+            ///////////   migrate rds开始  ///////////
+                function migrate(userid,instance_id){
+                    var migrate_backup_id = $("#migrate_backup_id");
+                        migrate_backup_id.html("");
+                        migrate_backup_id.html("<option value=''>不选择</option>");
+                         $.ajax({
+                            type: "GET",
+                            url : "/g/user/rds/backup/",
+                            data : {
+                                username:userid
+                            },
+                            success : function(data) {
+                                  var d1 = JSON.parse(data);
+                                   if(d1.result != "success"){
+                                       alert(d1.result);
+                                       return;
+                                   }
+                                if(d1.content.length>0){
+                                    for(var i=0;i<d1.content.length;i++){
+                                        migrate_backup_id.append("<option value='"+d1.content[i].id+"'>" + d1.content[i].name + "</option>");
+                                    }
+                                }else{
+                                }
+                                   addrds(userid,true);
+                            },
+                            error : function(XMLHttpRequest,textStatus,errorThrown) {
+                                alert("失败!");
+                                alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
+                                alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
+                                alert("textStatus:"+textStatus);
+                            }
+                        });
+                }
+
+                function migrate2(){
+                    $( "#migrate_dialog").dialog({
+                        autoOpen: false,
+                        height: 750,
+                        width: 700,
+                        modal: true,
+                        buttons: {
+                            "修改": function() {
+                               var c= confirm("确定要 migrate 吗?");
+                                 if(c== false){
+                                     return false;
+                                 }
+                                var bValid = true;
+                                var migrate_host = $( "#migrate_host");
+                                var migrate_vcpus = $( "#migrate_vcpus");
+                                var migrate_disk = $( "#migrate_disk");
+                                var migrate_ram = $("#migrate_ram");
+                                var tips = $( ".validateTips" );
+
+                                bValid = bValid && checknull( tips, migrate_vcpus, "migrate_vcpus");
+                                bValid = bValid && checknull( tips, migrate_disk, "migrate_disk");
+                                bValid = bValid && checknull( tips, migrate_ram, "migrate_ram");
+                                bValid = bValid && checknull( tips, migrate_host, "migrate_host");
+                                if(isNaN(resize_disk.val())){
+                                    bValid = false;
+                                    alert("请确认磁盘大小为数字！");
+                                }
+                                if(isNaN(resize_vcpu.val())){
+                                    bValid = false;
+                                    alert("请确认cpu核数为数字！");
+                                }
+                                if(isNaN(resize_ram.val())){
+                                    bValid = false;
+                                    alert("请确认内存大小为数字！");
+                                }
+                                if(bValid){
+                                    $.ajax({
+                                        type: "POST",
+                                        url : "/g/user/rds/migrate/",
+                                        data : {
+                                            username:userid,
+                                            instance_id:instance_id,
+                                            ram:migrate_ram.val(),
+                                            vcpus:migrate_vcpu.val(),
+                                            disk:migrate_disk.val(),
+                                            host:migrate_host.val(),
+                                            backup_id:migrate_backup_id.val()
+                                        },
+                                        success : function(data) {
+                                              var d1 = JSON.parse(data);
+                                               if(d1.result != "success"){
+                                                   alert(d1.result);
+                                                   window.location.href="/g/user/rdslist/?user_id="+userid;
+                                                   return;
+                                               }
+                                               alert("操作成功!");
+                                        },
+                                        error : function(XMLHttpRequest,textStatus,errorThrown) {
+                                            alert("resize RDS失败!");
+                                            alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
+                                            alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
+                                            alert("textStatus:"+textStatus);
+                                        }
+                                    });
+                                }
+                            },
+                            "取消": function() {
+                                $("#resize_dialog").dialog( "close" );
+                            }
                         },
-                        success : function(data) {
-                           var d1 = JSON.parse(data);
-                           //alert(d1.result);
-                           if(d1.result != "success"){
-                               alert(d1.result);
-                               return;
-                           }
-                           alert("操作成功!");
-                           window.location.href="/g/user/rdslist/?user_id="+userid;
-                        },
-                        error : function(XMLHttpRequest,textStatus,errorThrown) {
-                            alert("失败!");
-                            alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
-                            alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
-                            alert("textStatus:"+textStatus);
+                        close: function() {
+                              tips.empty();
                         }
                     });
-            }
-            ///////////   migrate 结束  ///////////
+                    $( "#resize_dialog" ).dialog("open");
+                }
+                ///////////   migrate rds结束  ///////////
+
 
             ///////////   failover 开始  ///////////
             function failover(userid,instance_id){
@@ -854,7 +962,8 @@
                         url : "/g/user/rds/failover/",
                         data : {
                             username:userid,
-                            instance_id:instance_id
+                            instance_id:instance_id,
+
                         },
                         success : function(data) {
                           var d1 = JSON.parse(data);
