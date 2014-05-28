@@ -102,7 +102,7 @@ public class RDSController {
         try {
             if (StringUtils.isNotEmpty(userId) && StringUtils.isNotEmpty(instance_id)) {
                 rdsGroupDTO = rdsService.getRDSGroupDTO(userId, instance_id);
-            } else {
+            } else if(StringUtils.isNotEmpty(userId)){
                 rdsGroupDTO = rdsService.getRDSGroupDTO(userId);
             }
         } catch (Exception e) {
