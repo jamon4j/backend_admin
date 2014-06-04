@@ -560,6 +560,8 @@
  <script>
         		///////////   create_backup 开始  ///////////
      	   	function create_backup(userid,instance_id){
+
+                tips = $( ".validateTips" );
                 $("#create_backup_legend").html("create_backup " + instance_id);
      		   	$( "#create_backup_dialog").dialog({
      				autoOpen: false,
@@ -575,7 +577,7 @@
      						var bValid = true;
      						create_backup_type = $( "#create_backup_type");
      						create_backup_name = $( "#create_backup_name");
-     					    tips = $( ".validateTips" );
+     					    //tips = $( ".validateTips" );
 
      						bValid = bValid && checknull( tips, create_backup_name, "create_backup_name");
      						if(bValid){
@@ -592,11 +594,11 @@
      									  var d1 = JSON.parse(data);
                                             if(d1.result != "success"){
                                                 alert(d1.result);
-                                                window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
+                                                //window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
                                                 return;
                                             }
                                             alert("操作成功!");
-                                            window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
+                                            //window.location.href="/g/user/rdslist/?user_id=<%=userId %>&instance_id=<%=instance_id %>";
      								},
      								error : function(XMLHttpRequest,textStatus,errorThrown) {
      									alert("create_backup 失败!");
@@ -612,7 +614,11 @@
      					}
      				},
      				close: function() {
-     				      tips.empty();
+
+                        if (tips)
+                        {
+                            tips.empty();
+                    }
      				}
      			});
      	   		$( "#create_backup_dialog" ).dialog("open");
@@ -705,6 +711,7 @@
 <script>
        		///////////   resetAdminPassword 开始  ///////////
     	   	function resetAdminPassword(userid,instance_id){
+                tips = $( ".validateTips" );
     		   	$( "#resetAdminPassword_dialog").dialog({
     				autoOpen: false,
     				height: 350,
@@ -719,7 +726,7 @@
     						var bValid = true;
     						reset_admin_password = $( "#reset_admin_password");
     						reset_admin_password2 = $( "#reset_admin_password2");
-    					    tips = $( ".validateTips" );
+
 
     						bValid = bValid && checknull( tips, reset_admin_password, "reset_admin_password");
     						bValid = bValid && checknull( tips, reset_admin_password2, "reset_admin_password2");
@@ -760,7 +767,9 @@
     					}
     				},
     				close: function() {
-    				      tips.empty();
+
+                              tips.empty();
+
     				}
     			});
     	   		$( "#resetAdminPassword_dialog" ).dialog("open");
