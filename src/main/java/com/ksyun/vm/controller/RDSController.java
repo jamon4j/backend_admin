@@ -106,6 +106,10 @@ public class RDSController {
                 rdsGroupDTO = rdsService.getRDSGroupDTO(userId);
 
             }
+            else if(StringUtils.isNotEmpty(instance_id))
+            {
+                rdsGroupDTO = rdsService.getRDSGroupDTOBy(instance_id);
+            }
         } catch (Exception e) {
             logger.error("[ RDS_INSTANCE_LIST---user:" + userId + " ]Error:", e);
         }
