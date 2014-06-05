@@ -6,6 +6,7 @@ import com.ksyun.vm.dao.rds.RDSValidationDao;
 import com.ksyun.vm.exception.ErrorCodeException;
 import com.ksyun.vm.exception.NoTokenException;
 import com.ksyun.vm.pojo.rds.*;
+import com.ksyun.vm.utils.Constants;
 import com.ksyun.vm.utils.InitConst;
 import com.ksyun.vm.utils.TimeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -69,8 +70,6 @@ public class RDSService {
         rdsGroupDTO.addRDSGroup(instance);
         return rdsGroupDTO;
     }
-
-
     public RDSInstance getInstance(String username, String instance_id) {
         RDSInstance instance = null;
         try {
@@ -81,6 +80,27 @@ public class RDSService {
         }
         return instance;
     }
+
+    public RDSGroupDTO getRDSGroupDTOBy(String instance_id) throws ErrorCodeException, NoTokenException {
+        logger.info("jsonService.hashCode():" + jsonService.hashCode());
+        RDSInstance instance = getInstanceBy(instance_id);
+        checkNotNull(instance);
+        RDSGroupDTO rdsGroupDTO = new RDSGroupDTO();
+        rdsGroupDTO.addRDSGroup(instance);
+        return rdsGroupDTO;
+    }
+
+    public RDSInstance getInstanceBy(String instance_id) {
+        RDSInstance instance = null;
+        try {
+            instance = jsonService.poGet(InitConst.KVM_RDS_INSTANCE_GET, InitConst.ADMIN, InitConst.PASSWORD, RDSInstance.class, instance_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+        return instance;
+    }
+
 
     @Deprecated
     public RDSInstance getInstanceFull(String username, String instance_id) {
