@@ -46,7 +46,7 @@ public class HandleAuthenticationInterceptor extends HandlerInterceptorAdapter {
 				|| uri.indexOf("/js") > -1 || uri.indexOf("/img") > -1
 				|| uri.indexOf("/getvmsum") > -1 || uri.indexOf("/change") > -1
 				|| uri.indexOf("/logout") > -1
-				|| uri.indexOf("/g/user/image_public_id_list/") > -1) {
+				|| uri.indexOf("/g/user/image_public_id_list/") > -1||uri.indexOf("api")>-1) {
 			// 过滤对change连接的权限控制
 			// 过滤运营需要的连接/g/user/image_public_id_list/
 			return true;
