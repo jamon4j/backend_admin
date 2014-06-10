@@ -96,7 +96,7 @@ public class ZoneController {
 
     @RequestMapping(value = "/api/zonelist",produces = {"text/plain;charset=UTF-8"})
     @ResponseBody
-    public String returnZoneListtest(HttpServletRequest request) {
+    public String returnZoneListAPI(HttpServletRequest request) {
         HashMap<String, Object> result = new HashMap<String, Object>();
 
 
