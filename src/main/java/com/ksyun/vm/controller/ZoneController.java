@@ -183,7 +183,7 @@ public class ZoneController {
         result.put("wan_ipnum_zones", String.format("%d个", wan_ipnum_zones));
         result.put("wan_used_ipnum_zones", String.format("%d个", wan_used_ipnum_zones));
         result.put("wan_used_ipnum_zones_scale", wan_used_ipnum_zones_scale);
-
+        //添加返回状态
         HashMap<String, Object> resulttotal = new HashMap<String, Object>();
         resulttotal.put("msg","successful");
         resulttotal.put("data",result);
