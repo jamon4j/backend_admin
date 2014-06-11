@@ -146,6 +146,7 @@ public class ZoneController {
             }
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
+            return "{'msg':'error','data':''}";
         }
 
         float value = 0;
@@ -183,7 +184,10 @@ public class ZoneController {
         result.put("wan_used_ipnum_zones", String.format("%d个", wan_used_ipnum_zones));
         result.put("wan_used_ipnum_zones_scale", wan_used_ipnum_zones_scale);
 
-        return JSONObject.toJSONString(result);
+        HashMap<String, Object> resulttotal = new HashMap<String, Object>();
+        resulttotal.put("msg","successful");
+        resulttotal.put("data",result);
+        return JSONObject.toJSONString(resulttotal);
     }
 
 
