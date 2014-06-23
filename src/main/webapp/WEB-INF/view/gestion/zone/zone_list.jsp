@@ -109,7 +109,7 @@
                             <c:set value="${running_vms + husage.running_vms}" var="running_vms" />
                             <c:set value="${vcpus + husage.vcpus}" var="vcpus" />
                             <c:set value="${vcpus_used + husage.vcpus_used}" var="vcpus_used" />
-                            <c:set value="${local_gb + husage.local_gb}" var="local_gb" />
+                                <c:set value="${local_gb + husage.local_gb}" var="local_gb" />
                             <c:set value="${local_gb_used + husage.local_gb_used}" var="local_gb_used" />
                             <c:set value="${free_disk_gb + husage.free_disk_gb}" var="free_disk_gb" />
                             <c:set value="${memory_mb + husage.memory_mb}" var="memory_mb" />

@@ -29,7 +29,7 @@ public class BaseController {
 	
 	@Resource
 	protected MessageSource messageSource;
-	
+
 	/**
 	 * 检查参数值是否为空
 	 * @param msgKey      resource properties key

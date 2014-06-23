@@ -351,9 +351,9 @@
                  <th>
                     <div class="th-gap">状态</div>
                 </th>
-                 <th >
+                <!-- <th >
                     <div class="th-gap">复制组ID</div>
-                </th>
+                </th> -->
                 <th>
                     <div class="th-gap">虚拟机IP</div>
                 </th>
@@ -407,7 +407,7 @@
                             <hr/>
                             <p><b>task_status</b></p><p>[${rds.task_status}]</p>
                             </td>
-                            <td>${rds.group} </td>
+                            <!--<td>${rds.group} </td>-->
                             <td><c:forEach var="i" items="${rds.ip}" varStatus="status">
                                 <p>ip:${i}</p>
                             </c:forEach></td>
@@ -520,6 +520,11 @@
     <p class="validateTips"><b style="color:red"></b></p>
 	<form>
 		<fieldset>
+
+
+            <p>租户ID<b>(必填)</b>：</p>
+            <input AUTOCOMPLETE="off" type="text" name="create_name" id="create_user"  value="" class="text ui-widget-content ui-corner-all" />
+
 			<p>名称<b>(必填)</b>：</p>
 			<input AUTOCOMPLETE="off" type="text" name="create_name" id="create_name"  value="" class="text ui-widget-content ui-corner-all" />
 			<div id="create_backup_id_div"  style="display: none">
@@ -561,7 +566,7 @@
         		///////////   create_backup 开始  ///////////
      	   	function create_backup(userid,instance_id){
 
-                tips = $( ".validateTips" );
+                var tips = $( ".validateTips" );
                 $("#create_backup_legend").html("create_backup " + instance_id);
      		   	$( "#create_backup_dialog").dialog({
      				autoOpen: false,
@@ -711,7 +716,7 @@
 <script>
        		///////////   resetAdminPassword 开始  ///////////
     	   	function resetAdminPassword(userid,instance_id){
-                tips = $( ".validateTips" );
+                var tips = $( ".validateTips" );
     		   	$( "#resetAdminPassword_dialog").dialog({
     				autoOpen: false,
     				height: 350,
@@ -829,6 +834,7 @@
                                  return false;
                              }
     						var bValid = true;
+                           var create_user=$("#create_user");
     						var create_name = $( "#create_name" );
     						create_type = $( "#create_type" );
     						create_service_type = $( "#create_service_type" );
@@ -842,7 +848,9 @@
     					//	allFields = $( [] ).add( create_name ).add( create_imageRef ).add( create_count ).add( create_security_groups ).add( create_adminPass ),
     						tips = $( ".validateTips" );
 
+
     					//	allFields.removeClass( "ui-state-error" );
+                            bValid = bValid&& checknull( tips, create_user, "create_user");
     						bValid = bValid && checknull( tips, create_name, "create_name");
     						bValid = bValid && checknull( tips, create_type, "create_type");
     						bValid = bValid && checknull( tips, create_service_type, "create_service_type");
@@ -869,26 +877,49 @@
                                 bValid = false;
                                 alert("请确认内存大小为数字！");
                             }
-                            var jsonData = JSON.stringify({"user_id":userid,
-                                                               "rds":{
-                                                                   "name":create_name.val(),
-                                                                   "type":create_type.val(),
-                                                                   "service_type":create_service_type.val(),
-                                                                   "extend":{
-                                                                       "admin_user":create_admin_user.val(),
-                                                                       "admin_password":create_admin_password.val(),
-                                                                       "port":create_port.val()
-                                                                   },
-                                                                   "flavor":{
-                                                                       "ram":create_ram.val(),
-                                                                       "vcpus":create_vcpu.val(),
-                                                                       "disk":create_root_disk.val()
-                                                                   },
-                                                                   "restorePoint":{
-                                                                        "backupRef":$("#create_backup_id").val()
-                                                                   }
-                                                               }
-                            });
+
+                            var postdata={"user_id":create_user.val(),
+                                "rds":{
+                                    "name":create_name.val(),
+                                    "type":create_type.val(),
+                                    "service_type":create_service_type.val(),
+                                    "extend":{
+                                        "admin_user":create_admin_user.val(),
+                                        "admin_password":create_admin_password.val(),
+                                        "port":create_port.val()
+                                    },
+                                    "flavor":{
+                                        "ram":create_ram.val(),
+                                        "vcpus":create_vcpu.val(),
+                                        "disk":create_root_disk.val()
+                                    }
+                                }
+                            }
+                            if(addrdsFromBackup)
+                            {
+                                postdata=={"user_id":create_user.val(),
+                                    "rds":{
+                                        "name":create_name.val(),
+                                        "type":create_type.val(),
+                                        "service_type":create_service_type.val(),
+                                        "extend":{
+                                            "admin_user":create_admin_user.val(),
+                                            "admin_password":create_admin_password.val(),
+                                            "port":create_port.val()
+                                        },
+                                        "flavor":{
+                                            "ram":create_ram.val(),
+                                            "vcpus":create_vcpu.val(),
+                                            "disk":create_root_disk.val()
+                                        },
+                                        "restorePoint":{
+                                            "backupRef":$("#create_backup_id").val()
+                                        }
+                                    }
+                                }
+                            }
+
+                            var jsonData = JSON.stringify(postdata);
     						if(bValid){
     							$.ajax({
     								type: "POST",
