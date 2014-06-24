@@ -25,10 +25,10 @@ a:hover { text-decoration:underline;}
 .btn-s1,
 .btn-s1 span,
 .tab-box h5 a,
-.tab-box h5 span { background:url(http://tcg0.hongtium.com/static/css/admin/bgimg/tab_bg.png) no-repeat;}
+.tab-box h5 span { background:url(http://pubkvm.ks-cdn.com/js/frame/bgimg/tab_bg.png) no-repeat;}
 
 #side-menu h2,
-.path { padding-left:10px; background:url(http://tcg0.hongtium.com/static/css/admin/bgimg/repeat_x.png) repeat-x;}
+.path { padding-left:10px; background:url(http://pubkvm.ks-cdn.com/js/frame/bgimg/repeat_x.png) repeat-x;}
 
 .icon-edit,
 .icon-del,
@@ -64,7 +64,7 @@ a:hover { text-decoration:underline;}
 .range-inser .range-r,
 .no-data,
 .win-confirm .icon-correct, 
-.a-error{ display:inline-block; background:url(http://tcg0.hongtium.com/static/css/admin/bgimg/icon_bg.png) no-repeat; margin-right:8px;}
+.a-error{ display:inline-block; background:url(http://pubkvm.ks-cdn.com/js/frame/bgimg/icon_bg.png) no-repeat; margin-right:8px;}
 
 .icon-alert,
 .icon-success,
@@ -81,10 +81,10 @@ a:hover { text-decoration:underline;}
 .active-one,
 .active-one-no ,
 .active-btn,
-.active-btn-no{ background:url(http://tcg0.hongtium.com/static/css/admin/bgimg/admin_all_bg.png) no-repeat;}
+.active-btn-no{ background:url(http://pubkvm.ks-cdn.com/js/frame/bgimg/admin_all_bg.png) no-repeat;}
 
 /*头部*/
-#header {min-width:725px; position:relative; width:100%; height:69px; margin-bottom:10px;overflow:hidden; background:url(http://tcg0.hongtium.com/static/css/admin/bgimg/header_bg.png) repeat-x;}
+#header {min-width:725px; position:relative; width:100%; height:69px; margin-bottom:10px;overflow:hidden; background:url(http://pubkvm.ks-cdn.com/js/frame/bgimg/header_bg.png) repeat-x;}
 #header h1 { position:absolute; left:18px; top:18px; width:215px; height:32px; text-indent:-999em; background:url(bgimg/logo.png) no-repeat;}
 #header ul { margin-left:277px; padding-top:40px;}
 #header li { float:left; display:inline; height:29px;margin-right:5px;  }
@@ -355,7 +355,7 @@ a:hover { text-decoration:underline;}
 .table .fold-cotrol { position:relative; height:20px;line-height:16px; overflow:hidden}
 .table .no-data { margin:15px 0;white-space:nowrap; color:#999;}
 
-.tb-tit-bg{ background:#F4F4F4 url(http://tcg0.hongtium.com/static/css/admin/bgimg/table_bg.png) 0 0 repeat-x;}
+.tb-tit-bg{ background:#F4F4F4 url(http://pubkvm.ks-cdn.com/js/frame/bgimg/table_bg.png) 0 0 repeat-x;}
 .td-foot-bg {background:#f4f4f4;}
 .add-rows {background:#F7F7F7;}/*添加二级导航*/
 .add-rows td { padding-left:20px;}

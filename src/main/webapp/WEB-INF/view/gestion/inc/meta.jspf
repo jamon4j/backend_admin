@@ -36,7 +36,7 @@
 </script>
 <style>
     #header h1 {
-        background: url("http://tcg0.hongtium.com/static/ksc_logo72.jpg") no-repeat scroll 0 0 transparent;
+        background: url("http://pubkvm.ks-cdn.com/js/frame/bgimg/ksc_logo72.jpg") no-repeat scroll 0 0 transparent;
         height: 72px;
         left: 18px;
         position: absolute;
