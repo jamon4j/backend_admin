@@ -16,7 +16,7 @@ import com.ksyun.vm.routedatasource.DataSourceInstances;
  * Time: 上午11:00
  * Func:
  */
-@Service
+@Service("roleService")
 public class RoleService {
 	
 	@Resource

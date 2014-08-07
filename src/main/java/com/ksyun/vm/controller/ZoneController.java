@@ -2,11 +2,13 @@ package com.ksyun.vm.controller;
 
 import java.io.IOException;
 import java.lang.Object;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.plaf.synth.Region;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -45,20 +47,28 @@ public class ZoneController {
     //zone列表
     @RequestMapping("/g/zonelist")
     public ModelAndView returnZoneList(HttpServletRequest request, ModelAndView mav) {
+        String Region = request.getParameter("Region");
         List<ZonePojo> list = null;
         List<StatZone> stat_zone = null;
+        ;
         List<IpStat> ip_stat = null;
         NetsInfo netsInfo = null;
         try {
-            list = zoneService.getZoneList();
-            stat_zone = statService.getStatZone();
+            list = zoneService.getZoneList(Region);
+            stat_zone = statService.getStatZone(Region);
             ip_stat = statService.getIpStat();
+
+
             for (ZonePojo pojo : list) {
                 for (StatZone zone : stat_zone) {
                     if (pojo.getName().equals(zone.getZone_name())) {
                         pojo.setStatZone(zone);
                         for (HostUsage usage : zone.getHost_usage()) {
                             usage.setCpu_infos(JSONObject.parseObject(usage.getCpu_info(), CpuInfos.class));
+                            System.out.println(Integer.parseInt(usage.getVcpus_used()) );
+                            System.out.println(Integer.parseInt(usage.getLocal_gb_used()));
+                            System.out.println(Integer.parseInt(usage.getMemory_mb_used()));//vcpus_used
+
                         }
                         break;
                     }
@@ -68,6 +78,8 @@ public class ZoneController {
                         pojo.setIpStat(ipStat);
                     }
                 }
+
+
             }
             netsInfo = NetsInfo.getInstance(ip_stat);
         } catch (ErrorCodeException | NoTokenException e) {
@@ -75,7 +87,11 @@ public class ZoneController {
         }
         mav.addObject("zonelist", list);
         mav.addObject("netsInfo", netsInfo);
-        mav.setViewName("/gestion/zone/zone_list");
+        if (Region.equals("RegionOne")) {
+            mav.setViewName("/gestion/zone/zone_list");
+        } else {
+            mav.setViewName("/gestion/zone/SHzone_list");
+        }
         return mav;
     }
 
@@ -85,6 +101,7 @@ public class ZoneController {
     public String returnZoneAjaxList(HttpServletRequest request, ModelAndView mav) {
         List<ZonePojo> list = null;
         try {
+
             list = zoneService.getZoneList();
             return JSONArray.toJSONString(list);
         } catch (ErrorCodeException | NoTokenException e) {
@@ -94,7 +111,7 @@ public class ZoneController {
     }
 
 
-    @RequestMapping(value = "/api/zonelist",produces = {"text/plain;charset=UTF-8"})
+    @RequestMapping(value = "/api/zonelist", produces = {"text/plain;charset=UTF-8"})
     @ResponseBody
     public String returnZoneListAPI(HttpServletRequest request) {
         HashMap<String, Object> result = new HashMap<String, Object>();
@@ -123,8 +140,9 @@ public class ZoneController {
         List<IpStat> ip_stat = null;
         NetsInfo netsInfo = null;
         try {
-            list = zoneService.getZoneList();
-            stat_zone = statService.getStatZone();
+            String Region = request.getParameter("Region");
+            list = zoneService.getZoneList(Region);
+            stat_zone = statService.getStatZone(Region);
             ip_stat = statService.getIpStat();
 
             for (StatZone zone : stat_zone) {
@@ -185,8 +203,8 @@ public class ZoneController {
         result.put("wan_used_ipnum_zones_scale", wan_used_ipnum_zones_scale);
         //添加返回状态
         HashMap<String, Object> resulttotal = new HashMap<String, Object>();
-        resulttotal.put("msg","successful");
-        resulttotal.put("data",result);
+        resulttotal.put("msg", "successful");
+        resulttotal.put("data", result);
         return JSONObject.toJSONString(resulttotal);
     }
 

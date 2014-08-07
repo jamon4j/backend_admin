@@ -54,7 +54,8 @@
 			<h2 class="first">机器管理</h2>
 			<ul>
 				<li><a href="/g/home?" router="home/0/0" target="mainframe">首页</a></li>
-				<li><a href="/g/zonelist?" router="home/0/1" target="mainframe">查询zone</a></li>
+				<li><a href="/g/zonelist?Region=RegionOne" router="home/0/1" target="mainframe">查询北京zone</a></li>
+                <li><a href="/g/zonelist?Region=SHRegionOne" router="home/0/1" target="mainframe">查询上海zone</a></li>
 				<!-- <li><a href="/g/allhostlist?" router="home/0/2" target="mainframe">查询物理机</a></li> -->
 				<li>
 					<!--<a href="/g/home?" router="home/0/3" target="mainframe">防火墙</a>-->

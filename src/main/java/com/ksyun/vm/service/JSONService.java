@@ -247,6 +247,29 @@ public class JSONService {
         }
     }
 
+
+    public <T extends BasePo> List<T> getPoList(String proKey, String username,
+                                                String password,String Region, Class<T> clazz, Object... param)
+            throws NoTokenException, ErrorCodeException {
+        OpenStackResult result = HttpUtils.get(getUrl(proKey, param),
+                setHeader(username, password,Region));
+        logger.info("useername=[{}] password=[{}] Region=[{}]",username,password,Region);
+
+        logger.info("username=[{}] getPoList [{}],result=[{}] !", new Object[]{
+                username, proKey, result});
+
+        if (result == null) {
+            return null;
+        }
+        if (result.getStatus() == HttpStatus.SC_OK) {
+            List<T> list = JSONArray.parseArray(result.getMessage(), clazz);
+            return list;
+        } else {
+            // 错误日志入库
+            throw new ErrorCodeException(result);
+        }
+    }
+
     /**
      * GET 方式获取List
      *
@@ -332,6 +355,22 @@ public class JSONService {
         header.put("Content-Type", "application/json");
         header.put("X-Auth-Token", po.getToken());
         logger.info("X-Auth-Token:{}", po.getToken());
+        return header;
+    }
+
+
+    private Map<String, String> setHeader(String username, String password, String Region)
+            throws NoTokenException, ErrorCodeException {
+        UserPo po = getToken(username, password);
+        if (po == null) {
+            throw new NoTokenException(username, password);
+        }
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("X-Auth-Token", po.getToken());
+        header.put("X-Auth-Region", Region);
+        logger.info("X-Auth-Token:{}", po.getToken());
+        logger.info("X-Auth-Region", Region);
         return header;
     }
 

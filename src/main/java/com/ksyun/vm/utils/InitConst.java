@@ -7,7 +7,7 @@ public class InitConst {
 	public static final String BACKEND = "backend";
 	public static final String HTTP_COOKIE = "kscdigest";
 
-	public static final String HTTP_HOST = "http.host";
+	public static final String HTTP_HOST = "10.0.3.157";
 	public static final String HTTP_PORT = "http.port";
 
 	public static final String HTTP_HOST_PUBLIC = "http.host.public";

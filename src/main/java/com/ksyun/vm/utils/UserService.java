@@ -73,7 +73,7 @@ public class UserService {
                 return false;
             }
         }
-        logger.info("[{}] 已经成功注册",username);
+        logger.info("[{}] 已经成功注册 ",username);
 
         return true;
     }
@@ -106,8 +106,8 @@ public class UserService {
 		if(!StringUtils.isEmpty(email)){
 			String ADMINUSERNAME = "kpweb@kingsoft.com";
 		    String ADMINPASSWORD = "WWcW59FqUFubBzmTe6BmOF1sHmaye";
-		//	String ADMINUSERNAME = "test@kingsoft.com";
-		//	String ADMINPASSWORD = "123456";
+//			String ADMINUSERNAME = "zhangzongli1@kingsoft.com";
+//			String ADMINPASSWORD = "123456";
 		    String token = UserHelper.login(ADMINUSERNAME, ADMINPASSWORD).get("token");
 		    Map<String, String> map =  UserHelper.adminGetUserInfoByEmail(token, email);
 		    userPo = jsonService.getToken(map.get("userId"), map.get("userId"));

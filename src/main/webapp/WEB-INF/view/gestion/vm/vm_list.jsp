@@ -25,6 +25,8 @@
     </style>
    	<script language="javascript">
    	var j = jQuery.noConflict(true);
+
+    var region=${Region};
   	function detail(id){
   		$( "#vm_dialog_"+id ).dialog({
 			autoOpen: false,
@@ -69,6 +71,8 @@
         $("#vms_sel").find("option:selected").appendTo($("#vms"));
     }
     function vnc(instanceId){
+
+
         $("#vncDialog").dialog({
             autoOpen: false,
             postion: "center",
@@ -77,7 +81,7 @@
             modal: true
         });
         $.ajax({
-            url:"/g/vnc/"+instanceId,
+            url:"/g/vnc/"+instanceId+"/"+region,
             dataType:"json",
             success:function(data){
                 window.open(data.url,instanceId,'height=600,width=800');
@@ -136,7 +140,8 @@
                         data:{
                             vms:$vms,
                             igores:$igores,
-                            target:target
+                            target:target,
+                            Region:region
                         },
                         type:'post',
                         success:function(data){
@@ -158,7 +163,7 @@
  </script>
 </head>
 <body class="main-body">
-<div class="path"><p>当前位置：机器管理<span>&gt;</span><a href="/g/zonelist">zone列表</a><span>&gt;</span><a href="javascript:history.go(-1)">host列表</a><span>&gt;</span>vm列表</p></div>
+<div class="path"><p>当前位置：机器管理<span>&gt;</span><a href="/查询zoneg/zonelist">zone列表</a><span>&gt;</span><a href="javascript:history.go(-1)">host列表</a><span>&gt;</span>vm列表</p></div>
 <div id="vncDialog" title="vnc" style="display:none">
 </div>
 <div id="cold_move" title="冷迁移" style="display: none">

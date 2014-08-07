@@ -23,6 +23,10 @@ public class ZoneService {
     @Autowired
     private JSONService jsonService;
 
+    public List<ZonePojo> getZoneList(String Region) throws ErrorCodeException, NoTokenException {
+        return jsonService.getPoList(InitConst.KVM_ZONE_LIST,InitConst.ADMIN,InitConst.PASSWORD,Region, ZonePojo.class);
+    }
+
     public List<ZonePojo> getZoneList() throws ErrorCodeException, NoTokenException {
         return jsonService.getPoList(InitConst.KVM_ZONE_LIST,InitConst.ADMIN,InitConst.PASSWORD, ZonePojo.class);
     }

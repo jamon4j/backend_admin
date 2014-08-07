@@ -35,7 +35,7 @@
         $( "#ip-"+id ).toggle('500')
     }
    	function showhostlist(zoneid){
-   		window.location.href="/g/hostlistbyzone/"+zoneid+"/RegionOne";
+   		window.location.href="/g/hostlistbyzone/"+zoneid+"/SHRegionOne";
    	}
  </script>
 </head>
@@ -97,9 +97,6 @@
                     <c:set value="0" var="memory_mb" />
                     <c:set value="0" var="memory_mb_used" />
                     <c:set value="0" var="free_ram_mb" />
-                    <c:set value="0" var="wan_ipnum" />
-                    <c:set value="0" var="wan_availability_ipnum" />
-                    <c:set value="0" var="wan_used_ipnum" />
                     <c:set value="0" var="lan_ipnum" />
                     <c:set value="0" var="lan_availability_ipnum" />
                     <c:set value="0" var="lan_used_ipnum" />
@@ -118,6 +115,18 @@
                             <%-- 将各个物理机的属性累加到zone的属性 --%>
                     </c:forEach>
 
+                    <c:if test="${vcpus_zones ==0}"><c:set value="0"  var="vcpus_zones_local"></c:set></c:if>
+                    <c:if test="${vcpus_zones !=0}"><c:set value="${vcpus_used_zones / vcpus_zones * 100}"  var="vcpus_zones_local"></c:set></c:if>
+                    <fmt:parseNumber var="vcpus_used_zones_scale_int" integerOnly="true" type="number" value="${vcpus_zones_local}" />
+
+                    <c:if test="${local_gb_zones ==0}"><c:set value="0"  var="local_gb_zones_local"></c:set></c:if>
+                    <c:if test="${local_gb_zones !=0}"><c:set value="${local_gb_used_zones / local_gb_zones * 100}"  var="local_gb_zones_local"></c:set></c:if>
+                    <fmt:parseNumber var="local_gb_used_zones_scale_int" integerOnly="true" type="number" value="${local_gb_zones_local}" />
+
+                    <c:if test="${memory_mb_zones ==0}"><c:set value="0"  var="memory_mb_zones_local"></c:set></c:if>
+                    <c:if test="${memory_mb_zones !=0}"><c:set value="${memory_mb_used_zones / memory_mb_zones * 100}"  var="memory_mb_zones_local"></c:set></c:if>
+                    <fmt:parseNumber var="memory_mb_used_zones_scale_int" integerOnly="true" type="number" value="${memory_mb_zones_local}" />
+
                     <c:set value="${running_vms_zones + running_vms}" var="running_vms_zones" />
                     <c:set value="${vcpus_zones + vcpus}" var="vcpus_zones" />
                     <c:set value="${vcpus_used_zones + vcpus_used}" var="vcpus_used_zones" />
@@ -125,15 +134,6 @@
                     <c:set value="${local_gb_used_zones + local_gb_used}" var="local_gb_used_zones" />
                     <c:set value="${memory_mb_zones + memory_mb}" var="memory_mb_zones" />
                     <c:set value="${memory_mb_used_zones + memory_mb_used}" var="memory_mb_used_zones" /><%-- 将各个zone的属性累加到zones的总属性 --%>
-					<fmt:parseNumber var="vcpus_used_zones_scale_int" integerOnly="true" type="number" value="${vcpus_used_zones / vcpus_zones * 100}" />
-                    <fmt:parseNumber var="local_gb_used_zones_scale_int" integerOnly="true" type="number" value="${local_gb_used_zones / local_gb_zones * 100}" />
-                    <fmt:parseNumber var="memory_mb_used_zones_scale_int" integerOnly="true" type="number" value="${memory_mb_used_zones / memory_mb_zones * 100}" />
-
-                    <c:forEach items="${dto.ipStat.wan}" var="wan" varStatus="status">
-                        <c:set value="${wan_ipnum + wan.ipnum}" var="wan_ipnum" />
-                        <c:set value="${wan_availability_ipnum + wan.availability_ipnum}" var="wan_availability_ipnum" />
-                        <c:set value="${wan_used_ipnum + wan.used_ipnum}" var="wan_used_ipnum" />
-                    </c:forEach>
 					<tr>
 						<td>${dto.id} </td>
 						<td>${dto.name} </td>
@@ -141,10 +141,21 @@
 						<td><button onclick="detail(${dto.id})">详情</button></td>
 						<td><button onclick="showhostlist(${dto.id})">查看物理机</button></td>
 						<td>
-						    <fmt:parseNumber var="vcpus_used_scale_int" integerOnly="true" type="number" value="${vcpus_used / vcpus * 100}" />
-						    <fmt:parseNumber var="local_gb_used_scale_int" integerOnly="true" type="number" value="${local_gb_used / local_gb * 100}" />
-						    <fmt:parseNumber var="memory_mb_used_scale_int" integerOnly="true" type="number" value="${memory_mb_used / memory_mb * 100}" />
-                            <fmt:parseNumber var="wan_used_ipnum_scale_int" integerOnly="true" type="number" value="${wan_used_ipnum / wan_ipnum * 100}" />
+
+                            <c:if test="${vcpus ==0}"><c:set value="0"  var="vcpus_local"></c:set></c:if>
+                            <c:if test="${vcpus !=0}"><c:set value="${vcpus_used / vcpus * 100}"  var="vcpus_local"></c:set></c:if>
+                            <fmt:parseNumber var="vcpus_used_scale_int" integerOnly="true" type="number" value="${vcpus_local}" />
+
+                            <c:if test="${local_gb ==0}"><c:set value="0"  var="local_gb_local"></c:set></c:if>
+                            <c:if test="${local_gb !=0}"><c:set value="${local_gb_used / local_gb * 100}"  var="local_gb_local"></c:set></c:if>
+
+                            <fmt:parseNumber var="local_gb_used_scale_int" integerOnly="true" type="number" value="${local_gb_local}" />
+
+                            <c:if test="${memory_mb ==0}"><c:set value="0"  var="memory_mb_local"></c:set></c:if>
+                            <c:if test="${memory_mb !=0}"><c:set value="${memory_mb_used / memory_mb * 100}}"  var="memory_mb_local"></c:set></c:if>
+                            <fmt:parseNumber var="memory_mb_used_scale_int" integerOnly="true" type="number" value="${memory_mb_local}" />
+
+
                             <p>总CPU：<em style="color:red;">${vcpus}</em>&nbsp;个</p>
                             <p>已使用CPU：<em style="color:red;">${vcpus_used}</em>&nbsp;个</p>
                             <p>已使用CPU百分比：<em style="color:red;">${vcpus_used_scale_int}</em>&nbsp;%</p>
@@ -154,9 +165,6 @@
                             <p>总内存：<em style="color:red;">${memory_mb}</em>&nbsp;MB</p>
                             <p>已使用内存：<em style="color:red;">${memory_mb_used}</em>&nbsp;MB</p>
                             <p>已使用内存百分比：<em style="color:red;">${memory_mb_used_scale_int}</em>&nbsp;%</p>
-                            <p>总IP（公网）：<em style="color:red;">${wan_ipnum}</em>&nbsp;个</p>
-                            <p>已使用IP：<em style="color:red;">${wan_used_ipnum}</em>&nbsp;个</p>
-                            <p>已使用IP百分比：<em style="color:red;">${wan_used_ipnum_scale_int}</em>&nbsp;%</p>
                             <p>已使用带宽：<em style="color:red;"></em>&nbsp;</p>
                             <p>已运行虚机总数：<em style="color:red;">${running_vms}</em>&nbsp;个</p>
                             <p>物理机总数：<em style="color:red;"><c:out value="${fn:length(dto.statZone.host_usage)}"></c:out></em>&nbsp;个</p>
@@ -223,9 +231,19 @@
                                             <td>${husage.memory_mb_used}MB</td>
                                             <td>${husage.free_ram_mb}MB</td>
                                             <td>
-                                                <fmt:parseNumber var="vcpus_used_scale_int" integerOnly="true" type="number" value="${husage.vcpus_used / husage.vcpus * 100}" />
-                                                <fmt:parseNumber var="local_gb_used_scale_int" integerOnly="true" type="number" value="${husage.local_gb_used / husage.local_gb * 100}" />
-                                                <fmt:parseNumber var="memory_mb_used_scale_int" integerOnly="true" type="number" value="${husage.memory_mb_used / husage.memory_mb * 100}" />
+
+
+                                                <c:if test="${ husage.vcpus ==0}"><c:set value="0"  var="vcpus_local_avg"></c:set></c:if>
+                                                <c:if test="${ husage.vcpus !=0}"><c:set value="${husage.vcpus_used / husage.vcpus * 100}"  var="vcpus_local_avg"></c:set></c:if>
+                                                <fmt:parseNumber var="vcpus_used_scale_int" integerOnly="true" type="number" value="${vcpus_local_avg}" />
+
+                                                <c:if test="${ husage.local_gb ==0}"><c:set value="0"  var="local_gb_local_avg"></c:set></c:if>
+                                                <c:if test="${ husage.local_gb !=0}"><c:set value="${husage.local_gb_used / husage.local_gb * 100}"  var="local_gb_local_avg"></c:set></c:if>
+                                                <fmt:parseNumber var="local_gb_used_scale_int" integerOnly="true" type="number" value="${local_gb_local_avg}" />
+
+                                                <c:if test="${ husage.memory_mb ==0}"><c:set value="0"  var="memory_mb_local_avg"></c:set></c:if>
+                                                <c:if test="${ husage.memory_mb !=0}"><c:set value="${husage.memory_mb_used / husage.memory_mb * 100}"  var="memory_mb_local_avg"></c:set></c:if>
+                                                <fmt:parseNumber var="memory_mb_used_scale_int" integerOnly="true" type="number" value="${memory_mb_local_avg}" />
                                                 <p>已使用CPU：<em>${vcpus_used_scale_int}</em>&nbsp;%</p>
                                                 <p>已使用磁盘：<em>${local_gb_used_scale_int}</em>&nbsp;%</p>
                                                 <p>已使用内存：<em>${memory_mb_used_scale_int}</em>&nbsp;%</p>
@@ -257,14 +275,7 @@
                         <th>已用</th>
                         </thead>
                         <tbody>
-                            <c:forEach items="${dto.ipStat.wan}" var="wan" varStatus="status">
-                            <tr>
-                                <td>${wan.name}</td>
-                                <td>${wan.ipnum}</td>
-                                <td>${wan.availability_ipnum}</td>
-                                <td>${wan.used_ipnum}</td>
-                            </tr>
-                            </c:forEach>
+
                             <c:forEach items="${dto.ipStat.lan}" var="lan" varStatus="status">
                             <tr>
                                 <td>${lan.name}</td>
@@ -308,9 +319,7 @@
                         <td><em style="color:red;">${local_gb_zones}</em>&nbsp;GB</td>
                         <td><em style="color:red;">${local_gb_used_zones}</em>&nbsp;GB</td>
                         <td><em style="color:red;">${local_gb_used_zones_scale_int}</em>&nbsp;%</td>
-                        <td><em style="color:red;">${netsInfo.wan_ipnum_zones}</em>&nbsp;个</td>
-                        <td><em style="color:red;">${netsInfo.wan_used_ipnum_zones}</em>&nbsp;个</td>
-                        <td><em style="color:red;">${netsInfo.wan_used_ipnum_zones_scale}</em>&nbsp;%</td>
+
                         <td><em style="color:red;"></em>&nbsp;</td>
                     </tr>
                    </tbody>

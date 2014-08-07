@@ -30,10 +30,21 @@ public class HostService {
         return list;
     }
 
+    public List<HostPojo> getHosts(String zoneid,String Region) throws ErrorCodeException, NoTokenException {
+        List<HostPojo> list = jsonService.getPoList(InitConst.KVM_ZONE_HOST_LIST,InitConst.ADMIN,InitConst.PASSWORD,Region,HostPojo.class,zoneid);
+        return list;
+    }
+
     public List<VmPojo> getVms(String hostid) throws ErrorCodeException, NoTokenException {
         List<VmPojo> list = jsonService.getPoList(InitConst.KVM_HOST_VM_LIST,InitConst.ADMIN,InitConst.PASSWORD,VmPojo.class,hostid);
         return list;
     }
+
+    public List<VmPojo> getVms(String hostid,String Region) throws ErrorCodeException, NoTokenException {
+        List<VmPojo> list = jsonService.getPoList(InitConst.KVM_HOST_VM_LIST,InitConst.ADMIN,InitConst.PASSWORD,Region,VmPojo.class,hostid);
+        return list;
+    }
+
     public void coldmove(String vmid,List<String> igore,String target)throws ErrorCodeException, NoTokenException{
         Map<String,Object> map = new HashMap<>();
         map.put("vm_id", vmid);

@@ -24,8 +24,8 @@ public class StatService {
     @Autowired
     private JSONService jsonService;
 
-    public List<StatZone> getStatZone() throws ErrorCodeException, NoTokenException {
-        List<StatZone> list = jsonService.getPoList(InitConst.KVM_STAT_ZONE, InitConst.ADMIN, InitConst.PASSWORD, StatZone.class);
+    public List<StatZone> getStatZone(String Region) throws ErrorCodeException, NoTokenException {
+        List<StatZone> list = jsonService.getPoList(InitConst.KVM_STAT_ZONE, InitConst.ADMIN, InitConst.PASSWORD,Region, StatZone.class);
         return list;
     }
 
@@ -39,6 +39,23 @@ public class StatService {
             for(UserPojo pojo:userList){
                 if(host.getResource().getProject().equals(pojo.getUser_name())) {
                     host.getResource().setEmail(pojo.getEmail());
+                    break;
+                }
+            }
+        }
+        return list;
+    }
+
+    public List<StatHost> getStatHost(String hostname,List<UserPojo> userList,String Region) throws ErrorCodeException, NoTokenException {
+        List<StatHost> list = jsonService.getPoList(InitConst.KVM_STAT_HOST, InitConst.ADMIN, InitConst.PASSWORD,Region, StatHost.class, hostname);
+        for(StatHost host:list){
+            if(host.getResource().getProject().equals("(used_max)")){
+                host.getResource().setEmail("");
+                host.getResource().setProject("total");
+            }
+            for(UserPojo pojo:userList){
+                if(host.getResource().getProject().equals(pojo.getUser_name())) {
+                        host.getResource().setEmail(pojo.getEmail());
                     break;
                 }
             }

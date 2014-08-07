@@ -44,7 +44,7 @@
         $.ajax({
             url:'/g/stathost',
             dataType:'json',
-            data:{hostname:name},
+            data:{hostname:name,Region:"${Region}"},
             type:'post',
             success:function(data){
                 $.each(data,function(index,val){
@@ -70,7 +70,7 @@
     }
  	//虚拟机列表
  	function showvmlist(hostname){
-   		window.location.href="/g/vmlist?hostname="+hostname;
+   		window.location.href="/g/vmlist?hostname="+hostname+"&Region="+"${Region}";
    	}
  </script>
 </head>
