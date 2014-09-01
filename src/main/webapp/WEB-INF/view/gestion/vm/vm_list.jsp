@@ -26,7 +26,7 @@
    	<script language="javascript">
    	var j = jQuery.noConflict(true);
 
-    var region=${Region};
+    var region="${Region}";
   	function detail(id){
   		$( "#vm_dialog_"+id ).dialog({
 			autoOpen: false,
@@ -84,7 +84,7 @@
             url:"/g/vnc/"+instanceId+"/"+region,
             dataType:"json",
             success:function(data){
-                window.open(data.url,instanceId,'height=600,width=800');
+                window.open(data.url,instanceId,region,'height=600,width=800');
             }
         })
     }
@@ -129,7 +129,7 @@
                     $.each(igore_hosts_sel,function(index,data){
                         $igores+=$(data).attr("value")+",";
                     })
-                    if($igores!=null&&$igores!="undefined"){
+                    if($igores){
                         $igores=$igores.substr(0,$igores.length-1);
                     }else{
                         $igores="";

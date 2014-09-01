@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.plaf.synth.Region;
 import java.io.IOException;
 import java.util.List;
 
@@ -30,9 +31,9 @@ public class VmController {
 	@Autowired
 	private EBSService ebsService;
 
-	@RequestMapping(value = "/g/vnc/{instanceId}")
+	@RequestMapping(value = "/g/vnc/{instanceId}/{region}")
 	@ResponseBody
-	public String getVNC(@PathVariable("instanceId") String instanceId) {
+	public String getVNC(@PathVariable("instanceId") String instanceId,@PathVariable("region")String region) {
 		try {
 			VNC vnc = vmService.getVNC(instanceId);
 			return JSONObject.toJSONString(vnc);
@@ -43,49 +44,55 @@ public class VmController {
 	}
 
 	// 按某用户查找虚拟机列表
-	@RequestMapping(value = "/g/user/vmlist/{tenant_id}/{user_id}")
+	@RequestMapping(value = "/g/user/vmlist/{tenant_id}/{user_id}/{region}")
 	public ModelAndView vmList(@PathVariable("tenant_id") String tenantId,
-			@PathVariable("user_id") String userId, HttpServletRequest request,
+			@PathVariable("user_id") String userId,@PathVariable("region")String region, HttpServletRequest request,
 			ModelAndView mav) {
 		List<VmPojo> vmList = null;
 		try {
-			vmList = vmService.getVms(userId, tenantId);
+			vmList = vmService.getVms(userId, tenantId,region);
 		} catch (ErrorCodeException | NoTokenException e) {
 			e.printStackTrace();
 		}
 		request.setAttribute("tenantid", tenantId);
 		request.setAttribute("userid", userId);
 		mav.addObject("vmlist", vmList);
+        mav.addObject("region",region);
+//        mav.addObject("regionname",region=="SHRegionOne"?"上海":"北京");
 		mav.setViewName("/gestion/user/vm_list");
 		return mav;
 	}
 
 	// 虚机绑定ebs列表
-	@RequestMapping("/g/vm_ebs/{tenantid}/{userid}/{vm_id}")
+	@RequestMapping("/g/vm_ebs/{tenantid}/{userid}/{vm_id}/{region}")
 	public ModelAndView returnVmEBSDetail(
 			@PathVariable("tenantid") String tenantId,
 			@PathVariable("userid") String userId,
-			@PathVariable("vm_id") String vmId, ModelAndView mav) {
+			@PathVariable("vm_id") String vmId, @PathVariable("region") String region,ModelAndView mav) {
 		List<VmEBSPojo> list = null;
 		try {
-			list = ebsService.getVMEBS(userId, tenantId, vmId);
+			list = ebsService.getVMEBS(userId, tenantId, vmId,region);
 		} catch (ErrorCodeException | NoTokenException e) {
 			e.printStackTrace();
 		}
 		mav.addObject("vmebslist", list);
 		mav.addObject("tenantid", tenantId);
 		mav.addObject("userid", userId);
+        mav.addObject("region",region);
+//        mav.addObject("regionname",region=="SHRegionOne"?"上海":"北京");
 		mav.setViewName("/gestion/user/vm_ebs_list");
 		return mav;
 	}
 
 	// 编辑指定虚拟机
-	@RequestMapping(value = "/g/user/edit_vm/{action}/{tenant_id}/{user_id}")
+	@RequestMapping(value = "/g/user/edit_vm/{action}/{tenant_id}/{user_id}/{region}")
 	@ResponseBody
 	public String editVm(@PathVariable("tenant_id") String tenantId,
 			@PathVariable("user_id") String userId,
 			@PathVariable("action") String action,
-			@RequestParam("vmids") String vmIds, ModelAndView mav) {
+			@RequestParam("vmids") String vmIds,
+            @PathVariable("region") String region,
+            ModelAndView mav) {
 		String[] vmidArray = vmIds.split(",");
 		for (String vmid : vmidArray) {
 			try {
@@ -99,7 +106,7 @@ public class VmController {
 	}
 
 	// 创建vm(ajax请求)
-	@RequestMapping(value = "/g/user/createvm/{tenant_id}/{user_id}")
+	@RequestMapping(value = "/g/user/createvm/{tenant_id}/{user_id}/{region}")
 	@ResponseBody
 	public String createVm(@PathVariable("tenant_id") String tenantId,
 			@PathVariable("user_id") String userId,
@@ -113,6 +120,7 @@ public class VmController {
 			@RequestParam("create_zone") String zone,
 			@RequestParam("count") String count,
 			@RequestParam("adminPass") String adminPass,
+            @PathVariable("region") String region,
 			@RequestParam("security_groups[]") String security_groups) {
 		try {
 			vmService.createVm(tenantId, userId, name, imageRef, count,
@@ -126,15 +134,16 @@ public class VmController {
 	}
 
 	// 创建vm(ajax请求)
-	@RequestMapping(value = "/g/user/vm/reset/{tenant_id}/{user_id}")
+	@RequestMapping(value = "/g/user/vm/reset/{tenant_id}/{user_id}/{region}")
 	@ResponseBody
 	public String createVm(@PathVariable("tenant_id") String tenantId,
 			@PathVariable("user_id") String userId,
 			@RequestParam("vm_id") String vm_id,
 			@RequestParam("password") String password,
+            @RequestParam("region") String region,
 			@RequestParam("image_id") String image_id) {
 		try {
-			vmService.reset(tenantId, userId, vm_id, password, image_id);
+			vmService.reset(tenantId, userId, vm_id, password, image_id, region);
 		} catch (ErrorCodeException | NoTokenException e) {
 			e.printStackTrace();
 			return "false";
@@ -142,12 +151,12 @@ public class VmController {
 		return "true";
 	}
 
-	@RequestMapping(value = "/g/user/vm/getvmsum")
+	@RequestMapping(value = "/g/user/vm/getvmsum/{region}")
 	@ResponseBody
-	public int getvmsum() {
+	public int getvmsum(@RequestParam("region") String region) {
 		List<VmPojo> vmList = null;
 		try {
-			vmList = vmService.getVmsAll();
+			vmList = vmService.getVmsAll(region);
 			if (vmList == null)
 				return 0;
 		} catch (ErrorCodeException | NoTokenException e) {
@@ -157,15 +166,16 @@ public class VmController {
 		return vmList.size();
 	}
 
-	@RequestMapping(value = "/g/user/vm/getbandwidth/{tenant_id}/{user_id}/{vm_id}/{new_brand}")
+	@RequestMapping(value = "/g/user/vm/getbandwidth/{tenant_id}/{user_id}/{vm_id}/{new_brand}/{region}")
 	@ResponseBody
 	public String getBandwidth(HttpServletRequest request,
 			HttpServletResponse response, @PathVariable("vm_id") String vmId,
 			@PathVariable("tenant_id") String tenantId,
 			@PathVariable("user_id") String userId,
+            @PathVariable("region") String region,
 			@PathVariable("new_brand") String newBrand) {
 		try {
-			vmService.updateBrand(tenantId, userId, vmId, newBrand);
+			vmService.updateBrand(tenantId, userId, vmId, newBrand,region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

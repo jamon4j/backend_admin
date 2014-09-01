@@ -13,6 +13,7 @@
         ul#icons span.ui-icon {float: left; margin: 0 4px;}
     </style>
    	<script>
+    var region="${region}";
    	var j = jQuery.noConflict(true);
     $(function(){
         $("li").hover(function(){
@@ -105,7 +106,7 @@
 						return false;
 					}else{
 						$.ajax({
-							url:"/g/user/createebs/${tenantId}/${userId}",
+							url:"/g/user/createebs/${tenantId}/${userId}"+"/"+region,
 							type:"POST",
 							data:{name:ebsname,size:ebssize,desc:ebsdesc},
 							dataType:"text",
@@ -148,7 +149,7 @@
             return false;
         }
         $.ajax({
-           url:'/g/user/createebsimage/${tenantId}/${userId}',
+           url:'/g/user/createebsimage/${tenantId}/${userId}'+"/"+region,
            data:{
                ebsid:ebsid,
                name:name,
@@ -171,7 +172,7 @@
             return false;
         }
         $.ajax({
-            url:'/g/user/deleteebs/${tenantId}/${userId}',
+            url:'/g/user/deleteebs/${tenantId}/${userId}'+"/"+region,
             type:'POST',
             data:{
                 ebsid:ebsid
@@ -193,7 +194,7 @@
             return false;
         }
         $.ajax({
-            url:'/g/user/deleteebssnapshot/${tenantId}/${userId}',
+            url:'/g/user/deleteebssnapshot/${tenantId}/${userId}'+"/"+region,
             type:'POST',
             data:{
                 ebssnapshotid:ebsid
@@ -211,7 +212,7 @@
     }
     function delSysImg(snapshotId){
         $.ajax({
-            url:'/g/user/deletesnapshot/${tenantId}/${userId}',
+            url:'/g/user/deletesnapshot/${tenantId}/${userId}'+"/"+region,
             type:'POST',
             data:{
                 snapshotid:snapshotId
@@ -233,7 +234,7 @@
 <div class="path"><p>当前位置：用户管理<span>&gt;</span><a href="javascript:history.go(-1)">用户信息</a><span>&gt;</span>EBS，快照信息</p></div>
 
 <div class="main-cont">
-    <h3 class="title">EBS，快照信息
+    <h3 class="title">EBS，快照信息<!--(${regionname})-->
     </h3>
     <div class="set-area">ebs列表，ebs数量：<c:out value="${fn:length(ebslist)}"></c:out>
         <ul id="icons" class="ui-widget ui-helper-clearfix" style="float: right;">

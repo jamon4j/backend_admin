@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>noVNC</title>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="include/base.css" title="plain">
+    <link rel="stylesheet" type="text/css" href="include/newbase.css">
+    <!--
+    <script type='text/javascript'
+        src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>
+    -->
+    <script src="include/vnc.js"></script>
+</head>
+
+<body style="margin: 0px;">
+<div id="noVNC_screen">
+    <div id="noVNC_status_bar" class="noVNC_status_bar" style="margin-top: 0px;display:none">
+        <table border=0 width="100%"><tr>
+            <td><div id="noVNC_status">Loading</div></td>
+            <td width="1%"><div id="noVNC_buttons">
+                <input type=button value="Send CtrlAltDel">
+            </div></td>
+        </tr></table>
+    </div>
+    <div id='vnct'>
+        <p class='prompt'>提示：若出现持续黑屏，则表示屏幕处在休眠状态，按任意键即可。</p>
+        <ul id='vnclist'>
+            <h3 class='opbtn'>
+                <a href="javascript:;">按键操作</a>
+            </h3>
+            <li>
+                <ul class='vnmenu'>
+                    <li>
+                        <a id="sendCtrlAltDelButton" href='javascript:;'>Ctrl-Alt-Delete</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <canvas id="noVNC_canvas" width="640px" height="20px">
+        Canvas not supported.
+    </canvas>
+</div>
+
+<script>
+    /*jslint white: false */
+    /*global window, $, Util, RFB, */
+    "use strict";
+
+    var rfb;
+
+    function passwordRequired(rfb) {
+        var msg;
+        msg = '<form onsubmit="return setPassword();"';
+        msg += '  style="margin-bottom: 0px">';
+        msg += 'Password Required: ';
+        msg += '<input type=password size=10 id="password_input" class="noVNC_status">';
+        msg += '<\/form>';
+        $D('noVNC_status_bar').setAttribute("class", "noVNC_status_warn");
+        $D('noVNC_status').innerHTML = msg;
+    }
+    function setPassword() {
+        rfb.sendPassword($D('password_input').value);
+        return false;
+    }
+    function sendCtrlAltDel() {
+        rfb.sendCtrlAltDel();
+        return false;
+    }
+    function updateState(rfb, state, oldstate, msg) {
+        var s, sb, cad, level;
+        s = $D('noVNC_status');
+        sb = $D('noVNC_status_bar');
+        cad = $D('sendCtrlAltDelButton');
+        switch (state) {
+            case 'failed':       level = "error";  break;
+            case 'fatal':        level = "error";  break;
+            case 'normal':       level = "normal"; break;
+            case 'disconnected': level = "normal"; break;
+            case 'loaded':       level = "normal"; break;
+            default:             level = "warn";   break;
+        }
+
+        if (state === "normal") { cad.disabled = false; }
+        else                    { cad.disabled = true; }
+
+        if (typeof(msg) !== 'undefined') {
+            sb.setAttribute("class", "noVNC_status_" + level);
+            s.innerHTML = msg;
+        }
+    }
+
+    window.onload = function () {
+
+        var host, port, password, path, token;
+
+        $D('sendCtrlAltDelButton').style.display = "inline";
+        $D('sendCtrlAltDelButton').onclick = sendCtrlAltDel;
+
+        document.title = unescape(WebUtil.getQueryVar('title', 'noVNC'));
+        // By default, use the host and port of server that served this file
+        host = WebUtil.getQueryVar('host', 'wvt1.ksyun.com');
+        port = WebUtil.getQueryVar('port', '80');
+
+        // If a token variable is passed in, set the parameter in a cookie.
+        // This is used by nova-novncproxy.
+        token = WebUtil.getQueryVar('token', null);
+        if (token) {
+            WebUtil.createCookie('token', token, 1)
+        }
+
+        password = WebUtil.getQueryVar('password', '');
+        path = WebUtil.getQueryVar('path', 'websockify');
+
+        if ((!host) || (!port)) {
+            updateState('failed',
+                    "Must specify host and port in URL");
+            return;
+        }
+
+        rfb = new RFB({'target':       $D('noVNC_canvas'),
+            'encrypt':      WebUtil.getQueryVar('encrypt',
+                    (window.location.protocol === "https:")),
+            'repeaterID':   WebUtil.getQueryVar('repeaterID', ''),
+            'true_color':   WebUtil.getQueryVar('true_color', true),
+            'local_cursor': WebUtil.getQueryVar('cursor', true),
+            'shared':       WebUtil.getQueryVar('shared', true),
+            'view_only':    WebUtil.getQueryVar('view_only', false),
+            'updateState':  updateState,
+            'onPasswordRequired':  passwordRequired});
+        rfb.connect(host, port, password, path);
+    };
+</script>
+
+</body>
+<script type="text/javascript">
+
+    function getClassName(oParent,sClass){
+        var aResult = [];
+        var aEle = oParent.getElementsByTagName('*');
+        var re = new RegExp('\\b'+sClass+'\\b','i');
+
+        for(var i = 0;i<aEle.length;i++){
+            if(re.test(aEle[i].className)){
+                aResult.push(aEle[i]);
+            }
+        }
+        return aResult;
+    }
+
+    var oVnct = document.getElementById('vnct');
+    var oCanvas = document.getElementById('noVNC_canvas');
+    var oBtn = getClassName(oVnct,'opbtn')[0];
+    var oABtn = oBtn.getElementsByTagName('a')[0];
+    var oVnmenu = getClassName(oVnct,'vnmenu')[0];
+    var iNow = 0;
+    var oNoVnc = document.getElementById('noVNC_canvas');
+
+    oBtn.onclick = function(event){
+        if(iNow == 0){
+            iNow = 1;
+        }else{
+            iNow --;
+        }
+        var event = event||event.window;
+        event.cancelBubble = true;
+        changeState();
+    }
+
+    function changeState(){
+        if(iNow == 1){
+            oVnmenu.style.display = 'block';
+            oABtn.className = 'vnccur';
+        }else{
+            oVnmenu.style.display = 'none';
+            oABtn.className = '';
+        }
+    }
+
+    document.onclick = function(){
+        oVnmenu.style.display = 'none';
+        oABtn.className = '';
+        iNow = 0;
+    }
+
+    // window.onresize = function(){
+
+    //     function changeSize(){
+    //         var oWidth = document.documentElement.clientWidth || document.body.clientWidth;
+    //         var oHeight = document.documentElement.clientHeight || document.body.clientHeight;
+    //         oNoVnc.style.width = oWidth + 'px';
+    //         oNoVnc.style.height = oHeight + 'px';
+    //     }
+    //     changeSize();
+
+    // }
+
+</script>
+</html>
+

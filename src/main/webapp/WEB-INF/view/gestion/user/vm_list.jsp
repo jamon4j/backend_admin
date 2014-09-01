@@ -26,18 +26,19 @@
             ul#icons span.ui-icon {float: left; margin: 0 4px;}
 	</style>
    	<script language="javascript">
+        var region="${region}";
    		var j = jQuery.noConflict(true);
         function chart_load(id){
-            window.location.href="/g/chart/load/"+id;
+            window.location.href="/g/chart/load/"+id+"/"+region;
         }
         function chart_disk(id){
-            window.location.href="/g/chart/disk/"+id;
+            window.location.href="/g/chart/disk/"+id+"/"+region;
         }
         function chart_network(id){
-            window.location.href="/g/chart/network/"+id;
+            window.location.href="/g/chart/network/"+id+"/"+region;
         }
         function chart_status(id){
-            window.location.href="/g/chart/status/"+id;
+            window.location.href="/g/chart/status/"+id+"/"+region;
         }
         function vnc(instanceId){
             $("#vncDialog").dialog({
@@ -48,10 +49,10 @@
                 modal: true
             });
             $.ajax({
-                url:"/g/vnc/"+instanceId,
+                url:"/g/vnc/"+instanceId+"/"+region,
                 dataType:"json",
                 success:function(data){
-                    window.open(data.url,instanceId,'height=600,width=800');
+                    window.open(data.url,instanceId,region,'height=600,width=800');
                 }
             })
         }
@@ -130,12 +131,12 @@
 						}
 						$.ajax({
 							type: "POST",
-							url : "/g/user/edit_vm/"+action+"/<%=tenantId %>/<%=userId %>",
+							url : "/g/user/edit_vm/"+action+"/<%=tenantId %>/<%=userId %>"+"/"+region,
 							data : {"vmids":vmids},
 							success : function(data) {
                                 if(data=="true"){
                                     alert(action+"虚拟机成功，因机器情况各异，可能需要稍等片刻!");
-                                    window.location.href="/g/user/vmlist/<%=tenantId %>/<%=userId %>";
+                                    window.location.href="/g/user/vmlist/<%=tenantId %>/<%=userId %>"+"/"+region;
                                 }else{
                                     alert(action+"虚拟机失败!");
                                 }
@@ -206,7 +207,7 @@
                             return;
                         }
                         $.ajax({
-                           url:'/g/user/vm/reset/<%=tenantId %>/<%=userId %>',
+                           url:'/g/user/vm/reset/<%=tenantId %>/<%=userId %>'+"/"+region,
                            data:{
                                vm_id:vm_id,
                                password:pass,
@@ -228,7 +229,7 @@
 	   	function addvm(tenantid,userid){
 	   		//获得系统镜像列表
 	   		$.ajax({
-				url : "/g/user/image_public_id_list/"+tenantid+"/"+userid,
+				url : "/g/user/image_public_id_list/"+tenantid+"/"+userid+"/"+region,
 				dataType : 'text',
 				success : function(data) {
 					var imageJson = eval('('+data+')');
@@ -239,7 +240,7 @@
 			});
 			//获得zone列表
 			$.ajax({
-				url : "/g/zonelist/ajax",
+				url : "/g/zonelist/ajax"+"/"+region,
 				dataType : 'text',
 				success : function(data) {
 					var zoneJson = eval('('+data+')');
@@ -250,7 +251,7 @@
 			});
 			//获得用户系统盘镜像列表
 			$.ajax({
-				url : "/g/user/sys_image_id_list/"+tenantid+"/"+userid,
+				url : "/g/user/sys_image_id_list/"+tenantid+"/"+userid+"/"+region,
 				dataType : 'text',
 				success : function(data) {
 					var imageJson = eval('('+data+')');
@@ -261,7 +262,7 @@
 			});
 			
 			$.ajax({
-				url : "/g/user/security_groups/ajax/"+tenantid+"/"+userid,
+				url : "/g/user/security_groups/ajax/"+tenantid+"/"+userid+"/"+region,
 				dataType : 'text',
 				success : function(data) {
 					var sgJson = eval('('+data+')');
@@ -319,7 +320,7 @@
 						if(bValid){
 							$.ajax({
 								type: "POST",
-								url : "/g/user/createvm/"+tenantid+"/"+userid,
+								url : "/g/user/createvm/"+tenantid+"/"+userid+"/"+region,
 								data : {name:create_name.val(),
 										imageRef:image,
 										count:create_count.val(),
@@ -334,11 +335,11 @@
 								success : function(data) {
 									if(data == "failed"){
 										alert("创建虚拟机失败!");
-										window.location.href="/g/user/vmlist/"+tenantid+"/"+userid;
+										window.location.href="/g/user/vmlist/"+tenantid+"/"+userid+"/"+region;
 										return;
 									}
 									var jsonobj=eval('('+data+')');
-									window.location.href="/g/user/vmlist/"+tenantid+"/"+userid;
+									window.location.href="/g/user/vmlist/"+tenantid+"/"+userid+"/"+region;
 								},
 								error : function(XMLHttpRequest,textStatus,errorThrown) {
 									alert("创建虚拟机失败!");
@@ -378,7 +379,7 @@
 					"创建": function() {
 						$.ajax({
 								type: "GET",
-								url : "/g/user/createsnapshot/"+tenantid+"/"+userid+"/"+vmid+"/"+$("#snapshot_name").val(),
+								url : "/g/user/createsnapshot/"+tenantid+"/"+userid+"/"+vmid+"/"+$("#snapshot_name").val()+"/"+region,
 								success : function(data) {
 									if(data == "failed"){
 										alert("创建系统快照失败!");
@@ -431,7 +432,7 @@
             });
             $( "#create_root_disk" ).val($( "#slider-range-min" ).slider( "value" ));
             $.ajax({
-                url : "/g/user/image_public_id_list/<%=tenantId %>/<%=userId %>",
+                url : "/g/user/image_public_id_list/<%=tenantId %>/<%=userId %>"+"/"+region,
                 dataType : 'text',
                 success : function(data) {
                     var imageJson = eval('('+data+')');
@@ -442,7 +443,7 @@
             });
             //获得用户系统盘镜像列表
             $.ajax({
-                url : "/g/user/sys_image_id_list/<%=tenantId %>/<%=userId %>",
+                url : "/g/user/sys_image_id_list/<%=tenantId %>/<%=userId %>"+"/"+region,
                 dataType : 'text',
                 success : function(data) {
                     var imageJson = eval('('+data+')');
@@ -453,7 +454,7 @@
             });
 	   	});
 	   	function ebslist(tenantid,vmid){
-	   		window.location.href="/g/vm_ebs/"+tenantid+"/${userid}/"+vmid;
+	   		window.location.href="/g/vm_ebs/"+tenantid+"/${userid}/"+vmid+"/"+region;
 	   	}
 	   	function setEBS(tenantid,vmid){
 	   		$("#setebs_dialog").dialog({
@@ -468,11 +469,11 @@
 							return false;
 						}
 						$.ajax({
-							url:"/g/user/setebs/${tenantid}/${userid}",
+							url:"/g/user/setebs/${tenantid}/${userid}"+"/"+region,
 							data:{vmid:vmid,ebsid:$("#setebs").val(),device:$("#device").val()},
 							success:function(data){
 								alert(data);
-								window.location.href="/g/vm_ebs/"+tenantid+"/${userid}/"+vmid;
+								window.location.href="/g/vm_ebs/"+tenantid+"/${userid}/"+vmid+"/"+region;
 							}
 						});
 						$("#setebs_dialog").dialog( "close" );
@@ -483,7 +484,7 @@
 				}
 	   		});
 	   		$.ajax({
-	   			url:"/g/user/ebslist/${tenantid}/${userid}",
+	   			url:"/g/user/ebslist/${tenantid}/${userid}"+"/"+region,
 	   			dataType:'json',
 	   			success:function(data){
 	   				$.each(data,function(index,val){
@@ -508,7 +509,7 @@
 							var new_brand = $("#new_brand").val();
 							if(confirm("确定修改带宽:"+network_bandwidth+"M -> "+new_brand+"M ?")) {
 								$.ajax({
-									url:'/g/user/vm/getbandwidth/'+tenantId+'/'+userId+'/'+vmId+'/'+new_brand,
+									url:'/g/user/vm/getbandwidth/'+tenantId+'/'+userId+'/'+vmId+'/'+new_brand+"/"+region,
 									success:function(data) {
 										if(data == "ok") {
 											alert("更新虚拟机带宽成功！"+network_bandwidth+"M -> "+new_brand+"M");
@@ -540,7 +541,7 @@
 <body class="main-body">
 <div class="path"><p>当前位置：机器管理<span>&gt;</span><a href="/g/user/list/1">用户信息</a><span>&gt;</span>vm列表</p></div>
 <div class="main-cont">
-    <h3 class="title">vm列表</h3>
+    <h3 class="title">vm列表<!--(${regionname})--></h3>
     <div class="set-area">
         <div>vm列表，vm数量：<c:out value="${fn:length(vmlist)}"></c:out>
         <ul id="icons" class="ui-widget ui-helper-clearfix" style="float: right;">

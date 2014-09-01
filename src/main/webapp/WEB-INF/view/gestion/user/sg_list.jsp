@@ -21,6 +21,7 @@
  	<script type="text/javascript" src="/js/kingsoft/vm_oper.js"></script>
     <title>安全组 - 安全组列表</title>
    	<script>
+    var region="${region}";
    	var j = jQuery.noConflict(true);
     $(function(){
         $("li").hover(function(){
@@ -99,7 +100,7 @@
 						if(bValid){
 							$.ajax({
 								type: "POST",
-								url : "/g/user/createsg/"+tenantId+"/"+userId,
+								url : "/g/user/createsg/"+tenantId+"/"+userId+"/"+region,
 								data : {name:$("#create_name").val(),desc:$("#create_desc").val()},
 								success : function(data) {
 									if(data == "false"){
@@ -108,7 +109,7 @@
 									}else{
 										alert("创建安全组成功");
 									}
-									window.location.href="/g/user/security_groups/"+tenantId+"/"+userId;
+									window.location.href="/g/user/security_groups/"+tenantId+"/"+userId+"/"+region;
 								},
 								error : function(XMLHttpRequest,textStatus,errorThrown) {
 									alert("创建安全组失败!");
@@ -154,7 +155,7 @@
 		
 		$.ajax({
 			type: "POST",
-			url : "/g/user/deletesgs/"+tenantId+"/"+userId,
+			url : "/g/user/deletesgs/"+tenantId+"/"+userId+"/"+region,
 			data : {sgids:sgids},
 			success : function(data) {
 				if(data == "false"){
@@ -163,7 +164,7 @@
 				}else{
 					alert("删除安全组成功");
 				}
-				window.location.href="/g/user/security_groups/"+tenantId+"/"+userId;
+				window.location.href="/g/user/security_groups/"+tenantId+"/"+userId+"/"+region;
 			},
 			error : function(XMLHttpRequest,textStatus,errorThrown) {
 				alert("删除安全组失败!");
@@ -174,7 +175,7 @@
 		});
    	}
    	function rules(sgid,tenantId,userId){
-   		window.location.href="/g/user/security_groups/rules/"+sgid+"/"+tenantId+"/"+userId;
+   		window.location.href="/g/user/security_groups/rules/"+sgid+"/"+tenantId+"/"+userId+"/"+region;
    	}
  </script>
 </head>
@@ -182,7 +183,7 @@
 <div class="path"><p>当前位置：<a href="/g/user/list/1">用户信息</a><span>&gt;</span>安全组管理<span>&gt;</span>安全组列表</p></div>
 
 <div class="main-cont">
-    <h3 class="title">安全组列表
+    <h3 class="title">安全组列表<!--(${regionname})-->
     </h3>
 
     <div class="set-area">安全组列表

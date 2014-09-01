@@ -62,9 +62,16 @@ public class JSONService {
      * @throws ErrorCodeException 执行错误异常
      */
     public <T extends BasePo> T poGet(String proKey, String username,
-                                      String password, Class<T> clazz, Object... param)
+                                           String password, Class<T> clazz, Object... param)
             throws NoTokenException, ErrorCodeException {
         return getPo(proKey, username, password, clazz, HttpMethod.GET, null,
+                param);
+    }
+
+    public <T extends BasePo> T poGet(String proKey, String username,
+                                      String password,String Region, Class<T> clazz, Object... param)
+            throws NoTokenException, ErrorCodeException {
+        return getPo(proKey, username, password,Region, clazz, HttpMethod.GET, null,
                 param);
     }
 
@@ -88,6 +95,14 @@ public class JSONService {
         return getPo(proKey, username, password, clazz, HttpMethod.POST,
                 requestBody, param);
     }
+
+    public <T extends BasePo> T poPost(String proKey, String username,
+                                       String password,String Region, Class<T> clazz, String requestBody,
+                                       Object... param) throws NoTokenException, ErrorCodeException {
+        return getPo(proKey, username, password,Region, clazz, HttpMethod.POST,
+                requestBody, param);
+    }
+
 
     /**
      * DELETE 获取方式
@@ -144,8 +159,8 @@ public class JSONService {
      * @throws ErrorCodeException 执行错误异常
      */
     private <T extends BasePo> T getPo(String proKey, String username,
-                                       String password, Class<T> clazz, HttpMethod method,
-                                       String requestBody, Object... param) throws NoTokenException,
+                                         String password, Class<T> clazz, HttpMethod method,
+                                         String requestBody, Object... param) throws NoTokenException,
             ErrorCodeException {
         OpenStackResult result;
         switch (method) {
@@ -213,6 +228,81 @@ public class JSONService {
         }
         return null;
     }
+
+    private <T extends BasePo> T getPo(String proKey, String username,
+                                       String password, String Region,Class<T> clazz, HttpMethod method,
+                                       String requestBody, Object... param) throws NoTokenException,
+            ErrorCodeException {
+        OpenStackResult result;
+        switch (method) {
+            case GET:
+                result = HttpUtils.get(getUrl(proKey, param),
+                        setHeader(username, password,Region));
+                logger.info("username=[{}] get [{}],result=[{}] !", new Object[]{
+                        username, proKey, result});
+                if (result != null && (result.getStatus() >= org.apache.http.HttpStatus.SC_OK && result.getStatus() <= org.apache.http.HttpStatus.SC_MULTI_STATUS)) {
+                    if (clazz == null) {
+                        return null;
+                    }
+                    return JSONObject.parseObject(result.getMessage(), clazz);
+                } else {
+                    // 错误日志入库
+                    logger.info("username=[{}] get [{}],result=[{}] !", new Object[]{
+                            username, proKey, result});
+                    throw new ErrorCodeException(result);
+                }
+            case POST:
+                result = HttpUtils.post(getUrl(proKey, param),
+                        setHeader(username, password,Region), requestBody);
+                logger.info("username=[{}] post [{}],result=[{}] !", new Object[]{
+                        username, proKey, result});
+                if (result != null && (result.getStatus() >= org.apache.http.HttpStatus.SC_OK && result.getStatus() <= org.apache.http.HttpStatus.SC_MULTI_STATUS)) {
+                    if (clazz == null) {
+                        return null;
+                    }
+                    return JSONObject.parseObject(result.getMessage(), clazz);
+                } else {
+                    // 错误日志入库
+                    throw new ErrorCodeException(result);
+                }
+            case DELETE:
+                result = HttpUtils.delete(getUrl(proKey, param),
+                        setHeader(username, password,Region));
+                logger.info("username=[{}] delete [{}],result=[{}] !",
+                        new Object[]{username, proKey, result});
+                if (result != null && (result.getStatus() >= org.apache.http.HttpStatus.SC_OK && result.getStatus() <= org.apache.http.HttpStatus.SC_MULTI_STATUS)) {
+                    if (clazz == null) {
+                        return null;
+                    }
+                    JSONObject.parseObject(result.getMessage(), clazz);
+                } else {
+                    // 错误日志入库
+
+                    throw new ErrorCodeException(result);
+                }
+            case PUT:
+                result = HttpUtils.put(getUrl(proKey, param),
+                        setHeader(username, password,Region), requestBody);
+                logger.info("username=[{}] put [{}],result=[{}] !", new Object[]{
+                        username, proKey, result});
+                if (result != null && (result.getStatus() >= org.apache.http.HttpStatus.SC_OK && result.getStatus()
+                        <= org.apache.http.HttpStatus.SC_MULTI_STATUS)) {
+                    if (clazz == null) {
+                        return null;
+                    }
+                    return JSONObject.parseObject(result.getMessage(), clazz);
+                } else {
+                    // 错误日志入库
+
+                    throw new ErrorCodeException(result);
+                }
+        }
+        return null;
+    }
+
+
+
+
 
     /**
      * GET 方式获取List

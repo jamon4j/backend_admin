@@ -70,7 +70,7 @@ public class UserController {
         list.add(po);
 		mav.addObject("list", list);
 		mav.setViewName("/gestion/user/user_list");
-		return mav;
+        return mav;
 	}
 
     // 创建用户(ajax请求)
@@ -86,16 +86,16 @@ public class UserController {
         return "true";
     }
 	// ebs及镜像列表
-	@RequestMapping(value = "/g/user/ebs_snapshot_list/{tenant_id}/{user_id}")
-	public ModelAndView ebsSnapShotList(@PathVariable("tenant_id") String tenantId, @PathVariable("user_id") String userId, ModelAndView mav)
+	@RequestMapping(value = "/g/user/ebs_snapshot_list/{tenant_id}/{user_id}/{region}")
+	public ModelAndView ebsSnapShotList(@PathVariable("tenant_id") String tenantId, @PathVariable("user_id") String userId,@PathVariable("region") String region, ModelAndView mav)
 			throws HttpException, IOException {
 		List<EBSPojo> ebsList = null;
 		List<SnapshotVmPojo> imageList = null;
         List<SnapshotEBSPojo> snapshotList = null;
         try {
-            ebsList = ebsService.getEBS(userId,tenantId);
-            snapshotList = snapshotService.getEBSSnapshots(userId, tenantId);
-            imageList = snapshotService.getVmSnapshots(userId,tenantId);
+            ebsList = ebsService.getEBS(userId,tenantId,region);
+            snapshotList = snapshotService.getEBSSnapshots(userId, tenantId,region);
+            imageList = snapshotService.getVmSnapshots(userId,tenantId,region);
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
         }
@@ -106,18 +106,20 @@ public class UserController {
 		map.put("systemImagelist", imageList);
 		map.put("snapshotlist", snapshotList);
 		mav.addAllObjects(map);
+//        mav.addObject("regionname",region=="SHRegionOne"?"上海":"北京");
+        mav.addObject("region",region);
 		mav.setViewName("/gestion/user/ebs_snapshot_list");
 		return mav;
 	}
 
 	// 返回可选镜像列表(ajax请求)
-	@RequestMapping(value = "/g/user/image_public_id_list/{tenant_id}/{user_id}")
+	@RequestMapping(value = "/g/user/image_public_id_list/{tenant_id}/{user_id}/{region}")
 	@ResponseBody
-	public String imageIdList(@PathVariable("tenant_id") String tenantId, @PathVariable("user_id") String userId, ModelAndView mav) throws HttpException,
+	public String imageIdList(@PathVariable("tenant_id") String tenantId, @PathVariable("user_id") String userId, @PathVariable("region") String region,ModelAndView mav) throws HttpException,
 			IOException {
         List<ImagePojo> list = null;
         try {
-            list = vmService.getImages(userId, tenantId);
+            list = vmService.getImages(userId, tenantId,region);
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
         }
@@ -133,6 +135,8 @@ public class UserController {
 		String resultStr = JsonMaker.createFromListToJson(list);
 		return resultStr;
 	}*/
+
+
 
 }
 

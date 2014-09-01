@@ -28,6 +28,7 @@ import org.jruby.RubyProcess;
 import org.omg.CORBA.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -96,13 +97,13 @@ public class ZoneController {
     }
 
     //zone列表
-    @RequestMapping("/g/zonelist/ajax")
+    @RequestMapping("/g/zonelist/ajax/{region}")
     @ResponseBody
-    public String returnZoneAjaxList(HttpServletRequest request, ModelAndView mav) {
+    public String returnZoneAjaxList(HttpServletRequest request,@PathVariable("region") String region, ModelAndView mav) {
         List<ZonePojo> list = null;
         try {
 
-            list = zoneService.getZoneList();
+            list = zoneService.getZoneList(region);
             return JSONArray.toJSONString(list);
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();

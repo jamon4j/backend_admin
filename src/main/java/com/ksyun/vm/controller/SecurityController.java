@@ -29,9 +29,9 @@ public class SecurityController {
 	}*/
 
     // 查找指定用户的安全组
-    @RequestMapping(value = "/g/user/security_groups/ajax/{tenantid}/{userid}")
+    @RequestMapping(value = "/g/user/security_groups/ajax/{tenantid}/{userid}/{region}")
     @ResponseBody
-    public String ajax(@PathVariable("tenantid") String tenantId,@PathVariable("userid") String userId){
+    public String ajax(@PathVariable("tenantid") String tenantId,@PathVariable("userid") String userId,@PathVariable("region") String region){
         List<SecurityPojo> list = null;
         try {
             list = securityService.getSecurity(userId,tenantId);
@@ -45,11 +45,11 @@ public class SecurityController {
     }
 	
     // 查找指定用户的安全组
-    @RequestMapping(value = "/g/user/security_groups/{tenantid}/{userid}")
-    public ModelAndView security_groups(@PathVariable("tenantid") String tenantId,@PathVariable("userid") String userId,ModelAndView mav, HttpServletRequest request){
+    @RequestMapping(value = "/g/user/security_groups/{tenantid}/{userid}/{region}")
+    public ModelAndView security_groups(@PathVariable("tenantid") String tenantId,@PathVariable("userid") String userId,@PathVariable("region") String region,ModelAndView mav, HttpServletRequest request){
         List<SecurityPojo> list = null;
         try {
-            list = securityService.getSecurity(userId,tenantId);
+            list = securityService.getSecurity(userId,tenantId,region);
         } catch (ErrorCodeException | NoTokenException e) {
             if(e instanceof ErrorCodeException){
                 System.out.println(((ErrorCodeException)e).getResult().getStatus()+"---"+((ErrorCodeException)e).getMessage());
@@ -59,13 +59,16 @@ public class SecurityController {
         request.setAttribute("tenantid", tenantId);
         request.setAttribute("userid", userId);
         mav.addObject("sglist", list);
+        mav.addObject("region", region);
+        mav.addObject("regionname",region=="SHRegionOne"?"上海":"北京");
         mav.setViewName("/gestion/user/sg_list");
         return mav;
     }
     // 创建安全组
-    @RequestMapping(value = "/g/user/createsg/{tenantid}/{userid}")
+    @RequestMapping(value = "/g/user/createsg/{tenantid}/{userid}/{region}")
     @ResponseBody
-    public String createsg(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@RequestParam("name") String name,@RequestParam("desc") String desc, ModelAndView mav) {
+    public String createsg(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,   @RequestParam("region") String region,
+                           @RequestParam("name") String name,@RequestParam("desc") String desc, ModelAndView mav) {
         try {
             securityService.addSecurity(userId,tenantId,name,desc);
         } catch (ErrorCodeException | NoTokenException e) {
@@ -76,11 +79,13 @@ public class SecurityController {
     }
 
     // 删除安全组
-    @RequestMapping(value = "/g/user/deletesgs/{tenantid}/{userid}")
+    @RequestMapping(value = "/g/user/deletesgs/{tenantid}/{userid}/{region}")
     @ResponseBody
-    public String deletesgs(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@RequestParam("sgids") String sgids){
+    public String deletesgs(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,
+                            @PathVariable("region") String region,
+                            @RequestParam("sgids") String sgids){
         try {
-            securityService.delSecurity(userId,tenantId,sgids);
+            securityService.delSecurity(userId,tenantId,sgids,region);
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
             return "false";
@@ -89,11 +94,13 @@ public class SecurityController {
     }
 
     // 查找指定用户安全组规则
-    @RequestMapping(value = "/g/user/security_groups/rules/{sgid}/{tenantid}/{userid}")
-    public ModelAndView rules(@PathVariable("sgid") String sgid,@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,ModelAndView mav, HttpServletRequest request) {
+    @RequestMapping(value = "/g/user/security_groups/rules/{sgid}/{tenantid}/{userid}/{region}")
+    public ModelAndView rules(@PathVariable("sgid") String sgid,@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,
+                              @PathVariable("region") String region,
+                              ModelAndView mav, HttpServletRequest request) {
         SecurityPojo dto = null;
         try {
-            dto = securityService.getRules(userId, tenantId, sgid);
+            dto = securityService.getRules(userId, tenantId, sgid,region);
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
         }
@@ -101,16 +108,18 @@ public class SecurityController {
         request.setAttribute("sgid", sgid);
         request.setAttribute("tenantid", tenantId);
         request.setAttribute("userid", userId);
+        mav.addObject("region",region);
+//        mav.addObject("regionname",region=="SHRegionOne"?"上海":"北京");
         mav.setViewName("/gestion/user/rules");
         return mav;
     }
     // 创建安全组规则
-    @RequestMapping(value = "/g/user/createrule/{sgid}/{tenantid}/{userid}",method = RequestMethod.POST)
+    @RequestMapping(value = "/g/user/createrule/{sgid}/{tenantid}/{userid}/{region}",method = RequestMethod.POST)
     @ResponseBody
-    public String createRule(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@PathVariable("sgid") String sgid,
+    public String createRule(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@PathVariable("sgid") String sgid,@PathVariable("region") String region,
                              @RequestParam("protocal") String protocal,@RequestParam("from_port") String fromPort,@RequestParam("to_port") String toPort,@RequestParam("cidr") String cidr) {
         try {
-            securityService.addRule(userId,tenantId,sgid,protocal,fromPort,toPort,cidr);
+            securityService.addRule(userId,tenantId,sgid,protocal,fromPort,toPort,cidr,region);
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
             return "false";
@@ -118,9 +127,9 @@ public class SecurityController {
         return "true";
     }
     // 删除安全组规则
-    @RequestMapping(value = "/g/user/deleterule/{ruleid}/{tenantid}/{userid}",method = RequestMethod.POST)
+    @RequestMapping(value = "/g/user/deleterule/{ruleid}/{tenantid}/{userid}/{region}",method = RequestMethod.POST)
     @ResponseBody
-    public String deleterule(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@PathVariable("ruleid") String ruleId) {
+    public String deleterule(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@PathVariable("ruleid") String ruleId, @PathVariable("region") String region) {
         try {
             securityService.delRule(userId,tenantId,ruleId);
         } catch (ErrorCodeException | NoTokenException e) {

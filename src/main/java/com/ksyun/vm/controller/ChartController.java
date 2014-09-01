@@ -30,35 +30,35 @@ public class ChartController {
     @Autowired
     private ChartService chartService;
 
-    @RequestMapping(value = "/g/chart/load/{id}")
-    public ModelAndView getChartLoad(@PathVariable("id")String vmuuid,ModelAndView mav){
+    @RequestMapping(value = "/g/chart/load/{id}/{region}")
+    public ModelAndView getChartLoad(@PathVariable("id")String vmuuid,@PathVariable("region")String region,ModelAndView mav){
         mav.addObject("vmuuid",vmuuid);
         mav.setViewName("/gestion/chart/chart_load");
         return mav;
     }
 
-    @RequestMapping(value = "/g/chart/{id}/initLoad")
+    @RequestMapping(value = "/g/chart/{id}/initLoad/{region}")
     @ResponseBody
     public String initLoad(@PathVariable("id")String vmuuid){
         List<MonitorVmLoadPo> poList = chartService.getLoadOneDaysAgo(vmuuid);
         String result = JSONArray.toJSONString(poList);
         return result;
     }
-    @RequestMapping(value = "/g/chart/{id}/getLoad")
+    @RequestMapping(value = "/g/chart/{id}/getLoad/{region}")
     @ResponseBody
     public String getLoad(@PathVariable("id")String vmuuid){
         MonitorVmLoadPo load = chartService.getLoad(vmuuid);
         String result = JSONObject.toJSONString(load);
         return result;
     }
-    @RequestMapping(value = "/g/chart/disk/{id}")
+    @RequestMapping(value = "/g/chart/disk/{id}/{region}")
     public ModelAndView getChartDisk(@PathVariable("id")String vmuuid,ModelAndView mav){
         mav.addObject("vmuuid",vmuuid);
         mav.setViewName("/gestion/chart/chart_disk");
         return mav;
     }
 
-    @RequestMapping(value = "/g/chart/{id}/initDisk")
+    @RequestMapping(value = "/g/chart/{id}/initDisk/{region}")
     @ResponseBody
     public String initDisk(@PathVariable("id")String vmuuid){
         List<MonitorVmDiskPo> poList = chartService.getDiskOneDaysAgo(vmuuid);
@@ -74,42 +74,42 @@ public class ChartController {
         String result = JSONObject.toJSONString(map);
         return result;
     }
-    @RequestMapping(value = "/g/chart/{id}/getDisk/{disk}")
+    @RequestMapping(value = "/g/chart/{id}/getDisk/{disk}/{region}")
     @ResponseBody
     public String getDisk(@PathVariable("id")String vmuuid,@PathVariable("disk")String disk){
         MonitorVmDiskPo diskResult = chartService.getDisk(vmuuid,disk);
         String result = JSONObject.toJSONString(diskResult);
         return result;
     }
-    @RequestMapping(value = "/g/chart/status/{id}")
+    @RequestMapping(value = "/g/chart/status/{id}/{region}")
     public ModelAndView getChartStatus(@PathVariable("id")String vmuuid,ModelAndView mav){
         mav.addObject("vmuuid",vmuuid);
         mav.setViewName("/gestion/chart/chart_status");
         return mav;
     }
 
-    @RequestMapping(value = "/g/chart/{id}/initStatus")
+    @RequestMapping(value = "/g/chart/{id}/initStatus/{region}")
     @ResponseBody
     public String initStatus(@PathVariable("id")String vmuuid){
         List<MonitorVmStatusFlowPo> poList = chartService.getStatusOneDaysAgo(vmuuid);
         String result = JSONArray.toJSONString(poList);
         return result;
     }
-    @RequestMapping(value = "/g/chart/{id}/getStatus")
+    @RequestMapping(value = "/g/chart/{id}/getStatus/{region}")
     @ResponseBody
     public String getStatus(@PathVariable("id")String vmuuid){
         MonitorVmStatusFlowPo network = chartService.getStatus(vmuuid);
         String result = JSONObject.toJSONString(network);
         return result;
     }
-    @RequestMapping(value = "/g/chart/network/{id}")
+    @RequestMapping(value = "/g/chart/network/{id}/{region}")
     public ModelAndView getChartNetwork(@PathVariable("id")String vmuuid,ModelAndView mav){
         mav.addObject("vmuuid",vmuuid);
         mav.setViewName("/gestion/chart/chart_network");
         return mav;
     }
 
-    @RequestMapping(value = "/g/chart/{id}/initNetwork")
+    @RequestMapping(value = "/g/chart/{id}/initNetwork/{region}")
     @ResponseBody
     public String initNetwork(@PathVariable("id")String vmuuid){
         List<MonitorVmNetworkPo> poList = chartService.getNetworkOneDaysAgo(vmuuid);
@@ -125,7 +125,7 @@ public class ChartController {
         String result = JSONObject.toJSONString(map);
         return result;
     }
-    @RequestMapping(value = "/g/chart/{id}/getNetwork/{mac}")
+    @RequestMapping(value = "/g/chart/{id}/getNetwork/{mac}/{region}")
     @ResponseBody
     public String getNetwork(@PathVariable("id")String vmuuid,@PathVariable("mac")String mac){
         MonitorVmNetworkPo network = chartService.getNetwork(vmuuid,mac);

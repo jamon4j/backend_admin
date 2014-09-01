@@ -49,9 +49,9 @@ public class EBSController {
     }
 
     // 获取ebs列表
-    @RequestMapping(value = "/g/user/ebslist/{tenantid}/{userid}")
+    @RequestMapping(value = "/g/user/ebslist/{tenantid}/{userid}/{region}")
     @ResponseBody
-    public String getVMEBSList(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId) {
+    public String getVMEBSList(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@PathVariable("region") String region) {
         List<EBSPojo> list = null;
         try {
             list = ebsService.getEBS(userId, tenantId);
@@ -62,12 +62,12 @@ public class EBSController {
     }
 
     // 绑定虚拟机的ebs
-    @RequestMapping(value = "/g/user/setebs/{tenantid}/{userid}")
+    @RequestMapping(value = "/g/user/setebs/{tenantid}/{userid}/{region}")
     @ResponseBody
     public String setEBS(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("vmid") String vmid,
-                         @RequestParam("ebsid") String ebsId, @RequestParam("device") String device){
+                         @RequestParam("ebsid") String ebsId, @RequestParam("device") String device,@RequestParam("region") String region){
         try {
-            ebsService.attachEBS(userId, tenantId, ebsId, vmid, device);
+            ebsService.attachEBS(userId, tenantId, ebsId, vmid, device,region);
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
             return "false";
@@ -75,11 +75,11 @@ public class EBSController {
         return "true";
     }
     //解绑虚拟机的ebs
-    @RequestMapping(value="/g/user/unbind/{tenantid}/{userid}", method=RequestMethod.POST)
+    @RequestMapping(value="/g/user/unbind/{tenantid}/{userid}/{region}", method=RequestMethod.POST)
     @ResponseBody
-    public String unsetEBS(@PathVariable("tenantid")String tenantid,@PathVariable("userid")String userid,@RequestParam("attach_id")String attach_id,@RequestParam("volumeid")String volumeid) throws Exception {
+    public String unsetEBS(@PathVariable("tenantid")String tenantid,@PathVariable("userid")String userid,@RequestParam("attach_id")String attach_id,@RequestParam("volumeid")String volumeid,@RequestParam("region")String region) throws Exception {
         try {
-            ebsService.detachEBS(userid,tenantid,attach_id,volumeid);
+            ebsService.detachEBS(userid,tenantid,attach_id,volumeid,region);
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
             return "false";

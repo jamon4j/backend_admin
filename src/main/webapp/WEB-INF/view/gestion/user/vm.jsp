@@ -20,6 +20,8 @@
     <%@include file="../inc/meta.jspf"%>
     <title>VM - VM列表</title>
    	<script language="javascript">
+
+        var region="${region}";
 		var j = jQuery.noConflict(true);
 		var vmid=null;
 		function checknull( tips, o, n ) {
@@ -60,7 +62,7 @@
    	
 	   	function addvm(tenantid,userid){
 	   		$.ajax({
-				url : "/g/user/image_public_id_list/"+tenantid+"/"+userid,
+				url : "/g/user/image_public_id_list/"+tenantid+"/"+userid+"/"+region,
 				dataType : 'text',
 				success : function(data) {
 					var imageJson = eval('('+data+')');
@@ -71,7 +73,7 @@
 			});
 			//获得虚拟机类型列表
 			$.ajax({
-				url : "/g/user/flavor_id_list/"+tenantid+"/"+userid,
+				url : "/g/user/flavor_id_list/"+tenantid+"/"+userid+"/"+region,
 				dataType : 'text',
 				success : function(data) {
 					var flavorJson = eval('('+data+')');
@@ -109,7 +111,7 @@
 						if(bValid){
 							$.ajax({
 								type: "POST",
-								url : "/g/user/createvm/"+tenantid+"/"+userid,
+								url : "/g/user/createvm/"+tenantid+"/"+userid+"/"+region,
 								data : {name:$("#create_name").val(),
 										imageRef:$("#create_imageRef").val(),
 										flavorRef:$("#create_flavorRef").val(),
@@ -119,7 +121,7 @@
 										adminPass:$("#create_adminPass").val()},
 										success : function(data) {
 									var jsonobj=eval('('+data+')');
-									window.location.href="/g/user/vmlist/"+tenantid+"/"+userid+"/"+jsonobj.server.id;
+									window.location.href="/g/user/vmlist/"+tenantid+"/"+userid+"/"+jsonobj.server.id+"/"+region;
 								},
 								error : function(XMLHttpRequest,textStatus,errorThrown) {
 									alert("创建虚拟机失败!");

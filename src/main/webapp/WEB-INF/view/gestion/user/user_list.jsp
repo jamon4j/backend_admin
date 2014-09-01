@@ -29,20 +29,20 @@
            $(this).removeClass("ui-state-hover");
        })
     });
-   	function ebs_snapshot_list(tenantId, userId){
-   		window.location.href="/g/user/ebs_snapshot_list/"+tenantId+"/"+userId;
+   	function ebs_snapshot_list(tenantId, userId,region){
+   		window.location.href="/g/user/ebs_snapshot_list/"+tenantId+"/"+userId+"/"+region;
    	}
    	
-   	function vm_list(tenantId, userId){
-   		window.location.href="/g/user/vmlist/"+tenantId+"/"+userId;
+   	function vm_list(tenantId, userId,region){
+   		window.location.href="/g/user/vmlist/"+tenantId+"/"+userId+"/"+region;
    	}
 
     function rds_list(userId){
         window.location.href="/g/user/rdslist/?user_id="+userId;
     }
    	
-   	function security_groups(tenantId, userId){
-   		window.location.href="/g/user/security_groups/"+tenantId+"/"+userId;
+   	function security_groups(tenantId, userId,region){
+   		window.location.href="/g/user/security_groups/"+tenantId+"/"+userId+"/"+region;
    	}
    	function checknull( tips, o, n ) {
 		if ( o.val() == null || o.val() == "" ) {
@@ -172,9 +172,20 @@
 						<td>${dto.enabled}</td>
 						<td>${dto.email}</td>
 						<td>${dto.tenant_id}</td>
-						<td><button class="ui-state-default ui-corner-all" onclick="security_groups('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
-						<td><button class="ui-state-default ui-corner-all" onclick="ebs_snapshot_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
-						<td><button class="ui-state-default ui-corner-all" onclick="vm_list('${dto.tenant_id}','${dto.user_id}')">查看</button></td>
+						<td>
+                            <button class="ui-state-default ui-corner-all" onclick="security_groups('${dto.tenant_id}','${dto.user_id}','RegionOne')">查看北京</button>
+                            <button class="ui-state-default ui-corner-all" onclick="security_groups('${dto.tenant_id}','${dto.user_id}','SHRegionOne')">查看上海</button>
+                        </td>
+						<td>
+                            <button class="ui-state-default ui-corner-all" onclick="ebs_snapshot_list('${dto.tenant_id}','${dto.user_id}','RegionOne')">查看北京</button>
+                            <button class="ui-state-default ui-corner-all" onclick="ebs_snapshot_list('${dto.tenant_id}','${dto.user_id}','SHRegionOne')">查看上海</button>
+
+                        </td>
+						<td>
+                            <button class="ui-state-default ui-corner-all" onclick="vm_list('${dto.tenant_id}','${dto.user_id}','RegionOne')">查看北京</button>
+                            <button class="ui-state-default ui-corner-all" onclick="vm_list('${dto.tenant_id}','${dto.user_id}','SHRegionOne')">查看上海</button>
+                        </td>
+
 					</tr>
 				</c:forEach>
             </tbody>

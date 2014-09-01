@@ -8,9 +8,10 @@
     <%@include file="../inc/meta.jspf"%>
     <title>用户 - VM的EBS列表</title>
     <script type="text/javascript">
+        var region="${region}";
         function unsetebs(attach_id,serverId){
             $.ajax({
-                url:"/g/user/unbind/${tenantid}/${userid}",
+                url:"/g/user/unbind/${tenantid}/${userid}"+"/"+region,
                 type:"POST",
                 data:{
                     attach_id:attach_id,
@@ -33,7 +34,7 @@
 <body class="main-body">
 <div class="path"><p>当前位置：机器管理<span>&gt;</span><a href="/g/user/list/1">用户信息</a><span>&gt;</span><a href="javascript:history.go(-1)">vm列表</a><span>&gt;</span>vm的ebs列表</p></div>
 <div class="main-cont">
-    <h3 class="title">vm的ebs列表
+    <h3 class="title">vm的ebs列表<!--(${regionname})-->
     </h3>
 
     <div class="set-area">

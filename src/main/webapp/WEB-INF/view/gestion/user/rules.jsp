@@ -23,6 +23,7 @@
     <%@include file="../inc/meta.jspf"%>
     <title>安全组规则列表</title>
    	<script language="javascript">
+    var region="${region}";
    	var j = jQuery.noConflict(true);
     $(function(){
         $("li").hover(function(){
@@ -99,7 +100,7 @@
 					if(bValid){
 						$.ajax({
 							type: "POST",
-							url : "/g/user/createrule/"+sgId+"/"+tenantId+"/"+userId,
+							url : "/g/user/createrule/"+sgId+"/"+tenantId+"/"+userId+"/"+region,
 							data : {protocal:create_protocal.val(),from_port:create_from_port.val(),to_port:create_to_port.val(),cidr:create_cidr.val()},
 							success : function(data) {
 								if(data == "failed"){
@@ -108,7 +109,7 @@
 								}else{
 									alert("创建安全组规则成功");
 								}
-								window.location.href="/g/user/security_groups/rules/"+sgId+"/"+tenantId+"/"+userId;
+								window.location.href="/g/user/security_groups/rules/"+sgId+"/"+tenantId+"/"+userId+"/"+region;
 							},
 							error : function(XMLHttpRequest,textStatus,errorThrown) {
 								alert("创建安全组规则失败!");
@@ -133,7 +134,7 @@
    	function delrule(ruleId,tenantId, userId){
   		$.ajax({
 			type: "POST",
-			url : "/g/user/deleterule/"+ruleId+"/"+tenantId+"/"+userId,
+			url : "/g/user/deleterule/"+ruleId+"/"+tenantId+"/"+userId+"/"+region,
 			success : function(data) {
 				if(data == "failed"){
 					alert("删除安全组规则失败");
@@ -156,7 +157,7 @@
 <body class="main-body">
 <div class="path"><p>当前位置：机器管理<span>&gt;</span><a href="/g/user/list/1">用户信息</a><span>&gt;</span>rule列表</div>
 <div class="main-cont">
-    <h3 class="title">安全组规则列表
+    <h3 class="title">安全组规则列表<!--(${regionname})-->
     </h3>
 
     <div class="set-area">
