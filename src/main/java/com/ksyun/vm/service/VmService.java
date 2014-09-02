@@ -21,6 +21,8 @@ import com.ksyun.vm.pojo.vm.VmPojo;
 import com.ksyun.vm.utils.InitConst;
 import com.ksyun.vm.utils.enumeration.EnumEditVm;
 
+import javax.swing.plaf.synth.Region;
+
 /**
  * User: liuchuandong Date: 13-10-14 Time: 下午1:37 Func:
  */
@@ -97,15 +99,13 @@ public class VmService {
     }
 
 	public List<ImagePojo> getImages(String userId, String tenantId)
-            throws ErrorCodeException, NoTokenException {
-        jsonService.setId(userId);
-        jsonService.setTenantId(tenantId);
-        List<ImagePojo> list = jsonService.getPoList(InitConst.KVM_IMAGE_LIST,
-                null, null, ImagePojo.class);
-        return list;
-    }
-
-
+			throws ErrorCodeException, NoTokenException {
+		jsonService.setId(userId);
+		jsonService.setTenantId(tenantId);
+		List<ImagePojo> list = jsonService.getPoList(InitConst.KVM_IMAGE_LIST,
+				null, null, ImagePojo.class);
+		return list;
+	}
 
 
     public List<ImagePojo> getImages(String userId, String tenantId,String Region)
@@ -228,8 +228,10 @@ public class VmService {
         map.put("vcpu", vcpu);
         map.put("root_disk", rootDisk);
         map.put("network_bandwidth", network);
-        if (onEbs != null && !onEbs.equals("")) {
-            map.put("boot_on_ebs", onEbs);
+        if(Region.equals("RegionOne")) {
+            if (onEbs != null && !onEbs.equals("")) {
+                map.put("boot_on_ebs", onEbs);
+            }
         }
         if (zone != null && !zone.equals("")) {
             map.put("zone", zone);
@@ -268,7 +270,7 @@ public class VmService {
         map.put("vm_id", vm_id);
         map.put("password", password);
         String requestBody = JSONObject.toJSONString(map);
-        jsonService.poPost(InitConst.KVM_VM_RESET, null, null,Region, null,
+        jsonService.poPost(InitConst.KVM_VM_RESET, null, null, null,
                 requestBody);
     }
 
@@ -304,10 +306,9 @@ public class VmService {
         map.put("vm_id", vm_id);
         map.put("egress", new_brand);
         String requestBody = JSONObject.toJSONString(map);
-        jsonService.poPost(InitConst.KVM_BANDWIDTH, null, null,Region, null,
+        jsonService.poPost(InitConst.KVM_BANDWIDTH, null, null, null,
                 requestBody);
     }
-
 
 	/**
 	 * 带宽升级计费

@@ -96,7 +96,7 @@ public class VmController {
 		String[] vmidArray = vmIds.split(",");
 		for (String vmid : vmidArray) {
 			try {
-				vmService.editVm(vmid, action, tenantId, userId, "");
+				vmService.editVm(vmid, action, tenantId, userId, "",region);
 			} catch (ErrorCodeException | NoTokenException e) {
 				e.printStackTrace();
 				return "false";
@@ -125,7 +125,7 @@ public class VmController {
 		try {
 			vmService.createVm(tenantId, userId, name, imageRef, count,
 					security_groups, adminPass, isOnEbs, zone, vcpu, network,
-					rootDisk, ram);
+					rootDisk, ram,region);
 		} catch (ErrorCodeException | NoTokenException e) {
 			e.printStackTrace();
 			return "false";
