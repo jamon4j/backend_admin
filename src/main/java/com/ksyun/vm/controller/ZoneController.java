@@ -66,7 +66,7 @@ public class ZoneController {
                         pojo.setStatZone(zone);
                         for (HostUsage usage : zone.getHost_usage()) {
                             usage.setCpu_infos(JSONObject.parseObject(usage.getCpu_info(), CpuInfos.class));
-                            System.out.println(Integer.parseInt(usage.getVcpus_used()) );
+                            System.out.println(Integer.parseInt(usage.getVcpus_used()));
                             System.out.println(Integer.parseInt(usage.getLocal_gb_used()));
                             System.out.println(Integer.parseInt(usage.getMemory_mb_used()));//vcpus_used
 
@@ -99,7 +99,7 @@ public class ZoneController {
     //zone列表
     @RequestMapping("/g/zonelist/ajax/{region}")
     @ResponseBody
-    public String returnZoneAjaxList(HttpServletRequest request,@PathVariable("region") String region, ModelAndView mav) {
+    public String returnZoneAjaxList(HttpServletRequest request, @PathVariable("region") String region, ModelAndView mav) {
         List<ZonePojo> list = null;
         try {
 
@@ -140,11 +140,12 @@ public class ZoneController {
         List<StatZone> stat_zone = null;
         List<IpStat> ip_stat = null;
         NetsInfo netsInfo = null;
+        String Region = request.getParameter("Region");
         try {
-            String Region = request.getParameter("Region");
+
             list = zoneService.getZoneList(Region);
             stat_zone = statService.getStatZone(Region);
-            ip_stat = statService.getIpStat();
+
 
             for (StatZone zone : stat_zone) {
                 for (HostUsage usage : zone.getHost_usage()) {
@@ -158,11 +159,14 @@ public class ZoneController {
                     }
                 }
             }
+
+            ip_stat = statService.getIpStat();
             netsInfo = NetsInfo.getInstance(ip_stat);
             if (netsInfo != null) {
                 wan_ipnum_zones = netsInfo.getWan_ipnum_zones();
                 wan_used_ipnum_zones = netsInfo.getWan_used_ipnum_zones();
             }
+
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
             return "{'msg':'error','data':''}";
@@ -199,9 +203,11 @@ public class ZoneController {
         result.put("local_gb_zones", String.format("%dGB", local_gb_zones));
         result.put("local_gb_used_zones", String.format("%dGB", local_gb_used_zones));
         result.put("local_gb_used_zones_scale_int", local_gb_used_zones_scale_int);
-        result.put("wan_ipnum_zones", String.format("%d个", wan_ipnum_zones));
-        result.put("wan_used_ipnum_zones", String.format("%d个", wan_used_ipnum_zones));
-        result.put("wan_used_ipnum_zones_scale", wan_used_ipnum_zones_scale);
+        if (Region!=null&&Region.equals("RegionOne")) {
+            result.put("wan_ipnum_zones", String.format("%d个", wan_ipnum_zones));
+            result.put("wan_used_ipnum_zones", String.format("%d个", wan_used_ipnum_zones));
+            result.put("wan_used_ipnum_zones_scale", wan_used_ipnum_zones_scale);
+        }
         //添加返回状态
         HashMap<String, Object> resulttotal = new HashMap<String, Object>();
         resulttotal.put("msg", "successful");
