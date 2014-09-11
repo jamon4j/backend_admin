@@ -65,7 +65,7 @@ public class SnapshotController {
     // 创建EBS快照
     @RequestMapping(value = "/g/user/createebsimage/{tenantid}/{userid}/{region}")
     @ResponseBody
-    public String createEBSImage(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("ebsid")String ebsid,@PathVariable("name")String name,@RequestParam("desc")String desc,@PathVariable("region") String region) {
+    public String createEBSImage(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("ebsid")String ebsid,@RequestParam("name")String name,@RequestParam("desc")String desc,@PathVariable("region") String region) {
         try {
             snapshotService.addEBSSnapshot(userId,tenantId,ebsid,name,desc,region);
         } catch (ErrorCodeException | NoTokenException e) {

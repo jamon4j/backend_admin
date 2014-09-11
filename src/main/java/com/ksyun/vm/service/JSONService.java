@@ -123,6 +123,13 @@ public class JSONService {
                 param);
     }
 
+    public <T extends BasePo> T poDelete(String proKey, String username,
+                                         String password,String region, Object... param) throws NoTokenException,
+            ErrorCodeException {
+        return getPo(proKey, username, password,region, null, HttpMethod.DELETE, null,
+                param);
+    }
+
     /**
      * PUT 获取方式
      *

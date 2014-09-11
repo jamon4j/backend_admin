@@ -36,11 +36,11 @@ public class EBSController {
         return "true";
     }
     //删除ebs
-    @RequestMapping(value = "/g/user/deleteebs/{tenantid}/{userid}", method = RequestMethod.POST)
+    @RequestMapping(value = "/g/user/deleteebs/{tenantid}/{userid}/{region}", method = RequestMethod.POST)
     @ResponseBody
-    public String deleteEBS(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("ebsid") String ebsid) {
+    public String deleteEBS(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("ebsid") String ebsid,@PathVariable("region") String region) {
         try {
-            ebsService.delEBS(userId,tenantId,ebsid);
+            ebsService.delEBS(userId,tenantId,ebsid,region);
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
             return "false";
@@ -54,7 +54,7 @@ public class EBSController {
     public String getVMEBSList(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,@PathVariable("region") String region) {
         List<EBSPojo> list = null;
         try {
-            list = ebsService.getEBS(userId, tenantId);
+            list = ebsService.getEBS(userId, tenantId,region);
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
         }
