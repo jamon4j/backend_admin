@@ -65,7 +65,7 @@ public class EBSController {
     @RequestMapping(value = "/g/user/setebs/{tenantid}/{userid}/{region}")
     @ResponseBody
     public String setEBS(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("vmid") String vmid,
-                         @RequestParam("ebsid") String ebsId, @RequestParam("device") String device,@RequestParam("region") String region){
+                         @RequestParam("ebsid") String ebsId, @RequestParam("device") String device,@PathVariable("region") String region){
         try {
             ebsService.attachEBS(userId, tenantId, ebsId, vmid, device,region);
         } catch (ErrorCodeException | NoTokenException e) {
@@ -77,7 +77,7 @@ public class EBSController {
     //解绑虚拟机的ebs
     @RequestMapping(value="/g/user/unbind/{tenantid}/{userid}/{region}", method=RequestMethod.POST)
     @ResponseBody
-    public String unsetEBS(@PathVariable("tenantid")String tenantid,@PathVariable("userid")String userid,@RequestParam("attach_id")String attach_id,@RequestParam("volumeid")String volumeid,@RequestParam("region")String region) throws Exception {
+    public String unsetEBS(@PathVariable("tenantid")String tenantid,@PathVariable("userid")String userid,@RequestParam("attach_id")String attach_id,@RequestParam("volumeid")String volumeid,@PathVariable("region")String region) throws Exception {
         try {
             ebsService.detachEBS(userid,tenantid,attach_id,volumeid,region);
         } catch (ErrorCodeException | NoTokenException e) {

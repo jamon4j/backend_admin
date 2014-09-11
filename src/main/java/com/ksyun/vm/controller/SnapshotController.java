@@ -53,7 +53,7 @@ public class SnapshotController {
     //删除系统快照
     @RequestMapping(value = "/g/user/deletesnapshot/{tenantid}/{userid}/{region}", method = RequestMethod.POST)
     @ResponseBody
-    public String deleteSnapshot(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("snapshotid") String snapshotid,@RequestParam("region") String region){
+    public String deleteSnapshot(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("snapshotid") String snapshotid,@PathVariable("region") String region){
         try {
             snapshotService.delVMSnapshot(userId, tenantId, snapshotid,region);
         } catch (ErrorCodeException | NoTokenException e) {
@@ -65,7 +65,7 @@ public class SnapshotController {
     // 创建EBS快照
     @RequestMapping(value = "/g/user/createebsimage/{tenantid}/{userid}/{region}")
     @ResponseBody
-    public String createEBSImage(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("ebsid")String ebsid,@RequestParam("name")String name,@RequestParam("desc")String desc,@RequestParam("region") String region) {
+    public String createEBSImage(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("ebsid")String ebsid,@PathVariable("name")String name,@RequestParam("desc")String desc,@PathVariable("region") String region) {
         try {
             snapshotService.addEBSSnapshot(userId,tenantId,ebsid,name,desc,region);
         } catch (ErrorCodeException | NoTokenException e) {
@@ -78,7 +78,7 @@ public class SnapshotController {
     //删除ebs快照
     @RequestMapping(value = "/g/user/deleteebssnapshot/{tenantid}/{userid}/{region}", method = RequestMethod.POST)
     @ResponseBody
-    public String deleteEBSSnapshot(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("ebssnapshotid") String ebssnapshotid,@RequestParam("region") String region){
+    public String deleteEBSSnapshot(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId, @RequestParam("ebssnapshotid") String ebssnapshotid,@PathVariable("region") String region){
         try {
             snapshotService.delEBSSnapshot(userId,tenantId,ebssnapshotid,region);
         } catch (ErrorCodeException | NoTokenException e) {

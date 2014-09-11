@@ -469,6 +469,7 @@
 							return false;
 						}
 						$.ajax({
+                            type: "POST",
 							url:"/g/user/setebs/${tenantid}/${userid}"+"/"+region,
 							data:{vmid:vmid,ebsid:$("#setebs").val(),device:$("#device").val()},
 							success:function(data){

@@ -140,7 +140,7 @@ public class VmController {
 			@PathVariable("user_id") String userId,
 			@RequestParam("vm_id") String vm_id,
 			@RequestParam("password") String password,
-            @RequestParam("region") String region,
+            @PathVariable("region") String region,
 			@RequestParam("image_id") String image_id) {
 		try {
 			vmService.reset(tenantId, userId, vm_id, password, image_id, region);
@@ -153,7 +153,7 @@ public class VmController {
 
 	@RequestMapping(value = "/g/user/vm/getvmsum/{region}")
 	@ResponseBody
-	public int getvmsum(@RequestParam("region") String region) {
+	public int getvmsum(@PathVariable("region") String region) {
 		List<VmPojo> vmList = null;
 		try {
 			vmList = vmService.getVmsAll(region);

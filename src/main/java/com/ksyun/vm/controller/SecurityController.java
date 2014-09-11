@@ -67,7 +67,7 @@ public class SecurityController {
     // 创建安全组
     @RequestMapping(value = "/g/user/createsg/{tenantid}/{userid}/{region}")
     @ResponseBody
-    public String createsg(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,   @RequestParam("region") String region,
+    public String createsg(@PathVariable("tenantid") String tenantId, @PathVariable("userid") String userId,   @PathVariable("region") String region,
                            @RequestParam("name") String name,@RequestParam("desc") String desc, ModelAndView mav) {
         try {
             securityService.addSecurity(userId,tenantId,name,desc);
