@@ -13,12 +13,12 @@ public class SeurityGroupRulePOJO extends BasePo {
         this.to_port = to_port;
     }
 
-    public String getCidir() {
-        return cidir;
+    public String getCidr() {
+        return cidr;
     }
 
-    public void setCidir(String cidir) {
-        this.cidir = cidir;
+    public void setCidr(String cidir) {
+        this.cidr = cidir;
     }
 
     public String getFrom_port() {
@@ -46,7 +46,7 @@ public class SeurityGroupRulePOJO extends BasePo {
     }
 
     private  int to_port;
-    private  String cidir;
+    private  String cidr;
     private   String from_port;
     private   String protocol;
     private  String id;

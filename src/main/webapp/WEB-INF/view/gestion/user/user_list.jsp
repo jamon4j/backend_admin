@@ -44,6 +44,10 @@
    	function security_groups(tenantId, userId,region){
    		window.location.href="/g/user/security_groups/"+tenantId+"/"+userId+"/"+region;
    	}
+    function memdb_list(tenantId, userId,region){
+        window.location.href="/g/memdb/getclusterlist/"+tenantId+"/"+userId+"/"+region;
+    }
+
    	function checknull( tips, o, n ) {
 		if ( o.val() == null || o.val() == "" ) {
 			alert( n + " 不能为空!!!" );
@@ -190,8 +194,8 @@
                         </td>
 
                         <td>
-                            <button class="ui-state-default ui-corner-all" onclick="vm_list('${dto.tenant_id}','${dto.user_id}','RegionOne')">查看北京</button>
-                            <button class="ui-state-default ui-corner-all" onclick="vm_list('${dto.tenant_id}','${dto.user_id}','SHRegionOne')">查看上海</button>
+                            <button class="ui-state-default ui-corner-all" onclick="memdb_list('${dto.tenant_id}','${dto.user_id}','RegionOne')">查看北京</button>
+                            <button class="ui-state-default ui-corner-all" onclick="memdb_list('${dto.tenant_id}','${dto.user_id}','SHRegionOne')">查看上海</button>
                         </td>
 
 					</tr>

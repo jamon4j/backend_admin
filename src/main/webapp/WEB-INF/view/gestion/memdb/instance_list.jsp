@@ -281,8 +281,6 @@
                             },
                             error: function (XMLHttpRequest, textStatus, errorThrown) {
                                 alert("创建 Cluster失败!");
-                                alert("XMLHttpRequest.status:" + XMLHttpRequest.status);
-                                alert("XMLHttpRequest.readyState:" + XMLHttpRequest.readyState);
                                 alert("textStatus:" + textStatus);
                             }
                         });
@@ -349,8 +347,6 @@
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 alert("failover instance 失败!");
-                alert("XMLHttpRequest.status:" + XMLHttpRequest.status);
-                alert("XMLHttpRequest.readyState:" + XMLHttpRequest.readyState);
                 alert("textStatus:" + textStatus);
             }
         });

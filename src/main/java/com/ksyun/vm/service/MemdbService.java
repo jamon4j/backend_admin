@@ -50,10 +50,7 @@ public class MemdbService {
     public void clusterDelete(String userId, String tenantId, String Region, String cluster_id) throws ErrorCodeException, NoTokenException {
         jsonService.setId(userId);
         jsonService.setTenantId(tenantId);
-        Map<String, Object> map = new HashMap<>();
-        map.put("cluster_id", cluster_id);
-        String requestBody = JSONObject.toJSONString(map);
-        jsonService.poDelete(InitConst.MEMDB_CLUSTER_DELETE, null, null, Region, null, requestBody);
+        jsonService.poDelete(InitConst.MEMDB_CLUSTER_DELETE, null, null, Region,cluster_id);
 
     }
 
@@ -61,20 +58,18 @@ public class MemdbService {
         jsonService.setId(userId);
         jsonService.setTenantId(tenantId);
         Map<String, Object> map = new HashMap<>();
-        map.put("cluster_id", cluster_id);
         map.put("size", size);
         String requestBody = JSONObject.toJSONString(map);
-        jsonService.poPost(InitConst.MEMDB_CLUSTER_RESIZE, null, null, Region, null, requestBody);
+        jsonService.poPost(InitConst.MEMDB_CLUSTER_RESIZE, null, null, Region, null, requestBody,cluster_id);
     }
 
     public void clusterSetMaxmemoryPolicy(String userId, String tenantId, String Region, String cluster_id, String policy) throws ErrorCodeException, NoTokenException {
         jsonService.setId(userId);
         jsonService.setTenantId(tenantId);
         Map<String, Object> map = new HashMap<>();
-        map.put("cluster_id", cluster_id);
-        map.put("policy", policy);
+        map.put("maxmemory_policy", policy);
         String requestBody = JSONObject.toJSONString(map);
-        jsonService.poPost(InitConst.MEMDB_CLUSTER_MAXMEORYPOLICY, null, null, Region, null, requestBody);
+        jsonService.poPost(InitConst.MEMDB_CLUSTER_MAXMEORYPOLICY, null, null, Region, null, requestBody,cluster_id);
     }
 
     public void clusterFlushdb(String userId, String tenantId, String Region, String cluster_id) throws ErrorCodeException, NoTokenException {
@@ -83,7 +78,7 @@ public class MemdbService {
         Map<String, Object> map = new HashMap<>();
         map.put("cluster_id", cluster_id);
         String requestBody = JSONObject.toJSONString(map);
-        jsonService.poPost(InitConst.MEMDB_CLUSTER_FLUSHDB, null, null, Region, null, requestBody);
+        jsonService.poPost(InitConst.MEMDB_CLUSTER_FLUSHDB, null, null, Region, null, requestBody,cluster_id);
     }
 
 
@@ -114,14 +109,14 @@ public class MemdbService {
         jsonService.poPost(InitConst.MEMDB_INSTANCE_FAILUREOVER, null, null, Region, null, requestBody,cluster_id);
     }
 
-    public List<SeurityGroupRulePOJO> clusterSecuritygroupRules(String userId, String tenantId, String Region, String cluster_id) throws ErrorCodeException, NoTokenException {
+    public List<SeurityGroupRulePOJO> clusterSecuritygroupRules(String userId, String tenantId, String Region, String groupid) throws ErrorCodeException, NoTokenException {
         jsonService.setId(userId);
         jsonService.setTenantId(tenantId);
-        List<SeurityGroupRulePOJO> list = jsonService.getPoList(InitConst.MEMDB_SECURITYGROUPRULE_LIST, null, null, Region, SeurityGroupRulePOJO.class,cluster_id);
+        List<SeurityGroupRulePOJO> list = jsonService.getPoList(InitConst.MEMDB_SECURITYGROUPRULE_LIST, null, null, Region, SeurityGroupRulePOJO.class,groupid);
         return list;
     }
 
-    public  void  clusterSecuritygroupRuleAdd(String userId, String tenantId, String Region,String group_id,String protocol,String from_port,String to_port,String cdir) throws ErrorCodeException, NoTokenException
+    public  void  clusterSecuritygroupRuleAdd(String userId, String tenantId, String Region,String group_id,String protocol,String from_port,String to_port,String cidr) throws ErrorCodeException, NoTokenException
     {
         jsonService.setId(userId);
         jsonService.setTenantId(tenantId);
@@ -130,7 +125,7 @@ public class MemdbService {
         map.put("protocol",protocol);
         map.put("from_port",from_port);
         map.put("to_port",to_port);
-        map.put("cdir",cdir);
+        map.put("cidr",cidr);
         String requestBody = JSONObject.toJSONString(map);
         jsonService.poPost(InitConst.MEMDB_SECURITYRULE_ADD, null, null, Region, null, requestBody);
     }
@@ -140,17 +135,13 @@ public class MemdbService {
     {
         jsonService.setId(userId);
         jsonService.setTenantId(tenantId);
-        Map<String, Object> map = new HashMap<>();
-        map.put("security_group_rule_id",security_group_rule_id);
-        String requestBody = JSONObject.toJSONString(map);
-        jsonService.poPost(InitConst.MEMDB_SECURITYRULE_DELETE, null, null, Region, null, requestBody);
+        jsonService.poDelete(InitConst.MEMDB_SECURITYRULE_DELETE, null, null, Region,security_group_rule_id);
     }
 
     public  SecurityGroupPOJO clusterSecuritygroupid(String userId, String tenantId, String Region,String security_group_id)throws ErrorCodeException, NoTokenException
     {
         jsonService.setId(userId);
         jsonService.setTenantId(tenantId);
-        Map<String, Object> map = new HashMap<>();
 
        return jsonService.poGet(InitConst.MEMDB_SECURITYGROUP_SINGLE, null, null, Region, SecurityGroupPOJO.class,security_group_id);
 

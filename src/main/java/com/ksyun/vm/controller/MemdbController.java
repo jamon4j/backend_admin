@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.yecht.Data;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -28,7 +29,8 @@ public class MemdbController extends BaseController {
 
     @Autowired
     private MemdbService memdbService;
-
+    private final String suc = "{\"result\":\"success\"}";
+    private final String err = "{\"result\":\"error\"}";
 
     @RequestMapping(value = "/g/memdb/getclusterlist/{tenantid}/{userid}/{region}")
     @ResponseBody
@@ -97,9 +99,9 @@ public class MemdbController extends BaseController {
             memdbService.addCluster(userId, tenantId, region, name, ha_cluster, protocol, Integer.parseInt(size));
         } catch (Exception e) {
             logger.error("getclusterlist:", e);
-            return "fail";
+            return err;
         }
-        return "ok";
+        return suc;
     }
 
 
@@ -122,9 +124,9 @@ public class MemdbController extends BaseController {
             memdbService.clusterDelete(userId, tenantId, region, cluster_id);
         } catch (Exception e) {
             logger.error("deletecluster:", e);
-            return "{\"result\":\"error\"}";
+            return err;
         }
-        return "{\"result\":\"success\"}";
+        return suc;
     }
 
 
@@ -144,15 +146,15 @@ public class MemdbController extends BaseController {
                                 @PathVariable("userid") String userId,
                                 @PathVariable("region") String region,
                                 @PathVariable("clusterid") String cluster_id,
-                                @RequestParam(value = "size", required = true) String size) {
+                                @RequestParam(value = "resize", required = true) String size) {
         try {
             memdbService.clusterResize(userId, tenantId, region, cluster_id, Integer.parseInt(size));
         } catch (Exception e) {
             logger.error("clusterresize:", e);
-            return "{\"result\":\"error\"}";
+            return err;
 
         }
-        return "{\"result\":\"success\"}";
+        return suc;
     }
 
 
@@ -177,9 +179,9 @@ public class MemdbController extends BaseController {
             memdbService.clusterSetMaxmemoryPolicy(userId, tenantId, region, cluster_id, policy);
         } catch (Exception e) {
             logger.error("clustersetmaxmemorypolicy:", e);
-            return "{\"result\":\"error\"}";
+            return err;
         }
-        return "{\"result\":\"success\"}";
+        return suc;
     }
 
     @RequestMapping(value = "/g/memdb/clusterflushdb/{tenantid}/{userid}/{clusterid}/{region}")
@@ -192,9 +194,9 @@ public class MemdbController extends BaseController {
             memdbService.clusterFlushdb(userId, tenantId, region, cluster_id);
         } catch (Exception e) {
             logger.error("clusterflushdb:", e);
-            return "{\"result\":\"error\"}";
+            return err;
         }
-        return "{\"result\":\"success\"}";
+        return suc;
     }
 
 
@@ -221,10 +223,10 @@ public class MemdbController extends BaseController {
             memdbService.addInstance(userId, tenantId, region, role, flavor_id, clusterid);
         } catch (Exception e) {
             logger.error("addinstance:", e);
-            return "{\"result\":\"error\"}";
+            return err;
 
         }
-        return "{\"result\":\"success\"}";
+        return suc;
     }
 
     //failureoverInstance
@@ -238,31 +240,35 @@ public class MemdbController extends BaseController {
                                       @RequestParam(value = "old_instance_id", required = true) String old_instance_id) {
 
         try {
-            memdbService.failureoverInstance(userId, tenantId, region,old_instance_id ,cluster_id);
+            memdbService.failureoverInstance(userId, tenantId, region, old_instance_id, cluster_id);
         } catch (Exception e) {
             logger.error("failureoverinstance:", e);
-            return "{\"result\":\"error\"}";
+            return err;
         }
-        return "{\"result\":\"success\"}";
+        return suc;
 
     }
 
 
-    @RequestMapping(value = "/g/memdb/clustersecuritygrouprules/{tenantid}/{userid}/{region}")
+    @RequestMapping(value = "/g/memdb/clustersecuritygrouprules/{tenantid}/{userid}/{region}/{groupid}")
     @ResponseBody
     public ModelAndView clusterSecuritygroupRules(@PathVariable("tenantid") String tenantId,
                                                   @PathVariable("userid") String userId,
                                                   @PathVariable("region") String region,
-                                                  @PathVariable("clusterid") String cluster_id) {
+                                                  @PathVariable("groupid") String groupid) {
         List<SeurityGroupRulePOJO> list = null;
         try {
-            list = memdbService.clusterSecuritygroupRules(userId, tenantId, region, cluster_id);
+            list = memdbService.clusterSecuritygroupRules(userId, tenantId, region, groupid);
         } catch (Exception e) {
             logger.error("clustersecuritygrouprules:", e);
 
         }
-        ModelAndView view = new ModelAndView("");
-        view.addObject("instances", list);
+        ModelAndView view = new ModelAndView("/gestion/memdb/securitygrouprulelist");
+        view.addObject("rulelist", list);
+        view.addObject("group_id", groupid);
+        view.addObject("userId", userId);
+        view.addObject("tenantid", tenantId);
+        view.addObject("region", region);
         return view;
     }
 
@@ -275,15 +281,15 @@ public class MemdbController extends BaseController {
                                               @RequestParam("protocol") String protocol,
                                               @RequestParam("from_port") String from_port,
                                               @RequestParam("to_port") String to_port,
-                                              @RequestParam("cdir") String cdir) {
+                                              @RequestParam("cidr") String cidr) {
         try {
-            memdbService.clusterSecuritygroupRuleAdd(userId, tenantId, region, group_id, protocol, from_port, to_port, cdir);
+            memdbService.clusterSecuritygroupRuleAdd(userId, tenantId, region, group_id, protocol, from_port, to_port, cidr);
         } catch (Exception e) {
             logger.error("clustersecuritygroupruleadd:", e);
-            return "{\"result\":\"error\"}";
+            return err;
 
         }
-        return "{\"result\":\"success\"}";
+        return suc;
     }
 
     @RequestMapping(value = "/g/memdb/clustersecuritygroupRuleDelete/{tenantid}/{userid}/{region}")
@@ -296,9 +302,9 @@ public class MemdbController extends BaseController {
             memdbService.clusterSecuritygroupRuleDelete(userId, tenantId, region, security_group_rule_id);
         } catch (Exception e) {
             logger.error("clustersecuritygroupRuleDelete:", e);
-            return "fail";
+            return err;
         }
-        return "ok";
+        return suc;
 
     }
 

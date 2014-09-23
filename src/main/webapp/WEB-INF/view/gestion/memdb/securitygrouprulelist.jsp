@@ -76,7 +76,7 @@
     </style>
 </head>
 <body class="main-body">
-<div class="path"><p>当前位置：MEMDB管理<span>&gt;</span>instance列表</p></div>
+<div class="path"><p>当前位置：MEMDB管理<span>&gt;</span>securityrule列表</p></div>
 <div class="main-cont">
     <h3 class="title">cluster列表</h3>
 
@@ -84,12 +84,12 @@
         <div>
             <ul id="icons" class="ui-widget ui-helper-clearfix" style="float: right;">
                 <li class="ui-state-default ui-corner-all">
-                    <a href="/g/memdb/getinstancelist/${tenantid}/${userId}/${cluster_id}/${region}">
+                    <a href="/g/memdb/clustersecuritygrouprules/${tenantid}/${userId}/${region}/${group_id}">
                         <button>刷新</button>
                     </a>
                 </li>
                 <li class="ui-state-default ui-corner-all">
-                    <button onclick="createInstance('${tenantid}','${userId}','${region}');">创建</button>
+                    <button onclick="createRule('${tenantid}','${userId}','${region}');">创建</button>
                 </li>
             </ul>
             <table class="table" cellpadding="0" cellspacing="0" width="100%" border="0">
@@ -116,7 +116,7 @@
                     </th>
 
                     <th>
-                        <div class="th-gap">缓存操作</div>
+                        <div class="th-gap">操作</div>
                     </th>
 
                 </tr>
@@ -133,8 +133,8 @@
                         <td>${rule.cidr} </td>
                         <td>
                             <p>
-                                <button onclick="deleteInstance('${tenantid}','${userId}','${region}','${rule.id}');">
-                                    failover
+                                <button onclick="deleteRule('${tenantid}','${userId}','${region}','${rule.id}');">
+                                    删除
                                 </button>
                             </p>
 
@@ -167,7 +167,7 @@
     </div>
 
     <!--创建高可用实例-->
-    <div id="addcluster_form" title="创建cluster" style="display: none">
+    <div id="addcluster_form" title="创建rule" style="display: none">
         <p class="validateTips"><b style="color:red"></b></p>
 
         <form>
@@ -179,6 +179,7 @@
                 <p>from_port<b>(from_port)</b>：</p>
                 <input AUTOCOMPLETE="off" type="text" name="from_port" id="from_port" value=""
                        class="text ui-widget-content ui-corner-all"/>
+
                 <p>cidr<b>(cidr)</b>：</p>
                 <input AUTOCOMPLETE="off" type="text" name="cidr" id="cidr" value="0.0.0.0/0"
                        class="text ui-widget-content ui-corner-all"/>
@@ -192,7 +193,7 @@
 
 <script type="text/javascript">
 
-    var data = {cluster_id: "${cluster_id}"};
+    var data = {cluster_id: "${group_id}"};
     var j = jQuery.noConflict(true);
     function checknull(tips, o, n) {
         if (o.val() == null || o.val() == "") {
@@ -215,7 +216,6 @@
     function createRule(tenant_id, userid, region) {
 
 
-
         $("#addcluster_form").dialog({
             autoOpen: false,
             height: 350,
@@ -223,7 +223,7 @@
             modal: true,
             buttons: {
                 ok: function () {
-                    var c = confirm("确定要创建instance 吗?");
+                    var c = confirm("确定要创建securityrule吗?");
                     if (c == false) {
                         return false;
                     }
@@ -232,19 +232,20 @@
                     var to_port = $("#to_port");
                     var cidr = $("#cidr");
                     var tips = $(".validateTips");
-                    bValid = bValid && checknull(tips, role, "role");
-                    bValid = bValid && checknull(tips, flavor_id, "flavor_id");
-                    var parturl = tenant_id + "/" + userid + "/" + data.cluster_id + "/" + region;
+                    bValid = bValid && checknull(tips, from_port, "from_port");
+                    bValid = bValid && checknull(tips, to_port, "to_port");
+                    bValid = bValid && checknull(tips, cidr, "cidr");
+                    var parturl = tenant_id + "/" + userid + "/" + region;
                     if (bValid) {
                         $.ajax({
                             type: "POST",
-                            url: "/g/memdb/addinstance/" + parturl,
+                            url: "/g/memdb/clustersecuritygroupruleadd/" + parturl,
                             data: {
-                                group_id:"${group_id}",
+                                group_id: "${group_id}",
                                 protocol: "tcp",
                                 from_port: from_port.val(),
-                                to_port:to_port.val(),
-                                cidr:cidr.val()
+                                to_port: to_port.val(),
+                                cidr: cidr.val()
 
                             },
                             success: function (data) {
@@ -252,12 +253,12 @@
                                 var d1 = JSON.parse(data);
                                 if (d1.result != "success") {
                                     alert(d1.result);
-                                    window.location.href = "/g/memdb/getinstancelist/" + parturl;
+                                    window.location.href = "/g/memdb/clustersecuritygrouprules/" + parturl + "/" + "${group_id}";
                                     alert("操作失败!")
                                     return;
                                 }
                                 alert("操作成功!");
-                                window.location.href = "/g/memdb/getinstancelist/" + parturl;
+                                window.location.href = "/g/memdb/clustersecuritygrouprules/" + parturl + "/${group_id}";
                             },
                             error: function (XMLHttpRequest, textStatus, errorThrown) {
                                 alert("创建 Cluster失败!");
@@ -277,29 +278,28 @@
     }
 
 
-
-    function deleteInstance(tenant_id, userid, region, rule_id) {
+    function deleteRule(tenant_id, userid, region, rule_id) {
         var c = confirm("确定要 删除安全组 吗?");
-        var parturl = tenant_id + "/" + userid + "/" + data.cluster_id + "/" + region;
+        var parturl = tenant_id + "/" + userid + "/" + region + "/";
         if (c == false) {
             return false;
         }
         $.ajax({
             type: "POST",
-            url: "/g/memdb/failureoverinstance/" + parturl,
+            url: "/g/memdb/clustersecuritygroupRuleDelete/" + parturl,
             data: {
-                old_instance_id:del_instance_id
+                security_group_rule_id: rule_id
 
             },
             success: function (data) {
                 var d1 = JSON.parse(data);
                 if (d1.result != "success") {
-                    window.location.href = "/g/memdb/getinstancelist/" + parturl;
+                    window.location.href = "/g/memdb/clustersecuritygrouprules/" + parturl + "/${group_id}";
                     alert("操作失败!")
                     return;
                 }
                 alert("操作成功!");
-                window.location.href = "/g/memdb/getinstancelist/" + parturl;
+                window.location.href = "/g/memdb/clustersecuritygrouprules/" + parturl + "/${group_id}";
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 alert("failover instance 失败!");
