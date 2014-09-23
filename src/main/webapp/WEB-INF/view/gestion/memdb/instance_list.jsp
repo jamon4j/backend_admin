@@ -156,7 +156,7 @@
                         </td>
                         <td>
                             <p>
-                                <button onclick="deleteInstance('${tenantid}','${userId}','${region}','${cluster.id}');">
+                                <button onclick="deleteInstance('${tenantid}','${userId}','${region}','${instance.id}');">
                                     failover
                                 </button>
                             </p>
@@ -198,7 +198,7 @@
                 <p>role<b>(role必填)</b>：</p>
                 <select name="role" id="role" class="text ui-widget-content ui-corner-all">
                     <option value="PROXY">PROXY</option>
-
+                    <option value="DATA">DATA</option>
                 </select>
 
                 <p>请选择flavor<b>(protocol必填)</b>：</p>

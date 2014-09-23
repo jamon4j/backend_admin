@@ -104,7 +104,7 @@ public class MemdbService {
         jsonService.setId(userId);
         jsonService.setTenantId(tenantId);
         Map<String, Object> map = new HashMap<>();
-        map.put("old_instance_id", old_instance_id);
+        map.put("del_instance_id", old_instance_id);
         String requestBody = JSONObject.toJSONString(map);
         jsonService.poPost(InitConst.MEMDB_INSTANCE_FAILUREOVER, null, null, Region, null, requestBody,cluster_id);
     }

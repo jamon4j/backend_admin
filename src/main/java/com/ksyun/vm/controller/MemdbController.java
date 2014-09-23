@@ -53,6 +53,16 @@ public class MemdbController extends BaseController {
         modelview.addObject("tenantid", tenantId);
         modelview.addObject("region", region);
         modelview.addObject("clusterlist", clusterlist);
+        String area="";
+        if(region.equals("RegionOne"))
+        {
+            area="北京机房";
+        }
+        else if(region.equals("SHRegionOne"))
+        {
+            area="上海机房";
+        }
+        modelview.addObject("area",area);
         return modelview;
     }
 
