@@ -162,6 +162,9 @@
                 <th width="8%">
                     <div class="th-gap">虚拟机</div>
                 </th>
+                <th width="8%">
+                    <div class="th-gap">Memdb</div>
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -182,6 +185,11 @@
 
                         </td>
 						<td>
+                            <button class="ui-state-default ui-corner-all" onclick="vm_list('${dto.tenant_id}','${dto.user_id}','RegionOne')">查看北京</button>
+                            <button class="ui-state-default ui-corner-all" onclick="vm_list('${dto.tenant_id}','${dto.user_id}','SHRegionOne')">查看上海</button>
+                        </td>
+
+                        <td>
                             <button class="ui-state-default ui-corner-all" onclick="vm_list('${dto.tenant_id}','${dto.user_id}','RegionOne')">查看北京</button>
                             <button class="ui-state-default ui-corner-all" onclick="vm_list('${dto.tenant_id}','${dto.user_id}','SHRegionOne')">查看上海</button>
                         </td>

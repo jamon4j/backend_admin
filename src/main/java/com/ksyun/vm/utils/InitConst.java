@@ -160,4 +160,25 @@ public class InitConst {
 
 
     public static final String CREATE_RDS_URL = "kvm.rds.callback";
+
+
+    public static final  String MEMDB_CLUSTER_LIST="memdb.cluster.list";
+    public static final  String MEMDB_CLUSTER_ADD="memdb.cluster.add";
+    public static final  String MEMDB_CLUSTER_DELETE="memdb.cluster.delete";
+    public static final  String MEMDB_CLUSTER_RESIZE="memdb.cluster.resize";
+    public static final  String MEMDB_CLUSTER_MAXMEORYPOLICY="memdb.cluster.setmaxmemorypolicity";
+    public static final  String MEMDB_CLUSTER_FLUSHDB="memdb.cluster.flushdb";
+    public static final  String MEMDB_INSTANCE_LIST="memdb.instance_list";
+    public static final  String MEMDB_INSTANCE_ADD="memdb.instance_add";
+    public static final  String MEMDB_INSTANCE_FAILUREOVER="memdb.instance.failourover";
+    public static final  String MEMDB_SECURITYGROUPRULE_LIST="memdb.securityrule.list";
+    public static final  String MEMDB_SECURITYRULE_ADD="memdb.securityrule.add";
+    public static final  String MEMDB_SECURITYRULE_DELETE="memdb.securityrule.delete";
+    public static final  String  MEMDB_SECURITYGROUP_SINGLE="memdb.securitygroup.single";
+    public static final  String  MEMDB_FLAVOR_SINGLE="memdb.flavor.single";
+    public static final  String  MEMDB_FLAVOR_LIST="memdb.flavor.list";
+
+
+
+
 }
