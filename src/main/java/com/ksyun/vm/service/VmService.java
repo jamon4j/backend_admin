@@ -270,7 +270,7 @@ public class VmService {
         map.put("vm_id", vm_id);
         map.put("password", password);
         String requestBody = JSONObject.toJSONString(map);
-        jsonService.poPost(InitConst.KVM_VM_RESET, null, null, null,
+        jsonService.poPost(InitConst.KVM_VM_RESET, null, null, Region,null,
                 requestBody);
     }
 
