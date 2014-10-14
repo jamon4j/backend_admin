@@ -598,4 +598,26 @@ public class LBSService {
 		jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_OPEN, null, null, null,
 				JSONObject.toJSONString(open_map), poolId);
 	}
+
+    public void updatePool(String userId, String tenantId, String poolId,
+                           String name, String egress, String admin_state_up,String Region)
+            throws NoTokenException, ErrorCodeException {
+        jsonService.setId(userId);
+        jsonService.setTenantId(tenantId);
+        // 更新name
+        Map<String, String> name_map = new HashMap<>();
+        name_map.put("name", name);
+        jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_NAME, null, null,Region, null,
+                JSONObject.toJSONString(name_map), poolId);
+        // 更新egress
+        Map<String, String> egress_map = new HashMap<>();
+        egress_map.put("egress", egress);
+        jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_EGRESS, null, null,
+                null, JSONObject.toJSONString(egress_map), poolId);
+        // 更新open
+        Map<String, String> open_map = new HashMap<>();
+        open_map.put("open", admin_state_up);
+        jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_OPEN, null, null, null,
+                JSONObject.toJSONString(open_map), poolId);
+    }
 }

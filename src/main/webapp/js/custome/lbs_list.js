@@ -685,7 +685,7 @@ function dialog_update_vip(userId, tenantId, vipId, name, admin_state_up, connec
 	$("#dialog_update_vip").dialog("open");
 }
 
-function dialog_update_pool(userId, tenantId, poolId, name, egress, admin_state_up) {
+function dialog_update_pool(userId, tenantId, poolId, name, egress, admin_state_up,region) {
 	var id_html = "<font color='red'>" + poolId +"</font>";
 	$("#span_update_pool_id").html(id_html);
 	if(admin_state_up == "true") {
@@ -709,7 +709,7 @@ function dialog_update_pool(userId, tenantId, poolId, name, egress, admin_state_
 			'修改' : function() {
 				dialog_loading();
 				$.ajax({
-					url : "/g/lbs/pool/update/" + userId + "/" + tenantId + "/" + poolId,
+					url : "/g/lbs/pool/update/" + userId + "/" + tenantId + "/" + poolId+"",
 					cache : false,
 					data : {
 						name : $("#update_pool_name").val(),
@@ -827,12 +827,12 @@ function button_update_vip(userId, tenantId, vipId, name, admin_state_up, connec
 	dialog_update_vip(userId, tenantId, vipId, name, admin_state_up, connection_limit, cookie_name, cookie_type, cookie_timeout, protocol);
 }
 
-function button_update_pool(userId, tenantId, poolId, name, egress, admin_state_up){
+function button_update_pool(userId, tenantId, poolId, name, egress, admin_state_up,region){
 	$("#span_update_pool_id").html("");
 	$("#td_update_pool_open").html("");
 	$("#update_pool_name").val("")
 	$("#update_pool_egress").val("")
-	dialog_update_pool(userId, tenantId, poolId, name, egress, admin_state_up);
+	dialog_update_pool(userId, tenantId, poolId, name, egress, admin_state_up,region);
 }
 
 function radio_protocol_change(value) {

@@ -875,7 +875,7 @@ public class LBSController {
 	 * @param admin_state_up
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/pool/update/{user_id}/{tenant_id}/{pool_id}")
+	@RequestMapping(value = "/g/lbs/pool/update/{user_id}/{tenant_id}/{pool_id}/{region}")
 	@ResponseBody
 	public String setPool(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,

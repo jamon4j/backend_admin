@@ -151,6 +151,13 @@ public class JSONService {
                 requestBody, param);
     }
 
+    public <T extends BasePo> T poPut(String proKey, String username,
+                                      String password,String region,Class<T> clazz, String requestBody,
+                                      Object... param) throws NoTokenException, ErrorCodeException {
+        return getPo(proKey, username, password, clazz, HttpMethod.PUT,
+                requestBody, param);
+    }
+
     /**
      * 基本请求方法
      *
