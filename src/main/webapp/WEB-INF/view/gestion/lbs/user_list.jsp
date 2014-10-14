@@ -82,7 +82,7 @@
 							<td>${dto.enabled}</td>
 							<td>${dto.email}</td>
 							<td>${dto.tenant_id}</td>
-							<td><select id="region"><option value="北京">北京</option><option value="上海">上海</option></select></td>
+							<td><select id="region"><option value="RegionOne">北京</option><option value="SHRegionOne">上海</option></select></td>
 							<td><button class="ui-state-default ui-corner-all"
 									onclick="in_pool('${dto.user_id}','${dto.tenant_id}','${dto.user_name}')">进入</button>
 							</td>
