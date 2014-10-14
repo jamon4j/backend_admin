@@ -38,12 +38,12 @@ public class LBSService {
 	 * @throws ErrorCodeException
 	 * @throws NoTokenException
 	 */
-	public List<PoolPOJO> getPools(String userId, String tenantId)
+	public List<PoolPOJO> getPools(String userId, String tenantId, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
 		List<PoolPOJO> list = jsonService.getPoList(
-				InitConst.KVM_LBS_POOL_LIST, null, null, PoolPOJO.class);
+				InitConst.KVM_LBS_POOL_LIST, null, null, region, PoolPOJO.class);
 		return list;
 	}
 
@@ -56,12 +56,12 @@ public class LBSService {
 	 * @throws ErrorCodeException
 	 * @throws NoTokenException
 	 */
-	public List<VipPOJO> getVips(String userId, String tenantId)
+	public List<VipPOJO> getVips(String userId, String tenantId, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
 		List<VipPOJO> list = jsonService.getPoList(InitConst.KVM_LBS_VIP_LIST,
-				null, null, VipPOJO.class);
+				null, null, region, VipPOJO.class);
 		return list;
 	}
 
@@ -74,12 +74,12 @@ public class LBSService {
 	 * @throws ErrorCodeException
 	 * @throws NoTokenException
 	 */
-	public List<MemberPOJO> getMembers(String userId, String tenantId)
+	public List<MemberPOJO> getMembers(String userId, String tenantId, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
 		List<MemberPOJO> list = jsonService.getPoList(
-				InitConst.KVM_LBS_MEMBER_LIST, null, null, MemberPOJO.class);
+				InitConst.KVM_LBS_MEMBER_LIST, null, null, region,MemberPOJO.class);
 		return list;
 	}
 
@@ -92,12 +92,12 @@ public class LBSService {
 	 * @throws ErrorCodeException
 	 * @throws NoTokenException
 	 */
-	public List<HealthPOJO> getHealths(String userId, String tenantId)
+	public List<HealthPOJO> getHealths(String userId, String tenantId, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
 		List<HealthPOJO> list = jsonService.getPoList(
-				InitConst.KVM_LBS_HEALTH_LIST, null, null, HealthPOJO.class);
+				InitConst.KVM_LBS_HEALTH_LIST, null, null, region,HealthPOJO.class);
 		return list;
 	}
 
@@ -111,11 +111,11 @@ public class LBSService {
 	 * @throws ErrorCodeException
 	 * @throws NoTokenException
 	 */
-	public PoolPOJO getPool(String userId, String tenantId, String poolId)
+	public PoolPOJO getPool(String userId, String tenantId, String poolId, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
-		PoolPOJO pojo = jsonService.poGet(InitConst.KVM_LBS_POOL, null, null,
+		PoolPOJO pojo = jsonService.poGet(InitConst.KVM_LBS_POOL, null, null, region,
 				PoolPOJO.class, poolId);
 		return pojo;
 	}
@@ -130,11 +130,11 @@ public class LBSService {
 	 * @throws ErrorCodeException
 	 * @throws NoTokenException
 	 */
-	public VipPOJO getVip(String userId, String tenantId, String vipId)
+	public VipPOJO getVip(String userId, String tenantId, String vipId, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
-		VipPOJO pojo = jsonService.poGet(InitConst.KVM_LBS_VIP, null, null,
+		VipPOJO pojo = jsonService.poGet(InitConst.KVM_LBS_VIP, null, null, region,
 				VipPOJO.class, vipId);
 		return pojo;
 	}
@@ -149,12 +149,12 @@ public class LBSService {
 	 * @throws NoTokenException
 	 * @throws ErrorCodeException
 	 */
-	public MemberPOJO getMember(String userId, String tenantId, String memberId)
+	public MemberPOJO getMember(String userId, String tenantId, String memberId, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
 		MemberPOJO pojo = jsonService.poGet(InitConst.KVM_LBS_MEMBER, null,
-				null, MemberPOJO.class, memberId);
+				null, region, MemberPOJO.class, memberId);
 		return pojo;
 	}
 
@@ -168,12 +168,12 @@ public class LBSService {
 	 * @throws NoTokenException
 	 * @throws ErrorCodeException
 	 */
-	public HealthPOJO getHealth(String userId, String tenantId, String healthId)
+	public HealthPOJO getHealth(String userId, String tenantId, String healthId, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
 		HealthPOJO pojo = jsonService.poGet(InitConst.KVM_LBS_HEALTH, null,
-				null, HealthPOJO.class, healthId);
+				null, region, HealthPOJO.class, healthId);
 		return pojo;
 	}
 
@@ -189,7 +189,7 @@ public class LBSService {
 	 * @throws NoTokenException
 	 */
 	public void addPool(String userId, String tenantId, String poolName,
-			String type, String egress) throws NoTokenException,
+			String type, String egress, String region) throws NoTokenException,
 			ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
@@ -199,7 +199,7 @@ public class LBSService {
 		map.put("network_type", type);
 		map.put("is_req_body", "true");
 		String requestBody = JSONObject.toJSONString(map);
-		jsonService.poPost(InitConst.KVM_LBS_POOL_ADD, null, null, null,
+		jsonService.poPost(InitConst.KVM_LBS_POOL_ADD, null, null, region, null,
 				requestBody);
 	}
 
@@ -219,7 +219,7 @@ public class LBSService {
 	 */
 	public void addVip(String userId, String tenantId, String name,
 			String protocol, String protocol_port, String lb_method,
-			String pool_id, SessionPersistencePOJO session_persistence)
+			String pool_id, SessionPersistencePOJO session_persistence, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
@@ -232,7 +232,7 @@ public class LBSService {
 		map.put("session_persistence", session_persistence);
 		map.put("is_req_body", "true");
 		String requestBody = JSONObject.toJSONString(map);
-		jsonService.poPost(InitConst.KVM_LBS_VIP_ADD, null, null, null,
+		jsonService.poPost(InitConst.KVM_LBS_VIP_ADD, null, null, region, null,
 				requestBody);
 	}
 
@@ -250,7 +250,7 @@ public class LBSService {
 	 * @throws ErrorCodeException
 	 */
 	public void addMember(String userId, String tenantId, String address,
-			String protocol_port, String vip_id, String weight, String vm_id)
+			String protocol_port, String vip_id, String weight, String vm_id, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
@@ -262,7 +262,7 @@ public class LBSService {
 		map.put("vm_id", vm_id);
 		map.put("is_req_body", "true");
 		String requestBody = JSONObject.toJSONString(map);
-		jsonService.poPost(InitConst.KVM_LBS_MEMBER_ADD, null, null, null,
+		jsonService.poPost(InitConst.KVM_LBS_MEMBER_ADD, null, null, region, null,
 				requestBody);
 	}
 
@@ -284,7 +284,7 @@ public class LBSService {
 	 */
 	public void addHealth(String userId, String tenantId, String delay,
 			String max_retries, String type, String timeout, String rise,
-			String fall, String http_method, String url_path)
+			String fall, String http_method, String url_path, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
@@ -303,7 +303,7 @@ public class LBSService {
 		map.put("admin_state_up", "true");
 		map.put("is_req_body", "true");
 		String requestBody = JSONObject.toJSONString(map);
-		jsonService.poPost(InitConst.KVM_LBS_HEALTH_ADD, null, null, null,
+		jsonService.poPost(InitConst.KVM_LBS_HEALTH_ADD, null, null, region, null,
 				requestBody);
 	}
 
@@ -317,11 +317,11 @@ public class LBSService {
 	 * @throws ErrorCodeException
 	 */
 	public void deleteHealth(String userId, String tenantId,
-			String health_monitor_id) throws NoTokenException,
+			String health_monitor_id, String region) throws NoTokenException,
 			ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
-		jsonService.poDelete(InitConst.KVM_LBS_HEALTH_DELETE, null, null,
+		jsonService.poDelete(InitConst.KVM_LBS_HEALTH_DELETE, null, null, region,
 				health_monitor_id);
 	}
 
@@ -334,11 +334,11 @@ public class LBSService {
 	 * @throws ErrorCodeException
 	 * @throws NoTokenException
 	 */
-	public void deleteMember(String userId, String tenantId, String member_id)
+	public void deleteMember(String userId, String tenantId, String member_id, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
-		jsonService.poDelete(InitConst.KVM_LBS_MEMEBER_DELETE, null, null,
+		jsonService.poDelete(InitConst.KVM_LBS_MEMEBER_DELETE, null, null, region,
 				member_id);
 	}
 
@@ -351,11 +351,11 @@ public class LBSService {
 	 * @throws ErrorCodeException
 	 * @throws NoTokenException
 	 */
-	public void deleteVip(String userId, String tenantId, String vip_id)
+	public void deleteVip(String userId, String tenantId, String vip_id, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
-		jsonService.poDelete(InitConst.KVM_LBS_VIP_DELETE, null, null, vip_id);
+		jsonService.poDelete(InitConst.KVM_LBS_VIP_DELETE, null, null, region, vip_id);
 	}
 
 	/**
@@ -367,12 +367,12 @@ public class LBSService {
 	 * @throws ErrorCodeException
 	 * @throws NoTokenException
 	 */
-	public void deletePool(String userId, String tenantId, String pool_id)
+	public void deletePool(String userId, String tenantId, String pool_id, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
 		jsonService
-				.poDelete(InitConst.KVM_LBS_POOL_DELETE, null, null, pool_id);
+				.poDelete(InitConst.KVM_LBS_POOL_DELETE, null, null, region, pool_id);
 	}
 
 	/**
@@ -386,14 +386,14 @@ public class LBSService {
 	 * @throws NoTokenException
 	 */
 	public void vipBindHealth(String userId, String tenantId, String vip_id,
-			String health_monitor_id) throws NoTokenException,
+			String health_monitor_id, String region) throws NoTokenException,
 			ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
 		Map<String, Object> map = new HashMap<>();
 		map.put("health_monitor_id", health_monitor_id);
 		String requestBody = JSONObject.toJSONString(map);
-		jsonService.poPost(InitConst.KVM_LBS_HEALTH_BIND, null, null, null,
+		jsonService.poPost(InitConst.KVM_LBS_HEALTH_BIND, null, null, region, null,
 				requestBody, vip_id);
 	}
 
@@ -408,11 +408,11 @@ public class LBSService {
 	 * @throws NoTokenException
 	 */
 	public void vipUnBindHealth(String userId, String tenantId, String vip_id,
-			String health_monitor_id) throws NoTokenException,
+			String health_monitor_id, String region) throws NoTokenException,
 			ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
-		jsonService.poDelete(InitConst.KVM_LBS_HEALTH_UNBIND, null, null,
+		jsonService.poDelete(InitConst.KVM_LBS_HEALTH_UNBIND, null, null, region,
 				vip_id, health_monitor_id);
 	}
 
@@ -437,7 +437,7 @@ public class LBSService {
 	public void updateHealth(String userId, String tenantId, String healthId,
 			String timeout, String delay, String fall, String rise,
 			String max_retries, String admin_state_up, String type,
-			String url_path, String http_method) throws NoTokenException,
+			String url_path, String http_method, String region) throws NoTokenException,
 			ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
@@ -445,48 +445,48 @@ public class LBSService {
 		Map<String, String> timeout_map = new HashMap<>();
 		timeout_map.put("timeout", timeout);
 		String string = JSONObject.toJSONString(timeout_map);
-		jsonService.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_TIMEOUT, null, null,
+		jsonService.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_TIMEOUT, null, null, region,
 				null, string, healthId);
 		// 更新delay
 		Map<String, String> delay_map = new HashMap<>();
 		delay_map.put("delay", delay);
-		jsonService.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_DELAY, null, null,
+		jsonService.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_DELAY, null, null, region,
 				null, JSONObject.toJSONString(delay_map), healthId);
 		// 更新max_retries
 		Map<String, String> max_retries_map = new HashMap<>();
 		max_retries_map.put("max_retries", max_retries);
 		jsonService.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_MAX_RETRIES, null,
-				null, null, JSONObject.toJSONString(max_retries_map), healthId);
+				null, region, null, JSONObject.toJSONString(max_retries_map), healthId);
 		// 要判断Type，TCP的时候不去更新url_path和http_method
 		if ("HTTP".equals(type)) {
 			// 更新http_method
 			Map<String, String> http_method_map = new HashMap<>();
 			http_method_map.put("http_method", http_method);
 			jsonService.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_HTTP_METHOD,
-					null, null, null, JSONObject.toJSONString(http_method_map),
+					null, null, region, null, JSONObject.toJSONString(http_method_map),
 					healthId);
 			// 更新url_path
 			Map<String, String> url_path_map = new HashMap<>();
 			url_path_map.put("url_path", url_path);
 			jsonService
 					.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_URL_PATH, null,
-							null, null, JSONObject.toJSONString(url_path_map),
+							null, region, null, JSONObject.toJSONString(url_path_map),
 							healthId);
 		}
 		// 更新rise
 		Map<String, String> rise_map = new HashMap<>();
 		rise_map.put("rise", rise);
-		jsonService.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_RISE, null, null,
+		jsonService.poPut(InitConst.KVM_LBS_HEALTH_UPDATE_RISE, null, null, region,
 				null, JSONObject.toJSONString(rise_map), healthId);
 		// 更新fall
 		Map<String, String> fall_map = new HashMap<>();
 		fall_map.put("fall", fall);
-		jsonService.poPut(InitConst.KVM_LBS_HEALTH_FALL, null, null, null,
+		jsonService.poPut(InitConst.KVM_LBS_HEALTH_FALL, null, null, region, null,
 				JSONObject.toJSONString(fall_map), healthId);
 		// 更新open
 		Map<String, String> open_map = new HashMap<>();
 		open_map.put("open", admin_state_up);
-		jsonService.poPut(InitConst.KVM_LBS_HEALTH_OPEN, null, null, null,
+		jsonService.poPut(InitConst.KVM_LBS_HEALTH_OPEN, null, null, region, null,
 				JSONObject.toJSONString(open_map), healthId);
 	}
 
@@ -502,17 +502,17 @@ public class LBSService {
 	 * @throws NoTokenException
 	 */
 	public void updateMember(String userId, String tenantId, String memberId,
-			String weight, String admin_state_up) throws NoTokenException,
+			String weight, String admin_state_up, String region) throws NoTokenException,
 			ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
 		Map<String, String> weight_map = new HashMap<>();
 		weight_map.put("weight", weight);
-		jsonService.poPut(InitConst.KVM_LBS_MEMBER_UPDATE_WEIGHT, null, null,
+		jsonService.poPut(InitConst.KVM_LBS_MEMBER_UPDATE_WEIGHT, null, null, region,
 				null, JSONObject.toJSONString(weight_map), memberId);
 		Map<String, String> open_map = new HashMap<>();
 		open_map.put("open", admin_state_up);
-		jsonService.poPut(InitConst.KVM_LBS_MEMBER_UPDATE_OPEN, null, null,
+		jsonService.poPut(InitConst.KVM_LBS_MEMBER_UPDATE_OPEN, null, null, region,
 				null, JSONObject.toJSONString(open_map), memberId);
 	}
 
@@ -533,25 +533,25 @@ public class LBSService {
 	 */
 	public void updateVip(String userId, String tenantId, String vipId,
 			String name, String admin_state_up, String connection_limit,
-			String cookie_name, String cookie_type, String cookie_timeout)
+			String cookie_name, String cookie_type, String cookie_timeout, String region)
 			throws NoTokenException, ErrorCodeException {
 		jsonService.setId(userId);
 		jsonService.setTenantId(tenantId);
 		// 更新name
 		Map<String, String> name_map = new HashMap<>();
 		name_map.put("name", name);
-		jsonService.poPut(InitConst.KVM_LBS_VIP_UPDATE_NAME, null, null, null,
+		jsonService.poPut(InitConst.KVM_LBS_VIP_UPDATE_NAME, null, null, region, null,
 				JSONObject.toJSONString(name_map), vipId);
 		// 更新OPEN
 		Map<String, String> open_map = new HashMap<>();
 		open_map.put("open", admin_state_up);
-		jsonService.poPut(InitConst.KVM_LBS_VIP_UPDATE_OPEN, null, null, null,
+		jsonService.poPut(InitConst.KVM_LBS_VIP_UPDATE_OPEN, null, null, region, null,
 				JSONObject.toJSONString(open_map), vipId);
 		// 更新connection_limit
 		Map<String, String> connection_limit_map = new HashMap<>();
 		connection_limit_map.put("connection_limit", connection_limit);
 		jsonService.poPut(InitConst.KVM_LBS_VIP_UPDATE_CONNECTION_LIMIT, null,
-				null, null, JSONObject.toJSONString(connection_limit_map),
+				null, region, null, JSONObject.toJSONString(connection_limit_map),
 				vipId);
 		// 更新session_persistence
 		SessionPersistencePOJO pojo = new SessionPersistencePOJO();
@@ -561,7 +561,7 @@ public class LBSService {
 		Map<String, Object> session_persistence_map = new HashMap<>();
 		session_persistence_map.put("session_persistence", pojo);
 		jsonService.poPut(InitConst.KVM_LBS_VIP_UPDATE_SESSION_PERSISTENCE,
-				null, null, null,
+				null, null, region, null,
 				JSONObject.toJSONString(session_persistence_map), vipId);
 	}
 
@@ -577,47 +577,25 @@ public class LBSService {
 	 * @throws ErrorCodeException
 	 * @throws NoTokenException
 	 */
-	public void updatePool(String userId, String tenantId, String poolId,
-			String name, String egress, String admin_state_up)
-			throws NoTokenException, ErrorCodeException {
-		jsonService.setId(userId);
-		jsonService.setTenantId(tenantId);
-		// 更新name
-		Map<String, String> name_map = new HashMap<>();
-		name_map.put("name", name);
-		jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_NAME, null, null, null,
-				JSONObject.toJSONString(name_map), poolId);
-		// 更新egress
-		Map<String, String> egress_map = new HashMap<>();
-		egress_map.put("egress", egress);
-		jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_EGRESS, null, null,
-				null, JSONObject.toJSONString(egress_map), poolId);
-		// 更新open
-		Map<String, String> open_map = new HashMap<>();
-		open_map.put("open", admin_state_up);
-		jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_OPEN, null, null, null,
-				JSONObject.toJSONString(open_map), poolId);
-	}
-
     public void updatePool(String userId, String tenantId, String poolId,
-                           String name, String egress, String admin_state_up,String Region)
+                           String name, String egress, String admin_state_up,String region)
             throws NoTokenException, ErrorCodeException {
         jsonService.setId(userId);
         jsonService.setTenantId(tenantId);
         // 更新name
         Map<String, String> name_map = new HashMap<>();
         name_map.put("name", name);
-        jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_NAME, null, null,Region, null,
+        jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_NAME, null, null, region, null,
                 JSONObject.toJSONString(name_map), poolId);
         // 更新egress
         Map<String, String> egress_map = new HashMap<>();
         egress_map.put("egress", egress);
-        jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_EGRESS, null, null,
+        jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_EGRESS, null, null, region,
                 null, JSONObject.toJSONString(egress_map), poolId);
         // 更新open
         Map<String, String> open_map = new HashMap<>();
         open_map.put("open", admin_state_up);
-        jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_OPEN, null, null, null,
+        jsonService.poPut(InitConst.KVM_LBS_POOL_UPDATE_OPEN, null, null, region, null,
                 JSONObject.toJSONString(open_map), poolId);
     }
 }

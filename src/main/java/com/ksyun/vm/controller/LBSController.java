@@ -126,8 +126,7 @@ public class LBSController {
 			@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
 			@PathVariable("username") String username,
-			@PathVariable("region") String region,
-			ModelAndView mav)
+			@PathVariable("region") String region, ModelAndView mav)
 			
 			throws NoTokenException, ErrorCodeException {
 		
@@ -137,10 +136,10 @@ public class LBSController {
 			e.printStackTrace();
 		}
 		
-		List<PoolPOJO> list = lbsService.getPools(userId, tenantId);
-		List<VipPOJO> vip_list = lbsService.getVips(userId, tenantId);
-		List<MemberPOJO> member_list = lbsService.getMembers(userId, tenantId);
-		List<HealthPOJO> health_list = lbsService.getHealths(userId, tenantId);
+		List<PoolPOJO> list = lbsService.getPools(userId, tenantId, region);
+		List<VipPOJO> vip_list = lbsService.getVips(userId, tenantId, region);
+		List<MemberPOJO> member_list = lbsService.getMembers(userId, tenantId, region);
+		List<HealthPOJO> health_list = lbsService.getHealths(userId, tenantId, region);
 		List<VmPojo> vm_list = vmService.getVms(userId, tenantId);
 		mav.addObject("list", list);
 		mav.addObject("vip_list", vip_list);
@@ -150,7 +149,10 @@ public class LBSController {
 		mav.addObject("user_id", userId);
 		mav.addObject("tenant_id", tenantId);
 		mav.addObject("pool_username", username);
-		mav.addObject("region", region);
+		String region_CN;
+		if(region.equals("SHRegionOne")) region_CN = "上海";
+		else region_CN = "北京";
+		mav.addObject("region", region_CN);
 		mav.setViewName("/gestion/lbs/lbs_list");
 		return mav;
 	}
@@ -165,16 +167,17 @@ public class LBSController {
 	 * @param mav
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/details/{user_id}/{tenant_id}/{username}/{pool_id}")
+	@RequestMapping(value = "/g/lbs/details/{user_id}/{tenant_id}/{username}/{pool_id}/{region}")
 	public ModelAndView getAllLbsDetailsByPool(
 			@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
 			@PathVariable("username") String username,
-			@PathVariable("pool_id") String poolId, ModelAndView mav) {
+			@PathVariable("pool_id") String poolId,
+			@PathVariable("region") String region, ModelAndView mav) {
 		// 获取POOL
 		try {
 			List<VmPojo> vm_list = vmService.getVms(userId, tenantId);
-			PoolPOJO poolPOJO = lbsService.getPool(userId, tenantId, poolId);
+			PoolPOJO poolPOJO = lbsService.getPool(userId, tenantId, poolId, region);
 			List<PoolPOJO> list = new ArrayList<>();
 			list.add(poolPOJO);
 			// 获取所有规则
@@ -184,24 +187,24 @@ public class LBSController {
 			List<HealthPOJO> health_list = new ArrayList<>();
 			Set<HealthPOJO> health_set = new HashSet<>();
 			for (String vipId : vips) {
-				VipPOJO vipPOJO = lbsService.getVip(userId, tenantId, vipId);
+				VipPOJO vipPOJO = lbsService.getVip(userId, tenantId, vipId, region);
 				vip_list.add(vipPOJO);
 				// 获取所有Member
 				List<String> members = vipPOJO.getMembers();
 				for (String memberId : members) {
 					MemberPOJO memberPOJO = lbsService.getMember(userId,
-							tenantId, memberId);
+							tenantId, memberId, region);
 					member_list.add(memberPOJO);
 				}
 				// 获取所有Health
 				List<String> healths = vipPOJO.getHealth_monitors();
 				for (String healthId : healths) {
 					HealthPOJO healthPOJO = lbsService.getHealth(userId,
-							tenantId, healthId);
+							tenantId, healthId, region);
 					health_set.add(healthPOJO);
 				}
 			}
-			List<HealthPOJO> health_all_list = lbsService.getHealths(userId, tenantId);
+			List<HealthPOJO> health_all_list = lbsService.getHealths(userId, tenantId, region);
 			mav.addObject("list", list);
 			mav.addObject("vip_list", vip_list);
 			mav.addObject("member_list", member_list);
@@ -238,19 +241,20 @@ public class LBSController {
 	 * @param mav
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/vip/details/{user_id}/{tenant_id}/{username}/{pool_id}/{vip_id}")
+	@RequestMapping(value = "/g/lbs/vip/details/{user_id}/{tenant_id}/{username}/{pool_id}/{vip_id}/{region}")
 	public ModelAndView getAllVipDetail(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
 			@PathVariable("username") String username,
 			@PathVariable("pool_id") String poolId,
-			@PathVariable("vip_id") String vipId, ModelAndView mav) {
+			@PathVariable("vip_id") String vipId,
+			@PathVariable("region") String region, ModelAndView mav) {
 		try {
 			List<VmPojo> vm_list = vmService.getVms(userId, tenantId);
-			PoolPOJO poolPOJO = lbsService.getPool(userId, tenantId, poolId);
+			PoolPOJO poolPOJO = lbsService.getPool(userId, tenantId, poolId, region);
 			List<PoolPOJO> list = new ArrayList<>();
 			list.add(poolPOJO);
 			List<VipPOJO> vip_list = new ArrayList<>();
-			VipPOJO vipPOJO = lbsService.getVip(userId, tenantId, vipId);
+			VipPOJO vipPOJO = lbsService.getVip(userId, tenantId, vipId, region);
 			vip_list.add(vipPOJO);
 			List<MemberPOJO> member_list = new ArrayList<>();
 			List<HealthPOJO> health_list = new ArrayList<>();
@@ -258,17 +262,17 @@ public class LBSController {
 			List<String> members = vipPOJO.getMembers();
 			for (String memberId : members) {
 				MemberPOJO memberPOJO = lbsService.getMember(userId, tenantId,
-						memberId);
+						memberId, region);
 				member_list.add(memberPOJO);
 			}
 			// 获取所有Health
 			List<String> healths = vipPOJO.getHealth_monitors();
 			for (String healthId : healths) {
 				HealthPOJO healthPOJO = lbsService.getHealth(userId, tenantId,
-						healthId);
+						healthId, region);
 				health_list.add(healthPOJO);
 			}
-			List<HealthPOJO> health_all_list = lbsService.getHealths(userId, tenantId);
+			List<HealthPOJO> health_all_list = lbsService.getHealths(userId, tenantId, region);
 			mav.addObject("list", list);
 			mav.addObject("vip_list", vip_list);
 			mav.addObject("member_list", member_list);
@@ -307,13 +311,14 @@ public class LBSController {
 	 * @throws ErrorCodeException
 	 * @throws NoTokenException
 	 */
-	@RequestMapping(value = "/g/lbs/pool/{user_id}/{tenant_id}/{username}")
+	@RequestMapping(value = "/g/lbs/pool/{user_id}/{tenant_id}/{username}/{region}")
 	public ModelAndView getPool(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
 			@PathVariable("username") String username,
-			@RequestParam("pool_id") String poolId, ModelAndView mav)
+			@RequestParam("pool_id") String poolId, 
+			@PathVariable("region") String region, ModelAndView mav)
 			throws NoTokenException, ErrorCodeException {
-		PoolPOJO pojo = lbsService.getPool(userId, tenantId, poolId);
+		PoolPOJO pojo = lbsService.getPool(userId, tenantId, poolId, region);
 		List<PoolPOJO> list = new ArrayList<>();
 		list.add(pojo);
 		mav.addObject("list", list);
@@ -336,10 +341,11 @@ public class LBSController {
 	 * @param egress
 	 *            带宽
 	 */
-	@RequestMapping(value = "/g/lbs/pool/add/{user_id}/{tenant_id}")
+	@RequestMapping(value = "/g/lbs/pool/add/{user_id}/{tenant_id}/{region}")
 	@ResponseBody
 	public String creatPool(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("region") String region,
 			@RequestParam("new_pool_name") String poolName,
 			@RequestParam("net_type") String type,
 			@RequestParam("new_pool_egress") String egress) {
@@ -347,7 +353,7 @@ public class LBSController {
 			if (egress.indexOf(".") > -1) {
 				egress = egress.substring(0, egress.indexOf("."));
 			}
-			lbsService.addPool(userId, tenantId, poolName, type, egress);
+			lbsService.addPool(userId, tenantId, poolName, type, egress, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -379,10 +385,11 @@ public class LBSController {
 	 * @param cookie_timeout
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/vip/add/{user_id}/{tenant_id}")
+	@RequestMapping(value = "/g/lbs/vip/add/{user_id}/{tenant_id}/{region}")
 	@ResponseBody
 	public String createVip(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("region") String region,
 			@RequestParam("name") String name,
 			@RequestParam("protocol") String protocol,
 			@RequestParam("protocol_port") String protocol_port,
@@ -401,7 +408,7 @@ public class LBSController {
 			persistencePOJO.setTimeout(cookie_timeout);
 			persistencePOJO.setType(cookie_type);
 			lbsService.addVip(userId, tenantId, name, protocol, protocol_port,
-					lb_method, pool_id, persistencePOJO);
+					lb_method, pool_id, persistencePOJO, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -430,10 +437,11 @@ public class LBSController {
 	 * @param vm_id
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/member/add/{user_id}/{tenant_id}")
+	@RequestMapping(value = "/g/lbs/member/add/{user_id}/{tenant_id}/{region}")
 	@ResponseBody
 	public String createMember(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("region") String region,
 			@RequestParam("address") String address,
 			@RequestParam("protocol_port") String protocol_port,
 			@RequestParam("vip_id") String vip_id,
@@ -441,7 +449,7 @@ public class LBSController {
 			@RequestParam("vm_id") String vm_id) {
 		try {
 			lbsService.addMember(userId, tenantId, address, protocol_port,
-					vip_id, weight, vm_id);
+					vip_id, weight, vm_id, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -473,10 +481,11 @@ public class LBSController {
 	 * @param url_path
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/health/add/{user_id}/{tenant_id}")
+	@RequestMapping(value = "/g/lbs/health/add/{user_id}/{tenant_id}/{region}")
 	@ResponseBody
 	public String createHealth(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
+			@PathVariable("region") String region,
 			@RequestParam("delay") String delay,
 			@RequestParam("max_retries") String max_retries,
 			@RequestParam("type") String type,
@@ -487,7 +496,7 @@ public class LBSController {
 			@RequestParam("url_path") String url_path) {
 		try {
 			lbsService.addHealth(userId, tenantId, delay, max_retries, type,
-					timeout, rise, fall, http_method, url_path);
+					timeout, rise, fall, http_method, url_path, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -512,13 +521,14 @@ public class LBSController {
 	 * @param healthId
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/health/del/{user_id}/{tenant_id}/{health_monitor_id}")
+	@RequestMapping(value = "/g/lbs/health/del/{user_id}/{tenant_id}/{health_monitor_id}/{region}")
 	@ResponseBody
 	public String removeHealth(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
-			@PathVariable("health_monitor_id") String healthId) {
+			@PathVariable("health_monitor_id") String healthId,
+			@PathVariable("region") String region) {
 		try {
-			lbsService.deleteHealth(userId, tenantId, healthId);
+			lbsService.deleteHealth(userId, tenantId, healthId, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -543,13 +553,14 @@ public class LBSController {
 	 * @param memberId
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/member/del/{user_id}/{tenant_id}/{member_id}")
+	@RequestMapping(value = "/g/lbs/member/del/{user_id}/{tenant_id}/{member_id}/{region}")
 	@ResponseBody
 	public String removeMember(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
-			@PathVariable("member_id") String memberId) {
+			@PathVariable("member_id") String memberId,
+			@PathVariable("region") String region) {
 		try {
-			lbsService.deleteMember(userId, tenantId, memberId);
+			lbsService.deleteMember(userId, tenantId, memberId, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -574,15 +585,16 @@ public class LBSController {
 	 * @param vip_id
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/vip/del/{user_id}/{tenant_id}/{vip_id}")
+	@RequestMapping(value = "/g/lbs/vip/del/{user_id}/{tenant_id}/{vip_id}/{region}")
 	@ResponseBody
 	public String removeVip(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
-			@PathVariable("vip_id") String vip_id) {
+			@PathVariable("vip_id") String vip_id,
+			@PathVariable("region") String region) {
 		try {
 			// 同时要删除健康检查的引用
 			List<HealthPOJO> health_list = lbsService.getHealths(userId,
-					tenantId);
+					tenantId, region);
 			List<String> health_ids = new ArrayList<>();// 存放与该VIP绑定的健康检查ID
 			// 查找当前VIP绑定的Health的ID
 			for (HealthPOJO healthPOJO : health_list) {
@@ -596,10 +608,10 @@ public class LBSController {
 			}
 			// 解除绑定
 			for (String health_id : health_ids) {
-				lbsService.vipUnBindHealth(userId, tenantId, vip_id, health_id);
+				lbsService.vipUnBindHealth(userId, tenantId, vip_id, health_id, region);
 			}
 			// 删除VIP
-			lbsService.deleteVip(userId, tenantId, vip_id);
+			lbsService.deleteVip(userId, tenantId, vip_id, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -624,28 +636,29 @@ public class LBSController {
 	 * @param pool_id
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/pool/del/{user_id}/{tenant_id}/{pool_id}")
+	@RequestMapping(value = "/g/lbs/pool/del/{user_id}/{tenant_id}/{pool_id}/{region}")
 	@ResponseBody
 	public String removePool(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
-			@PathVariable("pool_id") String poolId) {
+			@PathVariable("pool_id") String poolId,
+			@PathVariable("region") String region) {
 		try {
 			// 删除POOL，要先删除与VIP的绑定
-			PoolPOJO poolPOJO = lbsService.getPool(userId, tenantId, poolId);
+			PoolPOJO poolPOJO = lbsService.getPool(userId, tenantId, poolId, region);
 			// 当前Pool下的VIP
 			List<String> vips = poolPOJO.getVips();
 			for (String vip_id : vips) {
-				VipPOJO vip = lbsService.getVip(userId, tenantId, vip_id);
+				VipPOJO vip = lbsService.getVip(userId, tenantId, vip_id, region);
 				List<String> health_ids = vip.getHealth_monitors();
 				for (String health_id : health_ids) {// 接触VIP与Health的绑定
 					lbsService.vipUnBindHealth(userId, tenantId, vip_id,
-							health_id);
+							health_id, region);
 				}
 				// 删除VIP
-				lbsService.deleteVip(userId, tenantId, vip_id);
+				lbsService.deleteVip(userId, tenantId, vip_id, region);
 			}
 			// 删除POOL
-			lbsService.deletePool(userId, tenantId, poolId);
+			lbsService.deletePool(userId, tenantId, poolId, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -671,15 +684,16 @@ public class LBSController {
 	 * @param health_monitor_id
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/health/bind/{user_id}/{tenant_id}/{vip_id}")
+	@RequestMapping(value = "/g/lbs/health/bind/{user_id}/{tenant_id}/{vip_id}/{region}")
 	@ResponseBody
 	public String bindHealth(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
 			@PathVariable("vip_id") String vip_id,
+			@PathVariable("region") String region,
 			@RequestParam("health_monitor_id") String health_monitor_id) {
 		try {
 			lbsService.vipBindHealth(userId, tenantId, vip_id,
-					health_monitor_id);
+					health_monitor_id, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -705,15 +719,16 @@ public class LBSController {
 	 * @param health_monitor_id
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/health/unbind/{user_id}/{tenant_id}/{vip_id}/{health_monitor_id}")
+	@RequestMapping(value = "/g/lbs/health/unbind/{user_id}/{tenant_id}/{vip_id}/{health_monitor_id}/{region}")
 	@ResponseBody
 	public String unBindHealth(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
 			@PathVariable("vip_id") String vip_id,
-			@PathVariable("health_monitor_id") String health_monitor_id) {
+			@PathVariable("health_monitor_id") String health_monitor_id,
+			@PathVariable("region") String region) {
 		try {
 			lbsService.vipUnBindHealth(userId, tenantId, vip_id,
-					health_monitor_id);
+					health_monitor_id, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -747,11 +762,12 @@ public class LBSController {
 	 * @param http_method
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/health/update/{user_id}/{tenant_id}/{health_monitor_id}")
+	@RequestMapping(value = "/g/lbs/health/update/{user_id}/{tenant_id}/{health_monitor_id}/{region}")
 	@ResponseBody
 	public String setHealth(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
 			@PathVariable("health_monitor_id") String healthId,
+			@PathVariable("region") String region,
 			@RequestParam("timeout") String timeout,
 			@RequestParam("delay") String delay,
 			@RequestParam("fall") String fall,
@@ -767,7 +783,7 @@ public class LBSController {
 			http_method = http_method.trim().toUpperCase();
 			lbsService.updateHealth(userId, tenantId, healthId, timeout, delay,
 					fall, rise, max_retries, admin_state_up, type, url_path,
-					http_method);
+					http_method, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -794,16 +810,17 @@ public class LBSController {
 	 * @param admin_state_up
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/member/update/{user_id}/{tenant_id}/{member_id}")
+	@RequestMapping(value = "/g/lbs/member/update/{user_id}/{tenant_id}/{member_id}/{region}")
 	@ResponseBody
 	public String setMember(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
 			@PathVariable("member_id") String memberId,
+			@PathVariable("region") String region,
 			@RequestParam("weight") String weight,
 			@RequestParam("admin_state_up") String admin_state_up) {
 		try {
 			lbsService.updateMember(userId, tenantId, memberId, weight,
-					admin_state_up);
+					admin_state_up, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -834,11 +851,12 @@ public class LBSController {
 	 * @param cookie_timeout
 	 * @return
 	 */
-	@RequestMapping(value = "/g/lbs/vip/update/{user_id}/{tenant_id}/{vip_id}")
+	@RequestMapping(value = "/g/lbs/vip/update/{user_id}/{tenant_id}/{vip_id}/{region}")
 	@ResponseBody
 	public String setVip(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
 			@PathVariable("vip_id") String vipId,
+			@PathVariable("region") String region,
 			@RequestParam("name") String name,
 			@RequestParam("admin_state_up") String admin_state_up,
 			@RequestParam("connection_limit") String connection_limit,
@@ -847,7 +865,7 @@ public class LBSController {
 			@RequestParam("cookie_timeout") String cookie_timeout) {
 		try {
 			lbsService.updateVip(userId, tenantId, vipId, name, admin_state_up,
-					connection_limit, cookie_name, cookie_type, cookie_timeout);
+					connection_limit, cookie_name, cookie_type, cookie_timeout, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -880,6 +898,7 @@ public class LBSController {
 	public String setPool(@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
 			@PathVariable("pool_id") String poolId,
+			@PathVariable("region") String region,
 			@RequestParam("name") String name,
 			@RequestParam("egress") String egress,
 			@RequestParam("admin_state_up") String admin_state_up) {
@@ -888,7 +907,7 @@ public class LBSController {
 				egress = egress.substring(0, egress.indexOf("."));
 			}
 			lbsService.updatePool(userId, tenantId, poolId, name, egress,
-					admin_state_up);
+					admin_state_up, region);
 		} catch (NoTokenException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();

@@ -115,7 +115,7 @@
 	function in_pool(userId, tenantId, username) {
 		var region = document.getElementById("region").value;
 		window.location.href = "/g/lbs/list/" + userId + "/" + tenantId
-				+ "/" + username + "/" + encodeURIComponent(encodeURIComponent(region));
+				+ "/" + username + "/" + region;
 	}
 </script>
 </html>	
