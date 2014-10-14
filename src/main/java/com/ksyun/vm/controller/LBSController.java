@@ -1,5 +1,7 @@
 package com.ksyun.vm.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -119,12 +121,22 @@ public class LBSController {
 	 * @throws ErrorCodeException
 	 * @throws NoTokenException
 	 */
-	@RequestMapping(value = "/g/lbs/list/{user_id}/{tenant_id}/{username}")
+	@RequestMapping(value = "/g/lbs/list/{user_id}/{tenant_id}/{username}/{region}")
 	public ModelAndView getAllLbsDetails(
 			@PathVariable("user_id") String userId,
 			@PathVariable("tenant_id") String tenantId,
-			@PathVariable("username") String username, ModelAndView mav)
+			@PathVariable("username") String username,
+			@PathVariable("region") String region,
+			ModelAndView mav)
+			
 			throws NoTokenException, ErrorCodeException {
+		
+		try {
+			region = URLDecoder.decode(region, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
 		List<PoolPOJO> list = lbsService.getPools(userId, tenantId);
 		List<VipPOJO> vip_list = lbsService.getVips(userId, tenantId);
 		List<MemberPOJO> member_list = lbsService.getMembers(userId, tenantId);
@@ -138,6 +150,7 @@ public class LBSController {
 		mav.addObject("user_id", userId);
 		mav.addObject("tenant_id", tenantId);
 		mav.addObject("pool_username", username);
+		mav.addObject("region", region);
 		mav.setViewName("/gestion/lbs/lbs_list");
 		return mav;
 	}

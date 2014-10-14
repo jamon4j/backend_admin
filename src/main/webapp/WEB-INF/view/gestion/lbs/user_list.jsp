@@ -51,7 +51,7 @@
 				</colgroup>
 				<thead class="tb-tit-bg">
 					<tr>
-						<th width="22%">
+						<th width="20%">
 							<div class="th-gap">id</div>
 						</th>
 						<th width="10%">
@@ -63,8 +63,11 @@
 						<th width="10%">
 							<div class="th-gap">email</div>
 						</th>
-						<th width="22%">
+						<th width="20%">
 							<div class="th-gap">tenant_id</div>
+						</th>
+						<th width="20%">
+							<div class="th-gap">region</div>
 						</th>
 						<th width="8%">
 							<div class="th-gap">LBS管理</div>
@@ -79,6 +82,7 @@
 							<td>${dto.enabled}</td>
 							<td>${dto.email}</td>
 							<td>${dto.tenant_id}</td>
+							<td><select id="region"><option value="北京">北京</option><option value="上海">上海</option></select></td>
 							<td><button class="ui-state-default ui-corner-all"
 									onclick="in_pool('${dto.user_id}','${dto.tenant_id}','${dto.user_name}')">进入</button>
 							</td>
@@ -109,8 +113,9 @@
 </body>
 <script>
 	function in_pool(userId, tenantId, username) {
+		var region = document.getElementById("region").value;
 		window.location.href = "/g/lbs/list/" + userId + "/" + tenantId
-				+ "/" + username;
+				+ "/" + username + "/" + encodeURIComponent(encodeURIComponent(region));
 	}
 </script>
-</html>
+</html>	

@@ -189,7 +189,7 @@
 							<td><button onclick="button_details_vip('${vip.id }')"
 									class="ui-state-default ui-corner-all">查看</button></td>
 							<td
-								style="display: none;><button
+								style="display: none;"><button
 									onclick="dialog_vip_bind_health('${user_id }','${tenant_id }','${vip.id }')"
 									class="ui-state-default ui-corner-all">绑定</button> |
 								<button

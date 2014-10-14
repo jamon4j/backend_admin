@@ -25,7 +25,7 @@
 	</div>
 	<div class="main-cont">
 		<h3 class="title">
-			用户名：${pool_username} | userId：${user_id } | tenantId：${tenant_id }
+			用户名：${pool_username} | userId：${user_id } | tenantId：${tenant_id } | region: ${region }
 			<button onclick="window.location.reload();"
 				class="ui-state-default ui-corner-all">刷新</button>
 		</h3>
