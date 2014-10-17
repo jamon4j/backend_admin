@@ -65,11 +65,14 @@ public class ZoneController {
                     if (pojo.getName().equals(zone.getZone_name())) {
                         pojo.setStatZone(zone);
                         for (HostUsage usage : zone.getHost_usage()) {
+				if(usage!=null)
+				{
                             usage.setCpu_infos(JSONObject.parseObject(usage.getCpu_info(), CpuInfos.class));
                             System.out.println(Integer.parseInt(usage.getVcpus_used()));
                             System.out.println(Integer.parseInt(usage.getLocal_gb_used()));
                             System.out.println(Integer.parseInt(usage.getMemory_mb_used()));//vcpus_used
 
+				}
                         }
                         break;
                     }
