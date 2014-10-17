@@ -49,7 +49,8 @@ public class ZoneController {
     @RequestMapping("/g/zonelist")
     public ModelAndView returnZoneList(HttpServletRequest request, ModelAndView mav) {
         String Region = request.getParameter("Region");
-        List<ZonePojo> list = null;
+        List<ZonePojo> list =new ArrayList<ZonePojo>();
+        //List<ZonePojo> list = null;
         List<StatZone> stat_zone = null;
         ;
         List<IpStat> ip_stat = null;
@@ -86,15 +87,15 @@ public class ZoneController {
 
             }
             netsInfo = NetsInfo.getInstance(ip_stat);
+            mav.addObject("zonelist", list);
+            mav.addObject("netsInfo", netsInfo);
+            if (Region.equals("RegionOne")) {
+           	 mav.setViewName("/gestion/zone/zone_list");
+       	    } else {
+            mav.setViewName("/gestion/zone/SHzone_list");
+        	}
         } catch (ErrorCodeException | NoTokenException e) {
             e.printStackTrace();
-        }
-        mav.addObject("zonelist", list);
-        mav.addObject("netsInfo", netsInfo);
-        if (Region.equals("RegionOne")) {
-            mav.setViewName("/gestion/zone/zone_list");
-        } else {
-            mav.setViewName("/gestion/zone/SHzone_list");
         }
         return mav;
     }

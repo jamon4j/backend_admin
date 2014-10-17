@@ -1,5 +1,5 @@
 #!/bin/sh
-#set -x
+set -x
 MVN_PATH=/home/liyang14/apache-maven-3.2.1/bin
 export PATH="$MVN_PATH:$PATH"
 source_path="/home/liyang14/work_space"
@@ -17,6 +17,7 @@ git pull origin $current_branch >/dev/null
 
 if [ $? -eq 0 ]; then
 
+     cp $source_path/backend_admin/target/mvn_vm_web-1.0-SNAPSHOT.war  /tmp/mvn_vm_web-1.0-SNAPSHOTBACK.war
      mvn clean>/dev/null
      mvn install > /dev/null
      if [ $? -eq 0 ] ;then
@@ -25,10 +26,12 @@ if [ $? -eq 0 ]; then
           #decompress war 
 	  unzip $source_path/backend_admin/target/mvn_vm_web-1.0-SNAPSHOT.war  -d $deploy_path/webapps/ROOT/  > /dev/null
 	  #copy backup config file
-	  rm -rf $deploy_path/webapps/ROOT/WEB-INF/classes/conf.properties > /dev/null
-	  cp -rf /tmp/ROOT/WEB-INF/classes/conf.properties  $deploy_path/webapps/ROOT/WEB-INF/classes/conf.properties  > /dev/null
-          rm -rf  $deploy_path/webapps/ROOT/WEB-INF/classes/api.properties  > /dev/null
-	  cp -rf /tmp/ROOT/WEB-INF/classes/api.properties  $deploy_path/webapps/ROOT/WEB-INF/classes/api.properties > /dev/null
+	  rm -rf   $deploy_path/webapps/ROOT/WEB-INF/classes/conf.properties >/dev/null
+	  #cp -rf /tmp/ROOT/WEB-INF/classes/conf.properties  $deploy_path/webapps/ROOT/WEB-INF/classes/conf.properties  > /dev/null
+	  cp -rf /home/liyang14/backupconfig/conf.properties  $deploy_path/webapps/ROOT/WEB-INF/classes/conf.properties  > /dev/null
+          rm -rf  $deploy_path/webapps/ROOT/WEB-INF/classes/api.properties  
+	  #cp -rf /tmp/ROOT/WEB-INF/classes/api.properties  $deploy_path/webapps/ROOT/WEB-INF/classes/api.properties > /dev/null
+	  cp -rf /home/liyang14/backupconfig/api.properties  $deploy_path/webapps/ROOT/WEB-INF/classes/api.properties > /dev/null
 	 
 	  #shutdown tomcat
           #sh  $deploy_path/bin/shutdown.sh
@@ -58,5 +61,5 @@ else
 fi
 
 echo "this script execute over"
-#set +x
+set +x
 
